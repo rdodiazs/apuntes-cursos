@@ -1,0 +1,296 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage[spanish]{babel}\decimalpoint
+\usepackage{setspace}\onehalfspacing
+\usepackage{parskip} % Espacio entre parrafos.
+\usepackage{graphicx} % Para usar comando \includegraphics[]{}
+\usepackage{tikz} % Figuras
+\usetikzlibrary{angles, babel, quotes} % Agrego la librería 'babel' porque el mismo paquete en 'usepackage' redefine las doble-comillas
+                                       % y se genera un conflicto con el paquete 'tikz'.
+\usepackage{amsmath, amssymb} % Extensión de símbolos y obj. matemáticos.
+\usepackage{multirow} % Para unir multiples filas en una tabla.
+\usepackage{hyperref} % Siempre debe ser el ultimo paquete.
+
+
+\setcounter{tocdepth}{2} % Que no incluya subsubsections en la tabla de contenidos (toc).
+
+%================================
+
+\title{Clase 28. Integración por Sustitución Trigonométrica Inversa y Completando el Cuadrado.}
+\author{MIT 18.01: Single Variable Calculus.}
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent En esta clase continuamos con la técnica de integración por sustitución trigonométrica, pero ahora añadiendo a los recíprocos de las funciones seno, coseno y tangente. Además, usaremos el método de completar el cuadrado en los casos donde el integrando no nos permite reemplazarlo directamente por una función trigonométrica.
+\end{abstract}
+
+
+\section{Identidades Trigonométricas (resumen 2).}
+
+Recordemos las siguientes identidades trigonométricas usadas en la clase pasada:
+\begin{align*}
+&(1) \ \sin^{2}(\theta) + \cos^{2}(\theta) = 1 \\
+&(2) \ \cos(2\theta) = \cos^{2}(\theta) - \sin^{2}(\theta); \quad \sin(2\theta) = 2\sin(\theta)\cos(\theta) \\
+&(3) \ \cos^{2}(\theta) = \frac{1 + \cos(2\theta)}{2}; \quad \sin^{2}(\theta) = \frac{1 - \cos(2\theta)}{2}
+\end{align*}
+A ellas sumemos ahora la siguiente:
+\[
+  (4) \ \sec^{2}(x) = 1 + \tan^{2}(x)
+\]
+Debido a que añadimos a la función secante, agreguemos las fórmulas de las funciones recíproco del seno y coseno.
+\begin{align*}
+  \csc(x) &= \frac{1}{\sin(x)} &
+  \sec(x) &= \frac{1}{\cos(x)} \\
+\end{align*}
+Hagamos lo mismo con la función tangente y su recíproco.
+\begin{align*}
+  \tan(x) &= \frac{\sin(x)}{\cos(x)} &
+  \cot(x) &= \frac{\cos(x)}{\sin(x)}
+\end{align*}
+Usando la regla del cuociente encontramos las derivadas de las funciones trigonométricas que acabamos de ver.
+\begin{align*}
+  \frac{d}{dx}\sec(x) &= \sec(x)\tan(x) & \frac{d}{dx}\csc(x) &= -\csc(x)\cot(x) \\
+  \frac{d}{dx}\tan(x) &= \sec^{2}(x) & \frac{d}{dx}\cot(x) &= -\csc^{2}(x)
+\end{align*}
+En el caso de las integrales de funciones trigonométricas, podemos encontrarnos con las siguientes:
+\begin{align*}
+  \int \sin(x) dx &= -\cos(x) + C & \int \cos(x) dx &= \sin(x) + C \\
+  \int \csc(x) dx &= - \ln(|\csc(x) + \cot(x)|) + C & \int \sec(x) dx &= \ln(|\sec(x) + \tan(x)|) + C \\
+  \int \tan(x) dx &= - \ln(|\cos(x)|) + C & \int \cot(x) dx &= \ln(|\sin(x)|) + C
+\end{align*}
+Las integrales de las funciones $\sin(x)$ y $\cos(x)$ son sencillas y casi obvias de obtener, pero esto no sucede para el resto de las que vemos ahí. No obstante, con la ayuda del método de sustitución directa\footnote{La nombraré así para diferenciarla de la sustitución trigonométrica.} es posible conocerlas. Veámoslo para los casos de $\tan(x)$ y $\sec(x)$.
+
+Inicialmente, la integral de la $\tan(x)$ podemos reescribirla como:
+\[
+ \int \tan(x)dx = \int \frac{\sin(x)}{\cos(x)} dx
+\]
+Para resolverla, podemos usar el método de sustitución directa. La idea es reemplazar una de las dos funciones trigonométricas por una variable nueva $u$. Si hacemos la prueba, veremos que es más conveniente hacer con el $\cos(x)$, por lo tanto estableceremos que:
+\begin{align*}
+  u &= \cos(x) & du &= -\sin(x)dx
+\end{align*}
+implicando lo siguiente:
+\[
+  \int \tan(x)dx = \int - \frac{1}{u} du = - \int \frac{1}{u} du = - \ln(u) + C = - \ln(|\cos(x)|) + C
+\]
+
+En el caso de la integral de la $\sec(x)$ existen distintas maneras de resolverla. Acá usaremos el enfoque dado por el matemático James Gregory. Su idea fue comenzar multiplicando el integrando por $(\sec(x) + \tan(x))/(\sec(x) + \tan(x))$:
+\[
+  \int \sec(x)dx = \int \left[\sec(x) \cdot \frac{\sec(x) + \tan(x)}{\sec(x) + \tan(x)}\right] dx
+                 = \int \frac{\sec^{2}(x) + \sec(x)\tan(x)}{\sec(x) + \tan(x)} dx
+\]
+Luego, usamos el método de sustitución definiendo a la variable $u$ como:
+\[
+  u = \sec(x) + \tan(x)
+\]
+Esto implica que $du$ será:
+\[
+  du = \frac{d}{dx} [\sec(x) + \tan(x)] dx
+     = \left[\frac{d}{dx} \sec(x) + \frac{d}{dx} \tan(x)\right] dx
+     = \left[\sec(x)\tan(x) + \sec^{2}(x)\right] dx
+\]
+Haciendo el reemplazo, obtenemos que:
+\[
+  \int \sec(x) = \frac{1}{u} du = \ln(|u|) + C = \ln(|\sec(x) + \tan(x)|) + C
+\]
+
+\section{Integración por Sustitución Trigonométrica.}
+
+En la sección anterior hicimos una revisión de funciones trigonométricas distintas a las del seno y coseno, porque nos serán útiles para usar el método de sustitución.
+
+Algo que no estudiamos la clase anterior, es que si estamos en presencia de una integral cuyo integrando contiene a $\sqrt{a^{2} - x^{2}}$, $\sqrt{a^{2} + x^{2}}$ o $\sqrt{x^{2} - a^{2}}$, para $a \in \mathbb{R}$, se hace conveniente usar una de las sustituciones trigonométricas que vemos en la siguiente tabla:
+
+\begin{table}[!hbt]
+\centering
+
+\begin{tabular}{c c c c}
+\hline
+Expresión & Sustitución & Identidad Obtenida & Expresión Final \\
+\hline
+$\sqrt{a^{2} - x^{2}}$ & $x = a\sin(\theta)$ & $\cos^{2}(\theta) = 1 - \sin^{2}(\theta)$ & $a\cos(\theta)$ \\
+$\sqrt{a^{2} - x^{2}}$ & $x = a\cos(\theta)$ & $\sin^{2}(\theta) = 1 - \cos^{2}(\theta)$ & $a\sin(\theta)$ \\
+$\sqrt{a^{2} + x^{2}}$ & $x = a\tan(\theta)$ & $\sec^{2}(\theta) = 1 + \tan^{2}(\theta)$ & $a\sec(\theta)$ \\
+$\sqrt{x^{2} - a^{2}}$ & $x = a\sec(\theta)$ & $\tan^{2}(\theta) = \sec^{2}(\theta) - 1$ & $a\tan(\theta)$ \\
+\hline
+\end{tabular}
+
+\end{table}
+
+\textbf{Ejemplo 1.} Calcule usando el método de sustitución:
+\[
+  \int \left(\frac{1}{x^{2}\sqrt{1 + x^{2}}}\right) dx
+\]
+\textbf{Solución} Dado que tenemos una raíz cuadrada de la forma $\sqrt{a + x^{2}}$ en el denominador del integrando, donde $a = 1$, podemos hacer la siguiente sustitución trigonométrica:
+\begin{align*}
+  x &= \tan(\theta) & dx &= \sec^{2}(\theta) d\theta
+\end{align*}
+Como vimos en la tabla de arriba, esta sustitución permite deshacernos de la raíz cuadrada ya que nos lleva a la identidad trigonométrica $\sec^{2}(\theta) = 1 + \tan^{2}(\theta)$.
+\begin{align*}
+  \int \left(\frac{1}{x^{2}\sqrt{1 + x^{2}}}\right) dx &= \int \left(\frac{\sec^{2}(\theta)}{\tan^{2}(\theta)\sqrt{1 + \tan^{2}(\theta)}}\right) d\theta \\
+                                                       &= \int \left(\frac{\sec^{2}(\theta)}{\tan^{2}(\theta)\sqrt{\sec^{2}(\theta)}}\right) d\theta \\
+                                                       &= \int \left(\frac{\sec^{2}(\theta)}{\tan^{2}(\theta)\sec(\theta)}\right) d\theta \\
+  \int \left(\frac{1}{x^{2}\sqrt{1 + x^{2}}}\right) dx &= \int \left(\frac{\sec(\theta)}{\tan^{2}(\theta)}\right) d\theta
+\end{align*}
+Para facilitar el cálculo de esta integral, lo mejor es seguir simplificando el integrando en funciones que solo contengan al $\sen(\theta)$ y $\cos(\theta)$.
+\[
+  \int \left(\frac{1}{x^{2}\sqrt{1 + x^{2}}}\right) dx = \int \left(\frac{\frac{1}{\cos(\theta)}}{\frac{\sin^{2}(\theta)}{\cos^{2}(\theta)}}\right) d\theta
+                                                       = \int \left(\frac{\cos(\theta)}{\sin^{2}(\theta)}\right) d\theta
+\]
+Ahora podemos hacer una sustitución directa para llevar a la integral a una expresión mucho más sencilla, definiendo que:
+\begin{align*}
+  u &= \sin(\theta) & du &= \cos(\theta) d\theta
+\end{align*}
+Lo que nos lleva a:
+\[
+  \int \left(\frac{1}{x^{2}\sqrt{1 + x^{2}}}\right) dx = \int \left(\frac{1}{u^{2}}\right) du = -\frac{1}{u} + C
+\]
+En este ejemplo hemos realizado dos sustituciones. Ahora nuestro objetivo es volver a la variable original y, para ello, comenzamos desde el último reemplazo, donde $u = \sin(\theta)$.
+\[
+  \int \left(\frac{1}{x^{2}\sqrt{1 + x^{2}}}\right) dx = -\frac{1}{\sin(\theta)} + C = - \csc(\theta) + C
+\]
+Para restituir la sustitución trigonométrica, podemos seguir dos caminos, pero ambos se basan en el hecho de que $x = \tan(\theta)$. El primero es usar la función inversa de la tangente, señalando que $\theta = \arctan(x)$. Por lo tanto:
+\[
+  \int \left(\frac{1}{x^{2}\sqrt{1 + x^{2}}}\right) dx = - \csc(\arctan(x)) + C
+\]
+El otro camino es una solución geométrica, ya que usamos un triángulo rectángulo.
+
+\begin{figure}[hbt!]
+\centering
+\begin{tikzpicture}
+
+\draw (1, 1) coordinate (a) -- (5, 1) coordinate (b) -- (5, 5) coordinate (c) -- cycle
+      pic[draw, angle radius=1.3cm, pic text= $\theta$] {angle=b--a--c} % ángulo theta
+      pic[draw, angle radius=0.5cm] {right angle=c--b--a}; % ángulo recto
+\end{tikzpicture}
+
+\end{figure}
+
+Recordemos que anteriormente definimos:
+\[
+  x = \tan(\theta)
+\]
+A partir del triángulo rectángulo que vemos arriba, se cumple que:
+\[
+  \tan(\theta) = \frac{\text{OP}}{\text{ADY}}
+\]
+donde OP $=$ lado opuesto a $\theta$ y ADY $=$ lado adyacente a $\theta$.
+
+Usando estas dos igualdades con respecto a la función tangente, podemos establecer que:
+\[
+\tan(\theta) = \frac{\text{OP}}{\text{ADY}} = \frac{x}{1}
+\]
+Como ahora conocemos las medidas de los catetos del triángulo rectángulo, podemos usar el teorema de Pitágoras para obtener la hipotenusa que denotaremos como HIP.
+\[
+  \text{HIP} = \sqrt{1 + x^{2}}
+\]
+Llevemos toda esta información al triángulo rectángulo.
+
+\newpage
+
+\begin{figure}[hbt!]
+\centering
+
+\begin{tikzpicture}
+\draw (1, 1) coordinate (a) -- node [below] {$1$} (5, 1) coordinate (b) -- node[right] {$x$} (5, 5) coordinate (c) -- node[left] {$\sqrt{1 + x}$} cycle
+      pic[draw, angle radius=1.3cm, pic text= $\theta$] {angle=b--a--c} % ángulo theta
+      pic[draw, angle radius=0.5cm] {right angle=c--b--a}; % ángulo recto
+\end{tikzpicture}
+
+\end{figure}
+
+Nuestro propósito es llevar a la antiderivada
+\[
+  \int \left(\frac{1}{x^{2}\sqrt{1 + x^{2}}}\right) dx = - \csc(\theta) + C
+\]
+a su variable inicial y, para ello, usaremos las medidas del triángulo rectángulo que acabamos de construir para calcular la $\csc(\theta)$:
+\[
+  \csc(\theta) = \frac{1}{\sin(\theta)} = \frac{\text{HIP}}{\text{OP}} = \frac{\sqrt{1 + x^{2}}}{x}
+\]
+En consecuencia:
+\[
+  \int \left(\frac{1}{x^{2}\sqrt{1 + x^{2}}}\right) dx = - \left(\frac{\sqrt{1 + x^{2}}}{x}\right) + C
+\]
+Las dos respuestas que obtuvimos para este ejemplo son correctas (usando la inversa de la tangente y el triángulo rectángulo), dependerá de nosotros cuál es más útil (o nos acomoda más) para la tarea que buscamos realizar.
+
+
+\subsection{Completando el Cuadrado.}
+
+En ocasiones nos encontraremos con raíces cuadradas en el integrando donde la expresión al interior de éstas corresponderá a un cuadrado del binomio incompleto, similar a $x^{2} + bx$. Si, de igual modo, queremos resolver la integral usando el método de sustitución trigonométrica, una buena alternativa es \textbf{completar el cuadrado} y llevarlo a uno perfecto. Para ello, solo sumamos $(b/2)^{2}$ a dicha expresión, conllevando a que\footnote{Fuente: Stewart, et al (2017). \textit{Precálculo. Matemáticas para el Cálculo}. Pp 48.}:
+\[
+  x^{2} + bx + \left(\frac{b}{2}\right)^{2} = \left(x + \frac{b}{2}\right)^{2}
+\]
+
+\textbf{Ejemplo 2.} Calcule la siguiente integral:
+\[
+  \int \left(\frac{1}{\sqrt{x^{2} + 4x}}\right) dx
+\]
+\textbf{Solución.} Nuestro objetivo será calcular esta integral haciendo una sustitución trigonométrica. Primero, como la expresión $x^{2} + 4x$ parece ser un cuadrado del binomio incompleto, vamos a sumarle $(4/2)^{2}$ para llevarlo a uno perfecto.
+\[
+  x^{2} + 4x + \left(\frac{4}{2}\right)^{2} = x^{2} + 4x + 4 = (x + 2)^{2}
+\]
+Ahora bien, la idea es simplificar la expresión de la raíz cuadrada, no modificarla. Por lo tanto, al cuadrado del binomio le sumaremos $-4$ para mantenerla idéntica a la original.
+\[
+  \int \left(\frac{1}{\sqrt{x^{2} + 4x}}\right) dx = \int \left(\frac{1}{\sqrt{(x + 2)^{2} - 4}}\right) dx
+\]
+Luego, como siguiente paso para realizar la sustitución trigonométrica, vamos a hacer una sustitución directa, estableciendo que:
+\begin{align*}
+  u &= x + 2 & du &= 1dx
+\end{align*}
+Por consiguiente:
+\[
+  \int \left(\frac{1}{\sqrt{x^{2} + 4x}}\right) dx = \int \left(\frac{1}{\sqrt{(x + 2)^{2} - 4}}\right) dx
+                                                   = \int \left(\frac{1}{\sqrt{u^{2} - 4}}\right) du
+\]
+Ahora realizaremos la sustitución trigonométrica, definiendo a $u$ como una nueva función y nos guiaremos en la tabla que creamos al inicio de esta sección, en la cual podemos ver que para la expresión de la raíz es más conveniente establecer que:
+\begin{align*}
+  u &= 2\sec(\theta) & du &= (2\sec(\theta)\tan(\theta)) d\theta
+\end{align*}
+El factor $2$ que vemos en $u$ se debe que, como vemos en la tabla, estamos asumiendo que $\sqrt{u^{2} - 4}$ es de la forma $\sqrt{x^{2} - a^{2}}$. En este caso, $a^{2} = 2^{2} = 4$.
+
+Así, reescribimos la integral como:
+\begin{align*}
+\int \left(\frac{2\sec(\theta)\tan(\theta)}{\sqrt{4\sec^{2}(\theta) - 4}}\right) d\theta &=
+  \int \left(\frac{2\sec(\theta)\tan(\theta)}{\sqrt{4(\sec^{2}(\theta) - 1)}}\right) d\theta \\
+  &= \int \left(\frac{2\sec(\theta)\tan(\theta)}{\sqrt{4\tan^{2}(\theta)}}\right) d\theta \\
+  &= \int \left(\frac{2\sec(\theta)\tan(\theta)}{2\tan(\theta)}\right) d\theta \\
+  &= \int \sec(\theta) d\theta
+\end{align*}
+En la primera sección resolvimos la integral de la secante. Usando su fórmula, obtenemos lo siguiente:
+\[
+  \int \sec(\theta) d\theta = \ln(|\sec(\theta) + \tan(\theta)|) + C
+\]
+Nuestra próxima tarea es llevar a la antiderivada a su variable original. Anteriormente establecimos que $u = 2\sec(\theta)$. Aprovechemos esta igualdad para obtener a la secante, dividiéndola por $2$.
+\[
+  \sec(\theta) = \frac{u}{2}
+\]
+Lo anterior implica que:
+\[
+  \int \sec(\theta) d\theta = \ln\left(\left|\frac{u}{2} + \tan(\theta)\right|\right) + C
+\]
+Por otra parte, recordemos que $\sqrt{u^{2} - 4}$ terminó siendo igual a $2\tan(\theta)$. Por lo tanto, podemos establecer que:
+\[
+  \sqrt{u^{2} - 4} = 2\tan(\theta) \Longrightarrow \tan(\theta) = \frac{\sqrt{u^{2} - 4}}{2}
+\]
+y por tanto que:
+\begin{align*}
+  \int \sec(\theta) d\theta &= \ln\left(\left|\frac{u}{2} + \frac{\sqrt{u^{2} - 4}}{2}\right|\right) + C \\
+                            &= \ln\left(\left|\frac{u + \sqrt{u^{2} - 4}}{2}\right|\right) + C \\
+                            &= \ln(|u + \sqrt{u^{2} - 4}|) - \ln(|2|) + C
+\end{align*}
+El $\ln(|2|)$ es una constante, de manera que podemos escribir la antiderivada como:
+\[
+  \int \sec(\theta) d\theta  = \ln(|u + \sqrt{u^{2} - 4}|) + C
+\]
+Finalmente, solo nos queda volver a la variable original de la sustitución directa. Recordemos que definimos que $u = x + 2$, por lo tanto:
+\[
+  \int \left(\frac{1}{\sqrt{x^{2} + 4x}}\right) dx = \ln(|x + 2 + \sqrt{(x + 2)^{2} - 4}|) + C = \ln(|x + 2 + \sqrt{x^{2} + 4x}|) + C
+\]
+Con esto, damos por resuelto el ejemplo.
+
+
+\end{document}

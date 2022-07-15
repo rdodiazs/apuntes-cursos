@@ -1,0 +1,166 @@
+---
+title: ''
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r libraries, message=FALSE, warning=FALSE}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+```
+
+
+Grafica.
+
+$$
+\int_{0}^{\pi} \sin(x) dx
+$$
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+def_int_sin <- ggplot() + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_area(
+    data = tibble(
+      x = seq(from = 0, to = pi, length.out = 200), f_x = sin(x)
+    ),
+    aes(x = x, y = f_x),
+    fill = "#5791b9"
+  ) + 
+  geom_vline(xintercept = pi, linetype = "dashed") + 
+  geom_line(
+    data = tibble(
+      x = seq(from = -pi/2, to = 2*pi, length.out = 200), f_x = sin(x)
+    ),
+    aes(x = x, y = f_x),
+    color = "#c63b42"
+  ) + 
+  annotate(geom = "text", x = pi/2, y = 1.2, label = "f(x) == sin(x)",
+           color = "#c63b42", parse = TRUE) + 
+  scale_x_continuous(breaks = c(0, pi), labels = expression(0, pi)) + 
+  coord_cartesian(xlim = c(-0.2, 4)) + 
+  expand_limits(y = c(-1.5, 1.5)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL)
+
+def_int_sin
+```
+
+```{r, eval=FALSE, include=FALSE, echo=FALSE}
+ggsave(filename = "def-int-sin.jpg", plot = def_int_sin, path = "img",
+       width = 3.75, height = 2.5)
+```
+
+
+
+
+Gráfica.
+
+$$
+\int_{0}^{2\pi} \sin(x) dx
+$$
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+def_int_sin_2 <- ggplot() + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_area(
+    data = tibble(
+      x = seq(from = 0, to = 2*pi, length.out = 200), f_x = sin(x)
+    ),
+    aes(x = x, y = f_x),
+    fill = "#5791b9"
+  ) + 
+  geom_vline(xintercept = 2*pi, linetype = "dashed") + 
+  geom_line(
+    data = tibble(
+      x = seq(from = -pi/2, to = 3*pi, length.out = 200), f_x = sin(x)
+    ),
+    aes(x = x, y = f_x),
+    color = "#c63b42"
+  ) + 
+  annotate(geom = "text", x = 3.5, y = 1.2, label = "f(x) == sin(x)",
+           color = "#c63b42", parse = TRUE) + 
+  annotate(
+    geom = "text",
+    x = c(pi/2, (3*pi)/2), y = c(0.5, -0.4), label = c("+", "-"),
+    color = "white", fontface = 2, size = 8
+  ) + 
+  scale_x_continuous(breaks = c(0, pi,2*pi), labels = expression(0, pi,2*pi)) + 
+  coord_cartesian(xlim = c(-0.2, 6.5)) + 
+  expand_limits(y = c(-1.5, 1.5)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL)
+
+def_int_sin_2
+```
+
+
+```{r, eval=FALSE, include=FALSE, echo=FALSE}
+ggsave(filename = "def-int-sin-2.jpg", plot = def_int_sin_2, path = "img",
+       width = 3.75, height = 2.5)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

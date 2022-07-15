@@ -1,0 +1,168 @@
+---
+title: ''
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r libraries, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+
+
+
+funciones:
+
+$$
+\begin{aligned}
+  f(x) &= \frac{1}{1 + x} \\
+  f(x) &= 1 \\
+  f(x) &= \frac{1}{5}
+\end{aligned}
+$$
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+tvm_tfc1_example <- ggplot() + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_rect(aes(xmin = 0, xmax = 4, ymin = 0, ymax = 1, fill = "Superior")) + 
+  geom_area(
+    data = tibble(x = seq(from = 0, to = 4, length.out = 200), f_x = 1/(1+x)),
+    aes(x = x, y = f_x),
+    fill = "#5761ba"
+  ) + 
+  geom_rect(aes(xmin = 0, xmax = 4, ymin = 0, ymax = 1/5, fill = "Inferior")) + 
+  geom_hline(yintercept = c(1/5, 1), color = "#651784") + 
+  geom_line(
+    data = tibble(x = seq(from = -1, to = 5.5, length.out = 200), f_x = 1/(1+x)),
+    aes(x = x, y = f_x),
+    color = "#c63b42"
+  ) + 
+  geom_point(
+    data = tibble(x = c(0, 4), y = c(1, 1/5)),
+    aes(x = x, y = y), size = 2
+  ) + 
+  annotate(
+    geom = "text", x = 0.9, y = 1.3,
+    label = "f(x)==over(1, 1+x)", parse = TRUE,
+    size = 4,
+    color = "#c63b42"
+  ) + 
+  annotate(
+    geom = "text", x = c(4, 4.2), y = c(1.1, 0.3),
+    label = c("f(x) = 1", "f(x) = 1/5"),
+    size = 4,
+    color = "#651784"
+  ) + 
+  coord_cartesian(xlim = c(-1, 5), ylim = c(0, 1.5)) + 
+  scale_x_continuous(breaks = c(0, 4)) + 
+  scale_y_continuous(
+    breaks = c(0, 1/5, 1),
+    labels = c("0", "1/5", "1")
+  ) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL, fill = "Suma de\nRiemann")
+
+tvm_tfc1_example
+```
+
+
+```{r, eval=FALSE, include=FALSE, echo=FALSE}
+ggsave(filename = "tvm_tfc1_example.jpg", plot = tvm_tfc1_example, path = "img",
+       width = 3.75, height = 2.5)
+```
+
+
+
+
+
+función:
+$$
+  f(x) = \left(\frac{x}{2} - 1.5\right)^3 + 2
+$$
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+ftc2_proof <- ggplot() + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_area(
+    data = tibble(
+      x = seq(from = 1, to = 4.25, length.out = 200),
+      f_x = (((x/2)-1.5)^3)+2
+    ),
+    aes(x = x, y = f_x),
+    fill = "#367faf"
+  ) + 
+  geom_area(
+    data = tibble(
+      x = seq(from = 4.25, to = 5.2, length.out = 200),
+      f_x = (((x/2)-1.5)^3)+2
+    ),
+    aes(x = x, y = f_x),
+    fill = "#36af40"
+  ) + 
+  geom_line(
+    data = tibble(
+        x = seq(from = 0, to = 6, length.out = 200),
+        f_x = (((x/2)-1.5)^3)+2
+      ),
+    aes(x = x, y = f_x),
+    color = "#c63b42"
+  ) + 
+  geom_point(
+    data = tibble(x = 4.25, f_x = (((x/2)-1.5)^3)+2),
+    aes(x = x, y = f_x),
+    size = 2
+  ) + 
+  annotate(
+    geom = "text", x = c(3, 4.725), y = c(1, 1.122),
+    label = c("G(x)", "Delta*G"), parse = TRUE,
+    color = "#e5e5e5", fontface = "bold"
+  ) + 
+  annotate(
+    geom = "text", x = 4.8, y = 4,
+    label = "y = f(x)", color = "#c63b42"
+  ) + 
+  annotate(
+    geom = "text", x = 4.1, y = 2.7,
+    label = "(x, f(x))"
+  ) + 
+  scale_x_continuous(
+    breaks = c(0, 1, 4.25, 5.2),
+    labels = expression(0, a, x, x+Delta*x)
+  ) + 
+  scale_y_continuous(breaks = c(0, 2.244), labels = c("0", "f(x)")) + 
+  coord_cartesian(xlim = c(0, 5.6), ylim = c(0, 5.375)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL)
+
+ftc2_proof
+```
+
+
+```{r, eval=FALSE, include=FALSE, echo=FALSE}
+ggsave(filename = "ftc2_proof.jpg", plot = ftc2_proof, path = "img",
+       width = 3.75, height = 2.5)
+```
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,180 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage[spanish]{babel}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+% Opciones de paquetes.
+\decimalpoint % {babel}: coma decimal como punto.
+\onehalfspacing % {setspace}: interlineado
+
+% Encabezado.
+\title{Clase 30. Integración por Partes y Fórmula de Reducción.}
+\author{MIT 18.01: Single Variable Calculus.}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent La \textbf{integración por partes} es otra de las técnicas usadas para obtener integrales que no pueden ser resueltas directamente por el Teorema Fundamental del Cálculo. En esta clase estudiaremos cómo usarla y, a partir de ella, conoceremos \textbf{fórmulas de reducción} que también son útiles para resolver integrales de forma más rápida.
+\end{abstract}
+
+\section{Integración por Partes.}
+
+En ocasiones, integrales del producto entre dos funciones,
+\[
+  \int f(x)g(x) dx,
+\]
+no pueden ser resueltas directamente. Sin embargo, existe una técnica de integración que nos permite separarlas, usando la derivada de una de ellas e integramos solo la segunda. Ésta recibe el nombre de \textbf{Integración por Partes}.
+
+La integración por partes podemos entenderla como la ``antiderivada'' de la regla del producto de las derivadas\footnote{Una relación similar a la que hay entre el método de sustitución (directa o trigonométrica) de las integrales y la regla de la cadena de las derivadas.} ya que, como ahora veremos, su fórmula se obtiene a partir de ella.
+
+Sean $u = f(x)$ y $v = g(x)$. Por la regla del producto, la derivada de su multiplicación corresponde a:
+\[
+  (uv)' = u'v + uv'
+\]
+Luego, despejemos a $uv'$ de la ecuación.
+\[
+  uv' = (uv)' - u'v
+\]
+Y, posteriormente, calculemos la integral en la ecuación.
+\[
+  \int uv' dx = \int [(uv)' - u'v] dx = \int (uv)' dx - \int u'v dx
+\]
+Por el Teorema Fundamental del Cálculo podemos establecer que $\int (uv)' dx = uv$. Así,
+\[
+  \int uv' dx = uv - \int u'v dx
+\]
+es la \textbf{fórmula} que nos permite aplicar la técnica de \textbf{integración por partes}.
+
+Para las \textbf{integrales definidas} con límites $a$ y $b$, donde $a < b$, la fórmula de la integración por partes es la siguiente:
+\[
+  \int_{a}^{b} uv' dx = [uv]_{a}^{b} - \int_{a}^{b} u'v dx
+\]
+
+\textbf{Ejemplo 1.} Calcule la siguiente integral:
+\[
+  \int \ln(x) dx
+\]
+\textbf{Solución.} Esta integral no es integrable directamente a partir del TFC y tampoco con los métodos de integración que hemos estudiado en clases anterior. No obstante, podemos expresarla como el producto entre dos funciones:
+\[
+  \int \ln(x)dx = \int (\ln(x) \cdot 1) dx
+\]
+En ese sentido, tenemos la opción para ver si podemos encontrar funciones que son más fáciles de integrar a partir de la técnica de integración por partes.
+
+Como vimos en la fórmula de la integración por partes, tenemos que elegir a cuál de las dos funciones, $\ln(x)$ o $1$, consideraremos como una derivada. Para este caso, la mejor opción es la función constante $1$. Por lo tanto, establezcamos que:
+\[
+  u = \ln(x) \qquad \text{ y } \qquad v' = 1
+\]
+Esto implica que:
+\[
+  u' = \frac{1}{x} \qquad \text{ y } \qquad v = x
+\]
+Así, usando el método de integración por partes, podemos reescribir la integral inicial como:
+\[
+  \int \ln(x) dx = x \ln(x) - \int \frac{1}{x} x dx = x \ln(x) - \int 1 dx = x \ln(x) - x + C
+\]
+
+\textbf{Ejemplo 2.} Calcule la integral
+\[
+  \int (\ln(x))^{2} dx
+\]
+\textbf{Solución.} Esta integral también es posible resolverla por medio de la técnica de integración por partes y de igual modo a como lo hicimos en el ejemplo anterior, estableciendo que:
+\[
+  u = (\ln(x))^{2}, \ u' = \frac{2 (\ln(x))}{x}, \ v' = 1, \ v = x
+\]
+Por lo tanto,
+\[
+  \int (\ln(x))^{2} dx = x (\ln(x))^{2} - \int \frac{2 (\ln(x))}{x} x dx = x (\ln(x))^{2} - 2 \int \ln(x) dx
+\]
+En el Ejemplo 1 vimos que $\int \ln(x)dx = x \ln(x) - x$. En consecuencia:
+\[
+  \int (\ln(x))^{2} dx =  x (\ln(x))^{2} - 2 (x \ln(x) - x)
+\]
+
+\subsection{Fórmulas de Reducción a partir de la Integración por Partes.}
+
+En el ejemplo anterior, la antiderivada de $\int (\ln(x))^{2} dx$ se construyó a partir de $\int \ln(x) dx$. Esta no es una coincidencia. Efectivamente, es un patrón existente en $\ln(x)$ que está determinado por su exponente y, con ella, es posible obtener una \textbf{Fórmula de Reducción}.
+
+Las fórmulas de reducción son aquellas que están definidas por funciones con términos anteriores a ella. A partir de la técnica de integración por partes, podemos encontrar este tipo de expresiones en algunas integrales.
+
+Por ejemplo, resolvamos la integral
+\[
+  \int (\ln(x))^{n}dx
+\]
+Utilizando el método de integración por partes, podemos establecer que:
+\[
+  u = (\ln(x))^{n} \qquad \text{ y } \qquad v' = 1
+\]
+implicando que
+\[
+  u' = \frac{n \cdot (\ln(x))^{n - 1}}{x} \qquad \text{ y } \qquad v = x
+\]
+Por lo tanto
+\[
+  \int (\ln(x))^{n}dx = x (\ln(x))^{n} - n \int (\ln(x))^{n - 1} dx
+\]
+Podemos simplificar esta expresión definiendo que $F_{n}(x) = \int (\ln(x))^{n} dx$.
+\[
+  F_{n}(x) = x \cdot (\ln(x))^{n} - n \cdot F_{n - 1}(x)
+\]
+Fórmulas de reducción como la del $\int (\ln(x))^{n} dx$ son útiles porque permiten resolver integrales de manera más rápida.
+
+A continuación evaluamos a $F_{n}(x)$ para $n = {1, \ 2}$.
+\begin{align*}
+  F_{1}(x) &= x (\ln(x))^{1} - 1 \cdot \int (\ln(x))^{1 - 1} dx & F_{2}(x) &= x (\ln(x))^{2} - 2 \cdot \int (\ln(x))^{2 - 1} dx \\
+           &= x \ln(x) - x + C                                  &          &= x (\ln(x))^{2} - 2 (x \ln(x) - x) + C
+\end{align*}
+Como vemos, nos ahorramos el uso de técnicas de integración al encontrar la fórmula de reducción de $\int (\ln(x))^{n} dx$.
+
+\textbf{Ejemplo 3.} Busque la fórmula de reducción de
+\[
+  \int x^{n} e^{x} dx
+\]
+\textbf{Solución.} Usaremos el método de integración por partes para obtener la fórmula de reducción de este ejemplo.
+
+Como señalamos antes, una fórmula de reducción se caracteriza por funciones que son de término menor (anterior) a la de la función original. En ese sentido, la mejor opción es que
+\[
+  u = x^{n} \qquad \text{ y } \qquad v' = e^{x},
+\]
+porque al derivar $u$ obtendremos un factor cuyo término irá reduciéndose a medida que $n$ aumenta. En cambio, si lo hacemos con $e^{x}$ no veremos algún progreso en dicho propósito, porque $d/dx \ e^{x} = e^{x}$. Es decir, lo anterior implica que:
+\[
+  u' = nx^{n - 1} \qquad \text{ y } \qquad v = e^{x}
+\]
+Aplicando el método de integración por partes, obtenemos la fórmula de reducción para la integral de este ejemplo:
+\[
+  \int x^{n} e^{x} dx = x^{n} e^{x} - n \int x^{n - 1} e^{x} dx,
+\]
+la cual podemos simplificar estableciendo que $G_{n}(x) = \int x^{n} e^{x} dx$.
+\[
+  G_{n}(x) = x^{n} e^{x} - n \cdot G_{n - 1}(x)
+\]
+\textbf{Ejemplo 4.} Calcule las fórmulas de reducción de
+\[
+  \text{(a) } \int x^{n} \sin(x) dx \qquad \text{ y } \qquad \text{(b) } \int x^{n} \cos(x) dx
+\]
+\textbf{Solución.} Ambas fórmulas se encuentran de igual modo a como lo hicimos en el ejemplo anterior.
+
+Tanto para (a) como para (b), definamos que $u = x^{n}$, lo que significa que $u' = n x^{n - 1}$.
+
+Luego, centrándonos en (a), digamos que $v' = \sin(x)$. Esto implica que $v = - \cos(x)$. Por lo tanto, su fórmula de reducción es:
+\[
+  \int x^{n} \sin(x) dx = n \int x^{n - 1} \cos(x) dx - x^{n} \cos(x)
+\]
+En cuanto a (b), definamos que $v' = \cos(x)$ y que, por consiguiente, $v = \sin(x)$. En consecuencia, la fórmula de reducción de esta integral la encontramos de la siguiente manera:
+\[
+  \int x^{n} \cos(x) dx = x^{n} \sin(x) - n \int x^{n - 1} \sin(x) dx
+\]
+A continuación resumimos las fórmulas de reducción para las integrales que hemos visto hasta ahora.
+\begin{align*}
+  &\text{(1) } \int (\ln(x))^{n}dx = x (\ln(x))^{n} - n \int (\ln(x))^{n - 1} dx \\
+  &\text{(2) } \int x^{n} e^{x} dx = x^{n} e^{x} - n \int x^{n - 1} e^{x} dx \\
+  &\text{(3) } \int x^{n} \sin(x) dx = n \int x^{n - 1} \cos(x) dx - x^{n} \cos(x) \\
+  &\text{(4) } \int x^{n} \cos(x) dx = x^{n} \sin(x) - n \int x^{n - 1} \sin(x) dx
+\end{align*}
+
+\end{document}

@@ -1,0 +1,406 @@
+---
+title: "Plot and Stuff Week 4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r packages, message=FALSE}
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(patchwork)
+```
+
+
+
+## Aproximación Cuadrática.
+
+```{r}
+# Datos.
+quad_ap_cos <- function(x) 1-(0.5*(x^2))
+
+quad_list <- list(
+  cos_fun = tibble(theta = seq(from = -((3*pi)/2), to = (3*pi)/2,
+                               length.out = 200), 
+                   cos_theta = cos(theta)),
+  
+  quad_approx = tibble(theta = seq(from = -2, to = 2, length = 200),
+                       q_x = quad_ap_cos(theta)),
+  
+  approx_pt_1 = tibble(x = c(pi/8, pi/8), y = c(cos(pi/8), 1)),
+  
+  approx_pt_2 = tibble(x = c((3*pi)/7, (3*pi)/7), y = c(cos((3*pi)/7), 1)),
+  
+  approx_pt_3 = tibble(x = c((3*pi)/7, (3*pi)/7),
+                       y = c(cos((3*pi)/7), quad_ap_cos((3*pi)/7)))
+)
+```
+
+
+
+```{r}
+# Capas para el Diseño.
+ejes <- list(
+    geom_vline(xintercept = 0, color = "lightgrey"), 
+    geom_hline(yintercept = 0, color = "lightgrey")
+  )
+
+layout_1 <- list(
+    expand_limits(x = c(-4.5, 4.5), y = c(-1.5, 1.5)), 
+    scale_x_continuous(breaks = c(0, pi/8),
+                       labels = expression(0, over(pi, 8))), 
+    theme_light(), 
+    theme(panel.grid = element_blank()), 
+    labs(x = NULL, y = NULL)
+  )
+
+layout_2 <- list(
+    expand_limits(x = c(-4.5, 4.5), y = c(-1.5, 1.5)), 
+    scale_x_continuous(breaks = c(0, (3*pi)/7),
+                       labels = expression(0, over(3*pi, 7))), 
+    theme_light(), 
+    theme(panel.grid = element_blank()), 
+    labs(x = NULL, y = NULL)
+  )
+```
+
+
+
+```{r}
+# Etiquetas de los gráficos.
+plots_labels_1 <- list(
+  annotate(geom = "text", x = 1.9, y = 1.2, label = "L(x)",
+           color = "#ea0404"), 
+  annotate(geom = "text", x = 2, y = 0.2, label = "cos(x)",
+           color = "#0303b5")
+)
+
+plots_labels_2 <- list(
+  plots_labels_1,
+  annotate(geom = "text", x = 1.6, y = -0.8, label = "q(x)", color = "#258c25")
+)
+```
+
+
+
+```{r, fig.height=3, fig.width=7}
+# Función coseno y su approx. linear en x ~ 0.
+cos_lin_approx <- 
+  ggplot() + ejes + 
+  geom_line(data = quad_list$cos_fun, aes(theta, cos_theta),
+            color = "#0303b5") + 
+  geom_hline(yintercept = 1, color = "#ea0404")
+
+
+# Etiquetas.
+cos_lin_labeled_1 <- cos_lin_approx + plots_labels_1
+
+
+# Primer gráfico en punto x = pi/8.
+quad_approx_1 <- 
+  cos_lin_labeled_1 + 
+  geom_point(data = quad_list$approx_pt_1, aes(x, y), size = 2,
+             color = "#b503b5") + 
+  layout_1
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+# Guardar gráfico.
+ggsave(filename = "quad_approx_1.jpg", plot = quad_approx_1, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+# Segundo gráfico en punto x = 3pi/7.
+quad_approx_2 <- 
+  cos_lin_labeled_1 + 
+  geom_point(data = quad_list$approx_pt_2, aes(x, y), size = 2,
+             color = "#b503b5") + 
+  layout_2
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+# Guardar gráfico.
+ggsave(filename = "quad_approx_2.jpg", plot = quad_approx_2, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+# Se agrega la parabola de la aprox. cuadratica.
+cos_lin_quad_approx <- 
+  cos_lin_approx + 
+  geom_line(data = quad_list$quad_approx, aes(theta, q_x),
+            color = "#258c25")
+
+# Etiquetas: Se agrega etiqueta del gráfico de la parábola.
+cos_lin_labeled_2 <- cos_lin_quad_approx + plots_labels_2
+
+# Gráfico Final.
+quad_approx_3 <- 
+  cos_lin_labeled_2 + 
+  geom_point(data = quad_list$approx_pt_2, aes(x, y), size = 2,
+             color = "#b503b5") + 
+  geom_point(data = quad_list$approx_pt_3, aes(x, y), size = 2,
+             color = "#b503b5") + 
+  layout_2
+```
+
+```{r, eval=FALSE, include=FALSE}
+# Guardar gráfico.
+ggsave(filename = "quad_approx_3.jpg", plot = quad_approx_3, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+# Método de Newton.
+
+Acá usamos como ejemplo la siguiente función:
+
+\[f(x) = 2 - x^{2}\]
+
+```{r}
+(
+  newton_method_data <- tibble(
+    x = seq(from = -3, to = 3, length.out = 200),
+    f_x = 2-x^2
+  )
+)
+```
+
+
+```{r}
+# Grafico de la ecuación f(x) = 2 - x^2.
+newton_plot <- 
+  newton_method_data %>% 
+  ggplot(aes(x = x, y = f_x)) + 
+  geom_vline(xintercept = 0, color = "lightgray") + 
+  geom_hline(yintercept = 0, color = "lightgray") + 
+  geom_line(color = "blue")
+```
+
+
+
+```{r}
+# Parte del diseño del gráfico.
+newton_design <- list(
+  theme_light(), 
+  theme(panel.grid = element_blank(),
+        plot.title = element_text(hjust = 0.5)),
+  labs(x = NULL, y = NULL)
+)
+```
+
+
+
+```{r, fig.height=3, fig.width=7}
+(
+  newton_general_plot <- newton_plot + 
+    expand_limits(x = c(-4, 4)) + 
+    coord_cartesian(ylim = c(-3, 3)) + 
+    newton_design
+)
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "newton_general_plot.jpg", plot = newton_general_plot,
+       path = "img", height = 3, width = 7)
+```
+
+
+
+```{r, fig.height=3, fig.width=7/3}
+newton_plot + 
+  expand_limits(y = 3) + 
+  geom_abline(slope = -2, intercept = 3, color = "#aa0306") + 
+  geom_point(aes(x = 1, y = 2-(1^2)), color = "#9609a5", size = 2) + 
+  
+  # Ecuaciones de las funciones.
+  annotate(geom = "text", x = 1.33, y = -0.38, label = "f(x) == 2 - x^2",
+           parse = TRUE, color = "blue", size = 3.5) +
+  annotate(geom = "text", x = 1.46, y = 0.58, label = "L(x) == 3 - 2*x",
+           parse = TRUE, color = "#aa0306", size = 3.5) + 
+  
+  # Punto de tangencia.
+  #annotate(geom = "text", x = 1, y = 1.2, label = "(1, 1)",
+  #         color = "#9609a5") + 
+  
+  # Ceros o raices de las ecuaciones.
+  #annotate(geom = "text", x = 1.4, y = -0.2, label = "(list(sqrt(2), 0))",
+  #         parse = TRUE, color = "blue") + 
+  #annotate(geom = "text", x = 1.5, y = 0.2, label = "(1.5, 0)",
+  #         color = "#aa0306") + 
+  coord_cartesian(xlim = c(0.99, 1.75), ylim = c(-0.5, 3)) + 
+  newton_design + 
+  ggtitle(expression(x %~~% 1))
+```
+
+
+
+```{r}
+(
+  newton_and_approx_1 <- newton_plot + 
+    expand_limits(y = 3) + 
+    geom_abline(slope = -2, intercept = 3, color = "#aa0306") + 
+    geom_point(aes(x = 1, y = 2-(1^2)), color = "#9609a5", size = 2) + 
+    
+    # Ecuaciones de las funciones.
+    annotate(geom = "text", x = 1.33, y = -0.38, label = "f(x) == 2 - x^2",
+             parse = TRUE, color = "blue", size = 3.5) +
+    annotate(geom = "text", x = 1.46, y = 0.58, label = "L(x) == 3 - 2*x",
+             parse = TRUE, color = "#aa0306", size = 3.5) + 
+    coord_cartesian(xlim = c(0.99, 1.75), ylim = c(-0.5, 3)) + 
+    newton_design + 
+    ggtitle(expression(x %~~% 1))
+)
+```
+
+
+
+```{r, fig.height=3, fig.width=7/3}
+newton_plot + 
+  expand_limits(y = 3) + 
+  geom_abline(slope = -3, intercept = 17/4, color = "#aa0306") + 
+  geom_point(aes(x = 1.5, y = 2-(1.5^2)), color = "#9609a5", size = 2) + 
+  
+  # Texto: Ecuaciones de las funciones.
+  annotate(geom = "text", x = 1.09, y = 0.3, label = "f(x) == 2 - x^2",
+           parse = TRUE, color = "blue", size = 3.5) +
+  annotate(geom = "text", x = 1.36, y = 1,
+           label = "L(x) == over(17, 4) - 3*x", parse = TRUE,
+           color = "#aa0306", size = 3.5) + 
+    
+  # Texto: Punto de tangencia.
+  #annotate(geom = "text", x = 1.48, y = -0.45, label = "(1.5, -0.25)",
+  #         color = "#9609a5") + 
+  
+  # Texto: Ceros o raices de las ecuaciones.
+  #annotate(geom = "text", x = 1.4, y = -0.2, label = "(list(sqrt(2), 0))",
+  #         parse = TRUE, color = "blue") + 
+  #annotate(geom = "text", x = 1.44, y = 0.2, label = "(list(1.41*bar(6), 0))",
+  #         parse = TRUE, color = "#aa0306") + 
+  coord_cartesian(xlim = c(0.99, 1.75), ylim = c(-0.5, 3)) + 
+  newton_design + 
+  ggtitle(expression(x %~~% 1.5))
+```
+
+
+
+
+```{r}
+(
+  newton_and_approx_2 <- newton_plot + 
+    expand_limits(y = 3) + 
+    geom_abline(slope = -3, intercept = 17/4, color = "#aa0306") + 
+    geom_point(aes(x = 1.5, y = 2-(1.5^2)), color = "#9609a5", size = 2) + 
+    
+    # Texto: Ecuaciones de las funciones.
+    annotate(geom = "text", x = 1.1, y = 0.3, label = "f(x) == 2 - x^2",
+             parse = TRUE, color = "blue", size = 3.5) +
+    annotate(geom = "text", x = 1.36, y = 1,
+             label = "L(x) == over(17, 4) - 3*x", parse = TRUE,
+             color = "#aa0306", size = 3.5) + 
+    coord_cartesian(xlim = c(0.99, 1.75), ylim = c(-0.5, 3)) + 
+    newton_design + 
+    ggtitle(expression(x %~~% 1.5))
+)
+```
+
+
+
+```{r, fig.height=3, fig.width=7/3}
+newton_plot + 
+  expand_limits(y = 3) + 
+  geom_abline(slope = -17/6, intercept = 577/144, color = "#aa0306") + 
+  geom_point(aes(x = 17/12, y = 2-((17/12)^2)), color = "#9609a5",
+             size = 2) + 
+  
+  # Texto: Ecuaciones de las funciones.
+  annotate(geom = "text", x = 1.1, y = 0.3, label = "f(x) == 2 - x^2",
+           parse = TRUE, color = "blue", size = 3.5) +
+  annotate(geom = "text", x = 1.36, y = 1,
+           label = "L(x) == over(577, 144) - over(17, 6)*x",
+           parse = TRUE, color = "#aa0306", size = 3.5) + 
+    
+  # Texto: Punto de tangencia.
+  #annotate(geom = "text", x = 1.3, y = 0.05,
+  #         label = "(list(1.41*bar(6), 17/12))", parse = TRUE,
+  #         color = "#9609a5", size = 3.8) + 
+  
+  # Texto: Ceros o raices de las ecuaciones.
+  #annotate(geom = "text", x = 1.4, y = -0.2, label = "(list(sqrt(2), 0))",
+  #         parse = TRUE, color = "blue") + 
+  #annotate(geom = "text", x = 1.44, y = 0.2,
+  #         label = "(list(577/408, 0))", parse = TRUE,
+  #         color = "#aa0306") + 
+  coord_cartesian(xlim = c(0.99, 1.75), ylim = c(-0.5, 3)) + 
+  newton_design + 
+  ggtitle(expression(x %~~% 17/12))
+```
+
+
+
+
+```{r}
+(
+  newton_and_approx_3 <- newton_plot + 
+    expand_limits(y = 3) + 
+    geom_abline(slope = -17/6, intercept = 577/144, color = "#aa0306") + 
+    geom_point(aes(x = 17/12, y = 2-((17/12)^2)), color = "#9609a5",
+               size = 2) + 
+    
+    # Texto: Ecuaciones de las funciones.
+    annotate(geom = "text", x = 1.1, y = 0.3, label = "f(x) == 2 - x^2",
+             parse = TRUE, color = "blue", size = 3.5) +
+    annotate(geom = "text", x = 1.36, y = 1,
+             label = "L(x) == over(577, 144) - over(17, 6)*x",
+             parse = TRUE, color = "#aa0306", size = 3.5) + 
+    coord_cartesian(xlim = c(0.99, 1.75), ylim = c(-0.5, 3)) + 
+    newton_design + 
+    ggtitle(expression(x %~~% 17/12))
+)
+```
+
+
+
+```{r, fig.height=3, fig.width=7}
+(
+  newton_and_approx <-
+    newton_and_approx_1+newton_and_approx_2+newton_and_approx_3
+)
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "newton_and_approx.jpg", plot = newton_and_approx,
+       path = "img", height = 3, width = 7)
+```
+
+
+
+
+
+
+
+
+
+
+
+

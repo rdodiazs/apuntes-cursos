@@ -1,0 +1,872 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r packages, message=FALSE, echo=FALSE, include=FALSE}
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(ggplot2)
+library(patchwork)
+```
+
+
+
+
+```{r}
+tibble(x = seq(from = 0, to = 200)) %>% 
+  mutate(sq_root = sqrt(x))
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+approx_lin_sqrt <- 
+  ggplot() + 
+  geom_abline(slope = 0.05, intercept = 5, color = "#750ffc") + 
+  geom_point(aes(x = 100, y = 10), size = 2.5, color = "#ef9b09") + 
+  annotate(geom = "text", x = 50, y = 9,
+           label = "g'(100) = 0.05", color = "#750ffc") + 
+  annotate(geom = "text", x = 100, y = 8.9,
+           label = "(100, 10)", color = "#ef9b09") + 
+  expand_limits(y = c(0, 20)) + 
+  coord_cartesian(xlim = c(0, 200)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(y = "g(x)")
+
+approx_lin_sqrt
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "approx_lin_sqrt.jpg", plot = approx_lin_sqrt,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+approx_lin_sqrt_2 <- 
+  ggplot() + 
+  geom_vline(xintercept = 104, linetype = "dashed", color = "#757575") + 
+  geom_hline(yintercept = 10, linetype = "dashed", color = "#757575") + 
+  geom_segment(aes(x = 100, xend = 100, y = 0, yend = 10),
+               linetype = "dashed", color = "#757575") + 
+  geom_abline(slope = 0.05, intercept = 5, color = "#750ffc") + 
+  geom_point(aes(x = 100, y = 10), size = 2.5, color = "#ef9b09") + 
+  annotate(geom = "text", x = 116, y = 8.9,
+           label = "(104, ¿?)", color = "#757575") + 
+  expand_limits(y = c(0, 20)) + 
+  coord_cartesian(xlim = c(0, 200)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(y = "g(x)")
+
+approx_lin_sqrt_2
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "approx_lin_sqrt_2.jpg", plot = approx_lin_sqrt_2,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+approx_lin_sqrt_3 <- 
+  ggplot() + 
+  geom_vline(xintercept = 104, linetype = "dashed", color = "#757575") + 
+  geom_hline(yintercept = 10, linetype = "dashed", color = "#757575") + 
+  geom_segment(aes(x = 100, xend = 100, y = 0, yend = 10),
+               linetype = "dashed", color = "#757575") + 
+  geom_abline(slope = 0.05, intercept = 5, color = "#750ffc") + 
+  geom_point(aes(x = 100, y = 10), size = 2.5, color = "#ef9b09") + 
+  annotate(geom = "text", x = 102.5, y = 9.87, label = "104 - 100 = 4") + 
+  annotate(geom = "text", x = 104.2, y = 9.5, label = "10") + 
+  annotate(geom = "text", x = 104.6, y = 10.1, label = "4 x 0.05 = 0.2") + 
+  annotate(geom = "text", x = 101, y = 10.3,
+           label = "g'(100) = 0.05", color = "#750ffc") + 
+  expand_limits(y = c(0, 20)) + 
+  coord_cartesian(xlim = c(100, 106), ylim = c(9, 11)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(y = "g(x)")
+
+approx_lin_sqrt_3
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "approx_lin_sqrt_3.jpg", plot = approx_lin_sqrt_3,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+
+
+```{r}
+tibble(x = seq(from = -5, to = 5, length = 10),
+       y_1 = sqrt(25-(x^2)),
+       y_2 = -sqrt(25-(x^2)))
+```
+
+
+```{r}
+tibble(x = c(-5:5),
+       y_1 = sqrt(25-(x^2)),
+       y_2 = -sqrt(25-(x^2))) %>% 
+  filter(x == -3)
+```
+
+
+
+```{r, fig.width=4, fig.height=4}
+implicit_diff <- 
+  tibble(x = seq(from = -5, to = 5, length = 100),
+       y_1 = sqrt(25-(x^2)),
+       y_2 = -sqrt(25-(x^2))) %>% 
+  ggplot(aes(x = x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_vline(xintercept = -3, color = "#dd1900") + #Prueba linea vertical
+  geom_line(aes(y = y_1), color = "blue") + 
+  geom_line(aes(y = y_2), color = "blue") + 
+  geom_point(aes(x = -3, y = 4), color = "#dd1900",
+             size = 2) +  #Prueba linea vertical
+  geom_point(aes(x = -3, y = -4), color = "#dd1900",
+             size = 2) +  #Prueba linea vertical
+  annotate(geom = "text", x = -4, y = 4.2, label = "(-3, 4)") + 
+  annotate(geom = "text", x = -4, y = -4.2, label = "(-3, -4)") + 
+  expand_limits(x = c(-6, 6), y = c(-6, 6)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+implicit_diff
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "implicit_diff.jpg", plot = implicit_diff,
+       path = "img", width = 4, height = 4)
+```
+
+
+
+
+```{r, fig.width=4, fig.height=4, warning=FALSE}
+implicit_diff_2 <- 
+  tibble(x = seq(from = -5, to = 5, length = 200),
+       y_1 = sqrt(25-(x^2)),
+       y_2 = -sqrt(25-(x^2))) %>% 
+  ggplot(aes(x = x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(aes(y = y_1), color = "#7c07ea") + 
+  geom_line(aes(y = y_2), color = "#ea07e6") + 
+  annotate(geom = "text", x = -4.5, y = 4.3, 
+           label = expression(y[1] == sqrt(25 - x^2)),
+           color = "#7c07ea") + 
+  annotate(geom = "text", x = -4.5, y = -4.7, 
+           label = expression(y[2] == -sqrt(25 - x^2)),
+           color = "#ea07e6") + 
+  expand_limits(x = c(-6, 6), y = c(-6, 6)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+implicit_diff_2
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "implicit_diff_2.jpg", plot = implicit_diff_2,
+       path = "img", width = 4, height = 4)
+```
+
+
+
+
+
+```{r, fig.width=4, fig.height=4}
+implicit_diff_3 <- 
+  tibble(x = seq(from = -5, to = 5, length = 200),
+       y_1 = sqrt(25-(x^2)),
+       y_2 = -sqrt(25-(x^2))) %>% 
+  ggplot(aes(x = x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(aes(y = y_1), color = "blue") + 
+  geom_line(aes(y = y_2), color = "blue") + 
+  geom_vline(xintercept = 5, color = "#7c07ea") +
+  geom_vline(xintercept = -5, color = "#ea07e6") +
+  geom_point(aes(x = 5, y = 0), color = "#dd1900", size = 2) + 
+  geom_point(aes(x = -5, y = 0), color = "#dd1900", size = 2) + 
+  expand_limits(x = c(-6, 6), y = c(-6, 6)) + 
+  scale_x_continuous(breaks = c(-6, -5, -3, 0, 3, 5, 6)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+implicit_diff_3
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "implicit_diff_3.jpg", plot = implicit_diff_3,
+       path = "img", width = 4, height = 4)
+```
+
+
+
+
+
+```{r, fig.width=4, fig.height=4}
+implicit_diff_4 <- 
+  tibble(x = seq(from = -5, to = 5, length = 200),
+       y_1 = sqrt(25-(x^2)),
+       y_2 = -sqrt(25-(x^2))) %>% 
+  ggplot(aes(x = x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(aes(y = y_1), color = "blue") + 
+  geom_line(aes(y = y_2), color = "blue") + 
+  geom_hline(yintercept = 5, color = "#7c07ea") +
+  geom_hline(yintercept = -5, color = "#ea07e6") +
+  geom_point(aes(x = 0, y = 5), color = "#dd1900", size = 2) + 
+  geom_point(aes(x = 0, y = -5), color = "#dd1900", size = 2) + 
+  expand_limits(x = c(-6, 6), y = c(-6, 6)) + 
+  scale_y_continuous(breaks = c(-6, -5, -3, 0, 3, 5, 6)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+implicit_diff_4
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "implicit_diff_4.jpg", plot = implicit_diff_4,
+       path = "img", width = 4, height = 4)
+```
+
+
+
+
+```{r, fig.width=4, fig.height=4}
+implicit_diff_5 <- 
+  tibble(x = seq(from = -5, to = 5, length = 200),
+       y_1 = sqrt(25-(x^2)),
+       y_2 = -sqrt(25-(x^2))) %>% 
+  ggplot(aes(x = x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(aes(y = y_1), color = "blue") + 
+  geom_line(aes(y = y_2), color = "blue") + 
+  geom_abline(slope = 0.75, intercept = 6.25, color = "#7c07ea") + 
+  geom_point(aes(x = -3, y = 4), color = "#dd1900", size = 2) + 
+  expand_limits(x = c(-6, 6), y = c(-6, 6)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+implicit_diff_5
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "implicit_diff_5.jpg", plot = implicit_diff_5,
+       path = "img", width = 4, height = 4)
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+not_one_to_one <- tibble(x = seq(from = -2.5, to = 2.5, length = 200),
+       y = x^2) %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_line(color = "blue") + 
+  geom_segment(aes(x = -2.5, xend = 2.5, y = 4, yend = 4)) + 
+  geom_point(data = tibble(x = c(-2, 2), y = c(4, 4)),
+             size = 2, color = "#dd1900") + 
+  annotate(geom = "text", x = -1.5, y = 4.6,
+           label = expression(f(x)==x^2), color = "blue") + 
+  expand_limits(x = c(-4, 4)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+not_one_to_one
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "not_one_to_one.jpg", plot = not_one_to_one,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+not_one_to_one_2 <- 
+  tibble(x = seq(from = -2.5, to = 2.5, length = 200), y = x^2) %>% 
+  ggplot() + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") + 
+  geom_line(aes(x = x, y = y), color = "blue") + 
+  # f(x) inversa: Invierto la misma grafica, pero hacia el eje Y.
+  geom_line(aes(x = y, y = x), orientation = "y", color = "#007c00") + 
+  geom_segment(aes(x = 2, xend = 2, y = -3, yend = 3)) + 
+  geom_point(data = tibble(x = c(2, 2), y = c(-sqrt(2), sqrt(2))),
+             aes(x = x, y = y), size = 2, color = "#dd1900") + 
+  annotate(geom = "text", x = -1.3, y = 4,
+           label = expression(f(x)==x^2), color = "blue") + 
+  annotate(geom = "text", x = 3.3, y = 2.5,
+           label = expression(f^-1*(x)=="?"), color = "#007c00")  + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+not_one_to_one_2
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "not_one_to_one_2.jpg", plot = not_one_to_one_2,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+tibble(
+  x = seq(from = -2.5, to = 2.5, length = 200), y = x^2) %>% 
+  mutate(dominio = if_else(x > 0, true = "X >= 0", false = "X <= 0"),
+         dominio = factor(x = dominio, levels = c("X >= 0", "X <= 0")))
+```
+
+
+
+```{r, fig.height=3, fig.width=7}
+split_not_one_to_one <-
+tibble(x = seq(from = -2.5, to = 2.5, length = 200), y = x^2) %>% 
+  mutate(dominio = if_else(x > 0, true = "X >= 0", false = "X <= 0"),
+         dominio = factor(x = dominio, levels = c("X >= 0", "X <= 0"))) %>% 
+  ggplot() + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") + 
+  geom_line(aes(x = x, y = y), color = "blue") + 
+  geom_line(aes(x = y, y = x), orientation = "y", color = "#007c00") + 
+  facet_wrap(~ dominio, scales = "free")  + 
+  #theme_light() + 
+  theme(panel.grid = element_blank(),
+        panel.background = element_rect(fill = "white", color = "#eaeaea")) + 
+  labs(x = "", y = "")
+
+split_not_one_to_one
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "split_not_one_to_one.jpg", plot = split_not_one_to_one,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+
+```{r}
+tibble(x = seq(from = -2.5, to = 2.5, length = 200),
+       "h(x)" = (-3*(x^3))+x+2,
+       "j(x)" = (-3*(x^3))-x+2,
+       "k(x)" = -4+(5*x)+cos(3*x)) %>% 
+  pivot_longer(cols = 2:4, names_to = "fun", values_to = "output") %>% 
+  ggplot(aes(x = x, y = output)) + 
+  geom_line() + 
+  facet_wrap(~ fun, scales = "free_y")
+```
+
+
+
+```{r}
+tibble(x = seq(from = -1.5, to = 1.5, length = 200),
+       "h'(x)" = (-9*(x^2))+1,
+       "j'(x)" = (-9*(x^2))-1,
+       "k'(x)" = 5-(3*sin(3*x))) %>% 
+  pivot_longer(cols = 2:4, names_to = "fun", values_to = "output") %>% 
+  ggplot(aes(x = x, y = output)) + 
+  geom_hline(yintercept = 0, color = "red") + 
+  geom_line() + 
+  facet_wrap(~ fun, scales = "free_y")
+```
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+tibble(x = seq(from = -(pi/2), to = (5*pi)/2, length.out = 200),
+       y = cos(x)) %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(color = "blue") + 
+  geom_hline(yintercept = 0.6, color = "#e20f13") + 
+  scale_x_continuous(
+    breaks = c(-(pi/2), 0, (pi/2), pi,(3*pi)/2, 2*pi, (5*pi)/2),
+    labels = expression(-over(pi, 2), 0, over(pi, 2), pi,
+                        over(3*pi, 2), 2*pi, over(5*pi, 2))
+  ) + 
+  expand_limits(y = c(-1.5, 1.5)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "") -> cos_fun
+
+cos_fun
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "cos_fun.jpg", plot = cos_fun, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+tibble(x = seq(from = 0, to = pi, length.out = 200),
+       y = cos(x)) %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(color = "blue") + 
+  geom_hline(yintercept = 0.6, color = "#e20f13") + 
+  scale_x_continuous(
+    breaks = c(0, (pi/2), pi),
+    labels = expression(0, over(pi, 2), pi)
+  ) + 
+  expand_limits(x = c(-(pi/2), 2*pi), y = c(-1.5, 1.5)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "") -> cos_fun_restr
+
+cos_fun_restr
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename="cos_fun_restr.jpg", plot=cos_fun_restr,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+tibble(x = seq(from = -2*pi, to = 2*pi, length.out = 200),
+       y = tan(x)) %>% 
+  mutate(restrict = case_when(
+    x > -(3*pi)/2 & x < -(pi)/2 ~ "a",
+    x > -(pi)/2 & x < (pi)/2 ~ "b",
+    x > (pi)/2 & x < (3*pi)/2 ~ "c"
+  )) %>% 
+  filter(!is.na(restrict), x >= -4.6 & x <= 4.6) %>% 
+  ggplot(aes(x = x, y = y, color = restrict)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line() + 
+  scale_color_manual(values = c("blue", "blue", "blue")) + 
+  theme_light() + 
+  theme(panel.grid = element_blank(),
+        legend.position = "none") + 
+  labs(x = "", y = "") -> tang_fun
+
+tang_fun
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename="tang_fun.jpg", plot = tang_fun, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+tibble(x = seq(from = -2*pi, to = 2*pi, length.out = 200),
+       y = tan(x)) %>% 
+  mutate(restrict = case_when(
+    x > -(3*pi)/2 & x < -(pi)/2 ~ "a",
+    x > -(pi)/2 & x < (pi)/2 ~ "b",
+    x > (pi)/2 & x < (3*pi)/2 ~ "c"
+  )) %>% 
+  filter(!is.na(restrict), restrict == "b") %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(color = "blue") + 
+  expand_limits(x = c(-(3*pi)/2, (3*pi)/2)) + 
+  scale_x_continuous(breaks = c(-pi/2, 0, pi/2),
+                     labels = expression(-over(pi, 2), 0, over(pi, 2))) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "") -> tang_fun_restr
+
+tang_fun_restr
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename="tang_fun_restr.jpg", plot = tang_fun_restr,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r}
+tibble(x = seq(from = -(pi/2), to = (pi/2), length.out = 200),
+       y = sin(x))
+```
+
+
+```{r, fig.height=5, fig.width=5}
+tan_lines_arcsin <-
+  tibble(x = seq(from = -(pi/2), to = pi/2, length.out = 200),
+       y = sin(x)) %>% 
+  ggplot(aes(x = y, y = x), orientation = "y") + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(color = "blue") + 
+  geom_segment(aes(x = -1, xend = -1, y = -(pi/4), yend = -(pi/1.4)),
+               color = "#0baa29") + 
+  geom_segment(aes(x = 1, xend = 1, y = pi/4, yend = pi/1.4),
+               color = "#0baa29") + 
+  geom_point(data = tibble(x_1 = c(-1, 1), y_1 = c(-pi/2, pi/2)),
+             aes(x = x_1, y = y_1), size = 2, color = "#e20f13") + 
+  expand_limits(x = c(-1.5, 1.5), y = c(-pi, pi)) + 
+  scale_y_continuous(
+    breaks = c(-(pi/2), 0, (pi/2)),
+    labels = expression(-over(pi, 2), 0, over(pi, 2))
+  ) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+tan_lines_arcsin
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "tan_lines_arcsin.jpg", plot = tan_lines_arcsin,
+       path = "img", width = 5, height = 5)
+```
+
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+exp_plot <-
+  tibble(x = seq(from = -3.5, to = 3.5, length = 200),
+       exp_fun = 2^x) %>% 
+  ggplot(aes(x = x, y = exp_fun)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_line(color = "blue") + 
+  geom_point(data = tibble(x_1 = c(-2:2), y_2 = 2^x_1),
+             aes(x = x_1, y = y_2), color = "red", size = 2) + 
+  geom_text(data = tibble(x_1 = c(-2:2), y_2 = 2^x_1),
+            aes(x = x_1, y = y_2, label = paste0("(", x_1, ", ", y_2, ")")),
+            nudge_x = 0.3, nudge_y = -0.2) + 
+  coord_cartesian(ylim = c(0, 5)) + 
+  scale_x_continuous(breaks = c(-3, -2, -1, 0, 1, 2, 3)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+exp_plot
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "exp_plot.jpg", plot = exp_plot, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+exp_plot_2 <-
+  tibble(x = seq(from = -3.5, to = 3.5, length = 200),
+       "2^x" = 2^x,
+       "3^x" = 3^x,
+       "5^x" = 5^x) %>% 
+  pivot_longer(cols = 2:4, names_to = "name_fun", values_to = "values") %>% 
+  ggplot(aes(x = x, y = values, color = name_fun)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_line(size = 0.8) + 
+  coord_cartesian(ylim = c(0, 5)) + 
+  scale_x_continuous(breaks = c(-3, -2, -1, 0, 1, 2, 3)) + 
+  scale_color_discrete(labels = expression(2^x, 3^x, 5^x)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank(),
+        legend.position = c(0.86, 0.8),
+        legend.background = element_rect(fill = "transparent")) + 
+  labs(x = "", y = "", color = "")
+
+exp_plot_2
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "exp_plot_2.jpg", plot = exp_plot_2, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+
+```{r}
+tibble(delta_x = c(-0.5, -0.1, -0.05, -0.01, -0.005, -0.001,
+                   0.001, 0.005, 0.01, 0.05, 0.1, 0.5),
+       lim = (2^delta_x - 1)/delta_x)
+```
+
+
+```{r, fig.height=3, fig.width=7}
+exp_plot_3 <- 
+  tibble(x = seq(from = -3.5, to = 3.5, length = 200),
+       exp_fun = 2^x) %>% 
+  ggplot(aes(x = x, y = exp_fun)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_line(color = "blue") + 
+  geom_abline(slope = 0.6929070, intercept = 1, color = "#008c00") + 
+  geom_point(data = tibble(x_1 = 0, y_2 = 1),
+             aes(x = x_1, y = y_2), color = "red", size = 2) + 
+  geom_text(data = tibble(x_1 = 0, y_2 = 1),
+            aes(x = x_1, y = y_2, label = paste0("(", x_1, ", ", y_2, ")")),
+            nudge_x = 0.3, nudge_y = -0.2) + 
+  annotate(geom = "text", x = 1.8, y = 1.7, label = "m = M(2)",
+           color = "#008c00") + 
+  coord_cartesian(ylim = c(0, 5)) + 
+  scale_x_continuous(breaks = c(-3, -2, -1, 0, 1, 2, 3)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+exp_plot_3
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "exp_plot_3.jpg", plot = exp_plot_3, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+
+```{r}
+tibble(delta_x = c(-0.1, -0.01, -0.001, 0.001, 0.01, 0.1),
+       lim = (4^delta_x - 1)/delta_x)
+```
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+exp_plot_3_a <- tibble(x = seq(from = -3.5, to = 3.5, length = 200),
+       exp_fun = 2^x) %>% 
+  ggplot(aes(x = x, y = exp_fun)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_line(color = "blue") + 
+  geom_abline(slope = 0.6929070, intercept = 1, color = "#008c00") + 
+  geom_point(data = tibble(x_1 = 0, y_2 = 1),
+             aes(x = x_1, y = y_2), color = "red", size = 2) + 
+  geom_text(data = tibble(x_1 = 0, y_2 = 1),
+            aes(x = x_1, y = y_2, label = paste0("(", x_1, ", ", y_2, ")")),
+            nudge_x = 0.4, nudge_y = -0.2) + 
+  annotate(geom = "text", x = 2.3, y = 1.7, label = expression("M(2)" %~~% "0.69"),
+           color = "#008c00") + 
+  coord_cartesian(ylim = c(0, 5)) + 
+  scale_x_continuous(breaks = c(-3, -2, -1, 0, 1, 2, 3)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank(),
+        plot.title = element_text(hjust = 0.5)) + 
+  labs(x = "", y = "", title = expression(2^x))
+
+
+exp_plot_3_b <- tibble(x = seq(from = -3.5, to = 3.5, length = 200),
+       exp_fun = 4^x) %>% 
+  ggplot(aes(x = x, y = exp_fun)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_line(color = "blue") + 
+  geom_abline(slope = 1.39, intercept = 1, color = "#008c00") + 
+  geom_point(data = tibble(x_1 = 0, y_2 = 1),
+             aes(x = x_1, y = y_2), color = "red", size = 2) + 
+  geom_text(data = tibble(x_1 = 0, y_2 = 1),
+            aes(x = x_1, y = y_2, label = paste0("(", x_1, ", ", y_2, ")")),
+            nudge_x = 0.4, nudge_y = -0.2) + 
+  annotate(geom = "text", x = 2, y = 2, label = expression("M(4)" %~~% "1.39"),
+           color = "#008c00") + 
+  coord_cartesian(ylim = c(0, 5)) + 
+  scale_x_continuous(breaks = c(-3, -2, -1, 0, 1, 2, 3)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank(),
+        plot.title = element_text(hjust = 0.5)) + 
+  labs(x = "", y = "", title = expression(4^x))
+
+
+exp_plot_4 <- exp_plot_3_a+exp_plot_3_b
+
+exp_plot_4
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "exp_plot_4.jpg", plot = exp_plot_4, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.height=3, fig.width=7}
+exp_plot_5 <- tibble(x = seq(from = -3.5, to = 3.5, length = 200),
+       "k = 1" = 2^x,
+       "k = 3" = 2^(x*3),
+       "k = 5" = 2^(x*5)) %>% 
+  pivot_longer(cols = 2:ncol(.), names_to = "exp_fun",
+               values_to = "output") %>% 
+  ggplot(aes(x = x, y = output, color = exp_fun)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_line(size = 1) + 
+  coord_cartesian(ylim = c(0, 5)) + 
+  scale_x_continuous(breaks = c(-3, -2, -1, 0, 1, 2, 3)) + 
+  theme_light() + 
+  theme(legend.position = c(0.9, 0.87),
+        legend.background = element_rect(fill = "transparent"),
+        panel.grid = element_blank()) + 
+  labs(x = "", y = "", color = "", title = expression(f(kx) == 2^kx))
+
+exp_plot_5
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "exp_plot_5.jpg", plot = exp_plot_5, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.height=3.5, fig.width=5}
+ln_e_plots <-
+  tibble(x = seq(from = -5, to = 5, length.out = 200),
+       exp_fun = exp(x = x)) %>% 
+  ggplot() + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(aes(x = x, y = exp_fun), color = "blue") + 
+  geom_line(aes(x = exp_fun, y = x), orientation = "y", color = "#007c00") + 
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") + 
+  geom_point(data = tibble(x_p = c(0, 1), y_p = c(1, 0)),
+             aes(x = x_p, y = y_p), color = "red", size = 2) + 
+  geom_text(data = tibble(x_p = c(0, 1), y_p = c(1, 0)),
+             aes(x = x_p, y = y_p,label = paste0("(", x_p, ", ", y_p, ")")),
+            nudge_y = -0.46, nudge_x = 0.1) + 
+  annotate(geom = "text", x = 1, y = 4.2,
+           label = expression(e^"x"), color = "blue") + 
+  annotate(geom = "text", x = 2.5, y = 1.4,
+           label = "ln(x)", color = "#007c00") + 
+  coord_cartesian(xlim = c(-4, 5), ylim = c(-3, 5)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+ln_e_plots
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "ln_e_plots.jpg", plot = ln_e_plots, path = "img",
+       width = 5, height = 3.5)
+```
+
+
+
+
+
+```{r, fig.height=3.5, fig.width=5}
+ln_e_plots_2 <-
+  tibble(x = seq(from = -5, to = 5, length.out = 200),
+       exp_fun = exp(x = x)) %>% 
+  ggplot() + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(aes(x = x, y = exp_fun), color = "blue") + 
+  geom_line(aes(x = exp_fun, y = x), orientation = "y", color = "#007c00") + 
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") + 
+  geom_abline(slope = 1, intercept = 1, color = "#7c07ea") + 
+  geom_abline(slope = 1, intercept = -1, color = "#7c07ea") + 
+  geom_point(data = tibble(x_p = c(0, 1), y_p = c(1, 0)),
+             aes(x = x_p, y = y_p), color = "red", size = 2) + 
+  annotate(geom = "text", x = 1, y = 4.2,
+           label = expression(e^"x"), color = "blue") + 
+  annotate(geom = "text", x = 3, y = 1.45,
+           label = "ln(x)", color = "#007c00") + 
+  coord_cartesian(xlim = c(-4, 5), ylim = c(-3, 5)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "", y = "")
+
+ln_e_plots_2
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "ln_e_plots_2.jpg", plot = ln_e_plots_2, path = "img",
+       width = 5, height = 3.5)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

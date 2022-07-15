@@ -1,0 +1,17 @@
+# Archivos de salida o intermedios (e.g, .dvi) de LaTeX/pdflatex.
+*.out
+*.aux
+*.dvi
+*.log
+*.synctex.gz
+*.toc
+
+# Archivos .html generados por notebooks de R Markdown.
+*.nb.html
+
+# Quito archivo de .RData
+*.RData
+
+# Archivos innecesarios del curso de cálculo de una variable.
+calculo/una-variable/02_integracion/ACLARACION*
+calculo/una-variable/02_integracion/week-2/

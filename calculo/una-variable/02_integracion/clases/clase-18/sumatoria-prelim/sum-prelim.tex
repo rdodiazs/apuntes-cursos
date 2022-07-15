@@ -1,0 +1,101 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage[spanish]{babel}\decimalpoint
+\usepackage{setspace}\onehalfspacing % Interlineado de 1.5.
+\usepackage{parskip} %Espacio entre parrafos y texto justificado automáticamente.
+\usepackage{graphicx} %Para usar \includegraphics[]{}
+\usepackage{amssymb} %Para usar el simbolo del conj. de los Reales.
+\usepackage{amsmath} % Para usar columnas vectoriales.
+\usepackage{multirow} %Multiples filas en tablas.
+\usepackage{hyperref} %Siempre debe ser el ultimo paquete.
+
+
+%\setlength{\parindent}{0pt} %Texto justificado.
+\setcounter{tocdepth}{2} %Que no incluya subsubsections en el índice.
+
+%================================
+
+\title{Sumatorias: Preliminar.}
+\author{MIT 18.01: Single Variable Calculus.}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+% \noindent para que el texto del resumen esté justificado.
+{\noindent En este documento escribo una breve introducción a las sumatorias, puesto que serán útiles para lo que veremos en la clase 18 sobre integrales definidas. En gran medida, lo tomo de los apuntes de la semana dos del mismo curso que realicé en la plataforma \textit{edX}, pero con algunas modificaciones.}
+\end{abstract}
+
+\section{Sumatorias: Preliminar.}
+
+En la \href{..\\intro-def-int.pdf}{Clase 18} nos encontraremos con sumas que son infinitamente largas, las cuales podemos simplificar por medio de la notación $\Sigma$ (sigma mayúscula) también conocida como \textbf{Sumatoria}.
+
+Por definición, una suma $a_{1} + a_{2} + \cdots + a_{n - 1} + a_{n}$ puede simplificarse como:
+\[
+  \sum_{i = 1}^{n} a_{i} = a_{1} + a_{2} + \cdots + a_{n - 1} + a_{n}
+\]
+donde $\sum_{i = 1}^{n} a_{i}$ se lee como ``la suma de $a_{i}$ desde $i = 1$ hasta $i = n$''.
+
+A continuación tenemos dos ejemplos de sumas simplificadas y sus valores correspondientes.
+\begin{align*}
+  & (1) \ \sum_{j = 0}^{4} 2^{j} = 2^{0} + 2^{1} + 2^{2} + 2^{3} + 2^{4} = 1 + 2 + 4 + 8 + 16 = 31 \\
+  & (2) \ \sum_{k = 1}^{1001} (-1)^{k} = -1
+\end{align*}
+En ciertas ocasiones es mejor usar nuestro ingenio para evaluar una suma. Por ejemplo, en el caso $(2)$ podríamos haber sumado los mil y un $(-1)^{k}$, pero observemos que cuando $k$ es par, $(-1)^{k} = 1$, y cuando es impar, $(-1)^{k} = -1$, lo que implica que muchos de esos $\pm 1$ se cancelarán y, debido a que la última entrada es $(-1)^{1001}$ (i.e, impar), su valor final será $-1$.
+
+Ahora revisemos el caso opuesto. Expresemos la siguiente suma:
+\[
+  7 + 12 + 17 + 22 + 27 + 32 + 37
+\]
+como sumatoria.
+
+No existe una única manera para resolver este tipo de ejercicios, pero podemos detectar algunas características de esta suma para lograr nuestro objetivo.
+
+En primer lugar, cualquiera sea la expresión que resuma dicha suma, con ella debemos encontrar siete números y los mismos de arriba. Por otra parte, si pareamos cada valor en orden ascendente, veremos que todos difieren en cinco unidades. Por lo tanto, definamos que:
+
+\begin{enumerate}
+\item La suma vaya desde $i = 1$ hasta $i = 7$.
+\item Cada número sea un múltiplo de $5$, lo que implica que tendremos que sumarle dos unidades más.
+\end{enumerate}
+
+Es decir:
+\[
+  7 + 12 + 17 + 22 + 27 + 32 + 37 = \sum_{i = 1}^{7} (5i + 2)
+\]
+En general, la idea de usar la notación sigma es \textbf{reducir una suma, pero sin alterarla}. En ese sentido, \textbf{siempre habrá más de una forma de expresarla}, como lo vemos en el siguiente ejemplo.
+\[
+  \sum_{k = 1}^{5} 2^{k} = \sum_{k = 3}^{7} 2^{k - 2} = 2 \cdot \sum_{k = 0}^{4} 2^{k}
+\]
+Cada una representa la misma suma y, en este caso, hay dos patrones que nos indican por qué esta igualdad se cumple:
+
+\begin{enumerate}
+\item Siempre tenemos que realizar una suma entre cuatro números, cuya cantidad es la diferencia entre los límites superior e inferior (en ese orden).
+\item El último sumando siempre debe ser $2^{5}$.
+\end{enumerate}
+
+Otro caso lo podemos ver al simplificar la siguiente expresión
+\[
+  \sum_{n = 1}^{100} (n^{3} - n^{2}) - \sum_{n = 45}^{100} (n^{3} - n^{2} - n) - \sum_{n = 1}^{100} n
+\]
+Veamos que $\sum_{n = 1}^{100} (n^{3} - n^{2}) - \sum_{n = 1}^{100} n = \sum_{n = 1}^{100} (n^{3} - n^{2} - n)$. Por lo tanto:
+\[
+  \sum_{n = 1}^{100} (n^{3} - n^{2}) - \sum_{n = 45}^{100} (n^{3} - n^{2} - n) - \sum_{n = 1}^{100} n =
+    \sum_{n = 1}^{100} (n^{3} - n^{2} - n) - \sum_{n = 45}^{100} (n^{3} - n^{2} - n)
+\]
+Y en el lado derecho de esta ecuación, todos los valores desde $n = 45$ hasta $n = 100$ en $\sum_{n = 1}^{100} (n^{3} - n^{2} - n)$ se cancelarán al sumarlos con los de $ - \sum_{n = 45}^{100} (n^{3} - n^{2} - n)$, implicando que:
+\[
+  \sum_{n = 1}^{100} (n^{3} - n^{2} - n) - \sum_{n = 45}^{100} (n^{3} - n^{2} - n) =
+    \sum_{n = 1}^{44} (n^{3} - n^{2} - n)
+\]
+Donde $\sum_{n = 1}^{44} (n^{3} - n^{2} - n)$ es la misma resta de sumatorias original, pero simplificada.
+
+A continuación tenemos tres propiedades útiles de las sumatorias, donde $n$ es un número entero mayor a cero, $a$ y $b$ son sucesiones de números y $c$ es un número que pertenece a los $\mathbb{R}$:
+\begin{align*}
+(1)& \ \sum_{k = 1}^{n} (a_{k} + b_{k}) = \sum_{k = 1}^{n} a_{k} + \sum_{k = 1}^{n} b_{k} \\
+(2)& \ \sum_{k = 1}^{n} (a_{k} - b_{k}) = \sum_{k = 1}^{n} a_{k} - \sum_{k = 1}^{n} b_{k} \\
+(3)& \ \sum_{k = 1}^{n} c(a_{k}) = c\left(\sum_{k = 1}^{n} a_{k}\right)
+\end{align*}
+
+\end{document}

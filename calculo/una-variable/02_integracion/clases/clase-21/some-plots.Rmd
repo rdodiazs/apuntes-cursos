@@ -1,0 +1,483 @@
+---
+title: ''
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r libraries, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+
+
+Fórmulas de Gráficas:
+
+$$
+\begin{aligned}
+  L(x) &= \int_{1}^{x}\frac{1}{t}dt = \ln(|x|)|_{1}^{x} \\
+  y &= x-1 \ (\text{línea tangente en } (1, \ 0)) \\
+  L(e) &= 1
+\end{aligned}
+$$
+
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+log_int_plot <- tibble(
+  x = seq(from = 0.3, to = 4, length.out = 200),
+  L_x = log(abs(x))-log(abs(1))
+) %>% 
+  ggplot(aes(x = x, y = L_x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(color = "#367faf") + 
+  geom_hline(yintercept = 1, color = "#c63b42") + 
+  geom_abline(slope = 1, intercept = -1, linetype = "dashed") + 
+  geom_point(
+    data = tibble(x = c(1, exp(1)), y = c(0, 1)),
+    aes(x = x, y = y)
+  ) + 
+  annotate(
+    geom = "text", x = 2.3, y = 0.4,
+    label = "L(x)==integral((1/t)*dt, 1, x)", parse = TRUE,
+    color = "#367faf"
+  ) + 
+  annotate(geom = "text", x = 0.7, y = 1.15, label = "L(e) = 1",
+           color = "#c63b42") + 
+  annotate(geom = "text", x = 1.2, y = 0.7, label = "L'(1) = 1") + 
+  annotate(
+    geom = "text", x = c(1.15, 2.9), y = c(-0.15, 0.9),
+    label = c("(1, 0)", "(e, 1)")
+  ) + 
+  coord_cartesian(xlim = c(0, 3.5), ylim = c(-0.5, 1.5)) + 
+  scale_x_continuous(breaks = c(0, 1, 2, exp(1), 3),
+                     labels = expression(0, 1, 2, e, 3)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL)
+
+log_int_plot
+```
+
+
+```{r, eval=FALSE, include=FALSE, echo=FALSE}
+ggsave(filename = "log_int_plot.jpg", plot = log_int_plot, path = "img",
+       width = 3.75, height = 2.5)
+```
+
+
+
+
+Gráficas:
+
+$$
+\begin{aligned}
+  L(x) &= \int_{0}^{x} e^{-t^{2}} dt
+        = \left.\left(\frac{\sqrt{\pi}}{2} \cdot erf(x)\right)\right|_{0}^{x} \\
+  erf(x) &= \frac{2}{\sqrt{\pi}} \cdot \int_{0}^{x} e^{-t^{2}} dt \\
+  L'(x) &= e^{-x^{2}}
+\end{aligned}
+$$
+
+El cálculo de $L(x)$ se encuentra [acá](https://www.symbolab.com/solver/step-by-step/%5Cint_%7B0%7D%5E%7Bx%7De%5E%7B-t%5E2%7Ddt).
+
+En R, la función $erf(x)$ la calculo como `2*pnorm(x*sqrt(2)) - 1`, cuya idea la tomé desde la misma función del paquete [`statip`](https://github.com/paulponcet/statip/blob/master/R/erf.R), aunque en  [`pracma`](https://github.com/cran/pracma/blob/master/R/erf.R) lo calculan como `pchisq(2*x^2,1)*sign(x)`. Ni idea la diferencia.
+
+Para hacerla más sencilla, a $L(x)$ la calculo a partir de una sola función en R.
+
+```{r err int fun}
+pre_erf <- function(x){
+  err_fun <- function(x) 2*pnorm(q = x*sqrt(2)) - 1
+  #err_fun <- function(x) pchisq(2*x^2,1)*sign(x)
+  
+  limits <- function(x) (sqrt(pi)/2)*err_fun(x)
+  
+  #El límite inferior de la integral es cero, por eso `limits(0)`.
+  L_x <- limits(x) - limits(0)
+  
+  return(L_x)
+}
+```
+
+
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+pre_erf_plot <- tibble(
+  x = seq(from = -4, to = 4, length.out = 200),
+  L_x = pre_erf(x)
+) %>% 
+  ggplot(aes(x = x, y = L_x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_hline(
+    yintercept = c(-sqrt(pi)/2, sqrt(pi)/2),
+    linetype = "dashed", color = "#3b4bc6"
+  ) + 
+  geom_line(color = "#c63b42") + 
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") + 
+  geom_point(aes(x = 0, y = 0)) + 
+  annotate(
+    geom = "text", x = 1.5, y = 0.3,
+    label = "L(x) == integral(e^-t^2*dt, 0, x)",
+    parse = TRUE, color = "#c63b42"
+  ) + 
+  annotate(
+    geom = "text", x = -0.1, y = 0.6,
+    label = "L'(0) = 1"
+  ) + 
+  annotate(
+    geom = "text", x = c(-2, 2), y = c(0.65, -0.65),
+    label = c("y == over(sqrt(pi), 2)", "y == -over(sqrt(pi), 2)"),
+    parse = TRUE, color = "#3b4bc6"
+  ) + 
+  coord_cartesian(xlim = c(-3, 3)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL)
+
+pre_erf_plot
+```
+
+
+```{r, eval=FALSE, include=FALSE, echo=FALSE}
+ggsave(filename = "pre_erf_plot.jpg", plot = pre_erf_plot, path = "img",
+       width =3.75, height = 2.5)
+```
+
+
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+deriv_pre_erf_plot <- tibble(
+  x = seq(from = -4, to = 4, length.out = 200),
+  dL_x = exp(1)^(-x^2)
+) %>% 
+  ggplot(aes(x = x, y = dL_x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_area(
+    data = tibble(
+      x = seq(from = 0, to = 2, length.out = 200),
+      area = exp(1)^(-x^2)
+    ),
+    aes(x = x, y = area),
+    fill = "#367faf"
+  ) + 
+  geom_area(
+    data = tibble(
+      x = seq(from = -2, to = 0, length.out = 200),
+      area = exp(1)^(-x^2)
+    ),
+    aes(x = x, y = area),
+    fill = "#36af40"
+  ) + 
+  geom_line(color = "#c63b42") + 
+  annotate(
+    geom = "text", x = 1.5, y = 0.75+((1-0.75)/2),
+    label = "over(d*L(x), dx) == e^-x^2", parse = TRUE,
+    color = "#c63b42"
+  ) + 
+  annotate(
+    geom = "text", x = 2, y = 0.5, label = "L(x)",
+    color = "#367faf"
+  ) + 
+  annotate(
+    geom = "text", x = -2, y = 0.5, label = "L(-x) = -L(x)",
+    color = "#36af40"
+  ) + 
+  geom_segment(
+    aes(x = -0.8, xend = -1.3, y = 0.2, yend = 0.43),
+    arrow = arrow(length = unit(0.2, "cm")), size = 0.8
+  ) + 
+  geom_segment(
+    aes(x = 0.8, xend = 1.6, y = 0.2, yend = 0.43),
+    arrow = arrow(length = unit(0.2, "cm")), size = 0.8
+  ) + 
+  coord_cartesian(xlim = c(-3, 3)) + 
+  scale_x_continuous(breaks = c(-2, 0, 2), labels = c("-x", "0", "x")) + 
+  scale_y_continuous(breaks = c(0, 1)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL)
+
+deriv_pre_erf_plot
+```
+
+
+```{r, eval=FALSE, include=FALSE, echo=FALSE}
+ggsave(filename = "deriv_pre_erf_plot.jpg", plot = deriv_pre_erf_plot,
+       path = "img", width =3.75, height = 2.5)
+```
+
+
+
+
+## Área entre curvas.
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+first_method <- tibble(
+  x = seq(from = -pi/2, to = 3*(pi/2), length.out = 200),
+  f_x = sin(x),
+  g_x = -sin(x)
+) %>% 
+  ggplot(aes(x = x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(aes(y = f_x), color = "#c63b42") +
+  geom_line(aes(y = g_x), color = "#367faf") + 
+  geom_vline(xintercept = c(0.3, 2.8), linetype = "dashed") + 
+  geom_rect(aes(xmin = 1.46, xmax = 1.56, ymin = -1, ymax = 1), alpha = 0.01) + 
+  annotate(
+    geom = "text",
+    x = c(rep(2.5, 2), 1.5, 1.95, 0.55, 2.6),
+    y = c(0.9, -0.9, -1.2, -0.2, rep(-1.9, 2)),
+    label = c("f(x)", "g(x)", "dx", "f(x) - g(x)", "x = a", "x = b"),
+    color = c("#c63b42", "#367faf", rep("#595959", 2), rep("black", 2))
+  ) + 
+  coord_cartesian(xlim = c(0, pi)) + 
+  expand_limits(y = c(-2, 2)) + 
+  scale_x_continuous(breaks = c(0, 0.3, 2.8), labels = c("0", "a", "b")) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL)
+
+first_method
+```
+
+
+```{r, echo=FALSE, eval=FALSE, include=FALSE}
+ggsave(filename = "first_method.jpg", plot = first_method, path = "img",
+       width = 3.75, height = 2.5)
+```
+
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+second_method <- tibble(
+  x = seq(from = -4, to = 5, length.out = 200),
+  g_x = x + 3,
+  f_x = exp(x/2)
+) %>% 
+  ggplot(aes(x = x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(aes(y = f_x), color = "#c63b42") + 
+  geom_line(aes(y = g_x), color = "#367faf") + 
+  geom_rect(
+    aes(xmin = -1, xmax = 2*log(2.5), ymin = 2, ymax = 2.5),
+    alpha = 0.01
+  ) +
+  geom_hline(
+    yintercept = c(0.5, 6.5),
+    linetype = "dashed"
+  ) + 
+  annotate(
+    geom = "text",
+    x = c(1, 3.8, 1, 2.2, rep(-3.2, 2)),
+    y = c(rep(5, 2), 3.1, 2.3, 1.1, 7.1),
+    label = c("g(x)", "f(x)", "f(y) - g(y)", "dy", "y = c", "y = d"),
+    color = c("#367faf", "#c63b42", rep("#595959", 2), rep("black", 2))
+  ) + 
+  coord_cartesian(xlim = c(-3.5, 4.5), ylim = c(-1, 7.5)) + 
+  scale_y_continuous(breaks = c(0, 0.5, 6.5), labels = c("0", "c", "d")) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL)
+
+second_method
+```
+
+
+```{r, echo=FALSE, eval=FALSE, include=FALSE}
+ggsave(filename = "second_method.jpg", plot = second_method, path = "img",
+       width = 3.75, height = 2.5)
+```
+
+
+
+
+Ejemplo.
+
+```{r}
+example_init <- tibble(
+  y = seq(from = -4, to = 4, length.out = 200),
+  x_sq = (y^2)
+) %>% 
+  ggplot() + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey")
+
+
+main_lines <- list(
+  geom_path(aes(x = x_sq, y = y), color = "#c74440"), 
+  geom_abline(slope = 1, intercept = -2, color = "#2d70b3")
+)
+
+
+intersects_and_text <- list(
+  annotate(
+    geom = "text",
+    x = c(1.3, 6, 4.5, 2, -0.4, 4.3),
+    y = c(0.25, 2, 3.5, -0.8, -0.5, 1.4),
+    label = c("A", "x == y^2", "y == x - 2",
+              "(list(1, -1))", "(list(0, 0))", "(list(4, 2))"),
+    color = c("black", "#c74440", "#2d70b3", rep("black", 3)),
+    parse = TRUE,
+    size = c(6.5, rep(4, 2), rep(3.5, 3))
+  ),
+  geom_point(
+    data = tibble(y = c(-1, 0, 2), x = y^2),
+    aes(x = x, y = y)
+  )
+)
+
+
+example_design <- list(
+  coord_cartesian(xlim = c(-0.5, 7.5), ylim = c(-4, 4)), 
+  theme_light(), 
+  theme(panel.grid = element_blank()), 
+  labs(x = NULL, y = NULL)
+)
+
+
+
+new_lines <- list(
+  geom_line(
+    data = tibble(x = seq(from = 0, to = 1, length.out = 200),
+                  y = x^2),
+    aes(x = y, y = -x),
+    color = "#7b3294"
+  ),
+  geom_line(
+    data = tibble(x = seq(from = 0, to = 2, length.out = 200),
+                  y = x^2),
+    aes(x = y, y = x),
+    color = "#1a9641"
+  ),
+  geom_segment(aes(x = 1, xend = 4, y = -1, yend = 2), color = "#fb9a99")
+)
+
+new_elements <- list(
+  geom_vline(xintercept = 1, linetype = "dashed"),
+  geom_point(
+    data = tibble(y = c(-1, 0, 2), x = y^2),
+    aes(x = x, y = y)
+  )
+)
+```
+
+
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+example_init_plot <- example_init + 
+  main_lines + 
+  intersects_and_text +
+  example_design
+
+example_init_plot
+```
+
+
+```{r, echo=FALSE, eval=FALSE, include=FALSE}
+ggsave(filename = "example_init_plot.jpg", plot = example_init_plot,
+       path = "img", width = 3.75, height = 2.5)
+```
+
+
+
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+example_method_1 <- example_init + 
+  geom_line(
+    data = tibble(x = seq(from = 0, to = 8, length.out = 200), y = sqrt(x)),
+    aes(x = x, y = y),
+    color = "#7b3294"
+  ) + 
+  geom_line(
+    data = tibble(x = seq(from = 0, to = 8, length.out = 200), y = -sqrt(x)),
+    aes(x = x, y = y),
+    color = "#1a9641"
+  ) + 
+  geom_abline(slope = 1, intercept = -2, color = "#2d70b3") + 
+  geom_vline(xintercept = 1, linetype = "dashed") + 
+  geom_rect(aes(xmin = 2.5, xmax = 2.7, ymin = 0.5, ymax = sqrt(2.7)),
+            alpha = 0.01) + 
+  annotate(
+    geom = "text",
+    x = c(1.3, 6, 6, 4.5, 2, -0.4, 4.3, 0.5, 2.6),
+    y = c(0.25, 2, -3, 3.5, -0.8, -0.5, 1.4, 2.1, 2),
+    label = c("A", "y == sqrt(x)", "y == -sqrt(x)", "y == x - 2",
+              "(list(1, -1))", "(list(0, 0))", "(list(4, 2))", "x == 1", "dx"),
+    color = c("black", "#7b3294", "#1a9641",
+              "#2d70b3", rep("black", 4), "#595959"),
+    parse = TRUE,
+    size = c(6.5, rep(4, 3), rep(3.5, 3), 4, 4)
+  ) + 
+  geom_point(
+    data = tibble(y = c(-1, 0, 2), x = y^2),
+    aes(x = x, y = y)
+  ) + 
+  example_design
+
+example_method_1
+```
+
+
+```{r, echo=FALSE, eval=FALSE, include=FALSE}
+ggsave(filename = "example_method_1.jpg", plot = example_method_1, path = "img",
+       width = 3.75, height = 2.5)
+```
+
+
+
+
+```{r, fig.height=2.5, fig.width = (7.5)/2}
+example_method_2 <- example_init + 
+  geom_path(aes(x = x_sq, y = y), color = "#c74440") + 
+  geom_abline(slope = 1, intercept = -2, color = "#2d70b3") + 
+  geom_hline(
+    yintercept = c(-1, 2), linetype = "dashed"
+  ) + 
+  geom_rect(
+    aes(ymin = 0.7, ymax = 1.2, xmin = (1.2^2), xmax = (1.2+2)),
+    alpha = 0.01
+  ) + 
+  annotate(
+    geom = "text",
+    x = c(1.3, 6, 4.5, 1, -0.4, 4.3, 3.5, 5, 0.5),
+    y = c(0.25, 3, 3.5, -1.6, -0.5, 1.4, 0.95, -0.6, 2.4),
+    label = c("A", "x == y^2", "x == y + 2",
+              "(list(1, -1))", "(list(0, 0))", "(list(4, 2))", "dy",
+              "y == -1", "y == 2"),
+    color = c("black", "#c74440", "#2d70b3", rep("black", 3), "#595959",
+              rep("black", 2)),
+    parse = TRUE,
+    size = c(6.5, rep(4, 2), rep(3.5, 3), rep(4, 3))
+  ) + 
+  geom_point(
+    data = tibble(y = c(-1, 0, 2), x = y^2),
+    aes(x = x, y = y)
+  ) + 
+  example_design
+
+example_method_2
+```
+
+
+```{r, echo=FALSE, eval=FALSE, include=FALSE}
+ggsave(filename = "example_method_2.jpg", plot = example_method_2, path = "img",
+       width = 3.75, height = 2.5)
+```
+
+
+

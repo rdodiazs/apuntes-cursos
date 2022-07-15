@@ -1,0 +1,456 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage[spanish]{babel}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{amsmath, amssymb}
+\usepackage{hyperref}
+
+\decimalpoint % Opción del paquete `babel` para pasar los decimales de "comas" a "puntos".
+\onehalfspacing % Interlineado desde paquete `setspace`.
+
+
+% Encabezado.
+\title{Clase 29. Integración por Fracciones Parciales.}
+\author{MIT 18.01: Single Variable Calculus.}
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent Una segunda técnica de integración que revisaremos en este curso consiste en descomponer el integrando en \textbf{fracciones parciales} cuando es una \textbf{función racional} (i.e, un cociente de polinomios). Veremos en qué consiste, cuándo es preferible usarla y sus limitaciones.
+\end{abstract}
+
+
+\section{Fracciones Parciales.}
+
+En clases anteriores hemos integrado funciones expresadas como fracciones, utilizando algunas veces el método de sustitución (directa o trigonométrica) para conocer su antiderivada. Sin embargo, esta técnica no es útil cuando su numerador y denominador son \textbf{polinomios}. En dichos casos, lo mejor es reescribirla como una \textbf{suma de fracciones simples} llamadas \textbf{fracciones parciales}, puesto que son más fáciles de integrar.
+
+Sea
+\[
+  f(x) = \frac{P(x)}{Q(x)}
+\]
+una \textbf{función racional}, donde $P(x)$ y $Q(x)$ son las siguientes \textbf{funciones polinomiales} de $m$-ésimo y $n$-ésimo grado, respectivamente.
+\[
+  \frac{P(x)}{Q(x)} = \frac{p_{m}x^{m} + p_{m - 1}x^{m - 1} + \cdots + p_{1}x + p_{0}}{q_{n}x^{n} + q_{n - 1}x^{n - 1} + \cdots + q_{1}x + q_{0}}
+\]
+Si $f(x)$ es una \textbf{fracción propia} o, en otras palabras, cuando
+\[
+  n > m
+\]
+podemos factorizar el polinomio $Q(x)$ en \textbf{factores lineales} $x - r_{1}$, $x - r_{2}$, $\cdots$, $x - r_{n}$ distintos entre sí y, con cada uno de ellos, formar fracciones las cuales sumamos y donde a sus numeradores le asignamos una constante $A_{i}$, para $i = 1, \ 2, \ \cdots, n$. Este proceso se conoce como \textbf{descomposición en fracciones parciales}.
+
+\[
+  f(x) = \frac{P(x)}{Q(x)} = \frac{A_{1}}{x - r_{1}} + \frac{A_{2}}{x - r_{2}} + \cdots + \frac{A_{n}}{x - r_{n}}
+\]
+Para ser más preciso (y resumido), cuando en una función racional $f(x)$ como la que vimos arriba se cumple que:
+
+\begin{enumerate}
+\item $\text{grado}(Q(x)) > \text{grado}(P(x))$ y
+\item podemos factorizar $Q(x)$ en factores lineales distintos,
+\end{enumerate}
+
+entonces es posible descomponer \textbf{directamente} a $f(x)$ en fracciones parciales. Si \textbf{una de estas condiciones} (o las dos) \textbf{no se cumple}, tendremos que \textbf{realizar pasos adicionales} para que este método siga siendo aplicable.
+
+Por otra parte, veamos que la cantidad de fracciones parciales a obtener será igual a la cantidad de factores lineales que provengan de $Q(x)$.
+
+
+\section{Resolviendo integrales de funciones racionales.}
+
+Calculemos la siguiente integral.
+\[
+  \int \left(\frac{4x - 1}{x^{2} + x - 2}\right) dx
+\]
+Con el método de sustitución no podemos resolver esta integral, pero al ser una función racional podemos descomponer el integrando en fracciones parciales.
+
+Al descomponer una función racional en fracciones parciales, el \textbf{primer paso} es \textbf{factorizar el denominador en factores lineales}.
+\[
+  \int \left(\frac{4x - 1}{x^{2} + x - 2}\right) dx = \int \left(\frac{4x - 1}{(x + 2)(x - 1)}\right) dx
+\]
+Luego, separamos la expresión racional de integrando en la suma de dos fracciones a partir de los factores lineales de su denominador y a los numeradores les asignaremos dos constantes $A$ y $B$.
+\[
+  \int \left(\frac{4x - 1}{x^{2} + x - 2}\right) dx = \int \left(\frac{A}{x + 2} + \frac{B}{x - 1}\right) dx
+\]
+
+La idea ahora será conocer los valores de las constantes $A$ y $B$ tal que al resolver el integrando del lado derecho obtengamos el original. Para ello, veremos dos maneras para lograr este objetivo.
+
+\subsection{Conociendo las constantes usando un sistema de ecuaciones lineales.}
+
+Una forma de conocer las constantes $A$ y $B$ del integrando, es formando un sistema de ecuaciones.
+
+Nuestro propósito es probar que
+\[
+  \frac{4x - 1}{x^{2} + x - 2} = \frac{A}{x + 2} + \frac{B}{x - 1}
+\]
+Trabajemos con el denominador factorizado de la fracción de la izquierda.
+\[
+  \frac{4x - 1}{(x + 2)(x - 1)} = \frac{A}{x + 2} + \frac{B}{x - 1}
+\]
+Luego, despejemos a $4x - 1$ multiplicando la ecuación por el binomio $(x + 2)(x - 1)$ y reordenemos los sumandos de este lado de la ecuación con sus respectivas variables.
+\begin{align*}
+  4x - 1 &= A(x - 1) + B(x + 2) \\
+         &= (A + B)x - A + 2B
+\end{align*}
+Veamos que el sumando $4x$ del lado izquierdo tiene su correspondencia con $(A + B)x$ del lado derecho a partir de la variable $x$, de igual modo ocurre con las constantes $-1$ y $(-A + 2B)$. A partir de esta relación podemos formar un \textbf{sistema de ecuaciones lineales} cuya solución serán los valores de $A$ y $B$.
+\[
+\left\{
+\begin{aligned}
+A + B &= 4 \\
+-A + 2B &= -1
+\end{aligned}
+\right.
+\]
+Al resolver este sistema, sea por eliminación gaussiana/sustitución hacia atrás o usando matrices, obtendremos que $A = 3$ y $B = 1$.
+
+\subsection{Conociendo las constantes usando el método de ocultamiento.}
+
+Volvamos a la siguiente expresión.
+\[
+  \frac{4x - 1}{(x + 2)(x - 1)} = \frac{A}{x + 2} + \frac{B}{x - 1}
+\]
+Anteriormente multiplicamos esta ecuación por $(x + 2)(x - 1)$ y obtuvimos:
+\[
+  4x - 1 = A(x - 1) + B(x + 2)
+\]
+Si bien usar un sistema de ecuaciones es una forma efectiva de conocer a $A$ y $B$, una manera más rápida de lograr aquello es \textbf{darle valores a $x$ que permitan cancelar a una de las dos constantes para conocer a la otra}. La condición es que \textbf{no se pueden repetir}.
+
+Por ejemplo, primero busquemos el valor de $A$. Para ello, establezcamos que $x = -2$ puesto que así cancelamos a $B$.
+\begin{align*}
+  4(-2) - 1 &= A(-2 - 1) + B(-2 + 2) \\
+         -9 &= A(-3) \\
+          3 &= A
+\end{align*}
+Luego, hagamos lo mismo para $B$ estableciendo que $x = 1$, ya que con esto eliminamos a $A$.
+\begin{align*}
+4(1) - 1 &= A(1 - 1) + B(1 + 2) \\
+       1 &= B
+\end{align*}
+Este procedimiento se conoce como el \textbf{método del ocultamiento} (\textit{cover-up}), porque en la ecuación
+\[
+  \frac{4x - 1}{(x + 2)(x - 1)} = \frac{A}{x + 2} + \frac{B}{x - 1}
+\]
+lo que intuitivamente estamos haciendo es como si tapáramos uno de los factores lineales del denominador de la fracción de la izquierda con una de nuestras manos para conocer a una de las constantes del lado derecho. Esto se materializa al darle los valores a $x$ como lo vimos anteriormente luego de multiplicar la igualdad por $(x + 2)(x - 1)$.
+
+\subsection{Terminando de resolver la integral.}
+
+Ahora que sabemos que $A = 3$ y $B = 1$, terminemos de resolver la integral.
+\[
+  \int \left(\frac{4x - 1}{x^{2} + x - 2}\right) dx = \int \left(\frac{3}{x + 2} + \frac{1}{x - 1}\right) dx
+\]
+Como vemos, la ventaja descomponer el integrando en fracciones parciales cuando corresponde a una función racional es que obtenemos una integral más fácil de resolver, porque su antiderivada corresponderá a una suma de \textbf{logaritmos naturales de valores absolutos}.
+\[
+  \int \left(\frac{4x - 1}{x^{2} + x - 2}\right) dx = \int \left(\frac{3}{x + 2} + \frac{1}{x - 1}\right) dx
+                                                    = 3 \ln(|x + 2|) + \ln(|x - 1|) + C
+\]
+Recordemos que:
+\[
+  \int \frac{1}{x} dx = \ln(|x|) + C
+\]
+
+
+\section{Usando fracciones parciales cuando los requisitos no se cumplen.}
+
+En la primera sección señalamos que si no se cumple que los factores lineales del denominador de la función racional son distintos o que el grado del polinomio de este último es mayor al del numerador, aún sigue siendo posible descomponerla en fracciones parciales, pero tenemos que realizar pasos adicionales y ahora los veremos.
+
+En general, vamos a considerar a toda función racional en la forma:
+\[
+  f(x) = \frac{P(x)}{Q(x)}
+\]
+
+\subsection{Caso 1: \texorpdfstring{$Q(x)$}{Denominador} tiene factores lineales repetidos.}
+
+Intentemos resolver la siguiente integral.
+\[
+  \int \left(\frac{x^{2} + 2}{(x - 1)^{2}(x + 2)}\right) dx
+\]
+Debido a que el integrando es una función racional, podemos descomponerla en fracciones parciales para resolver la integral\footnote{De hecho, si expandimos el binomio del denominador, veremos que es de trecer grado.}. El problema que tenemos, es que se repite dos veces el factor $(x - 1)$ en el denominador.
+\[
+  \int \left(\frac{x^{2} + 2}{(x - 1)^{2}(x + 2)}\right) dx = \int \left(\frac{x^{2} + 2}{(x - 1)(x - 1)(x + 2)}\right) dx
+\]
+Cuando esto ocurre, debemos \textbf{repetir la fracción parcial del factor que se reitera} en una cantidad de veces igual al valor de su exponente y los denominadores deben ser la expresión algebraica inicial, pero con su exponente aumentando en una unidad desde $1$ hasta el original. Por otra parte, cada constante de los numeradores deben ser distintos entre sí.
+\[
+  \int \left(\frac{x^{2} + 2}{(x - 1)^{2}(x + 2)}\right) dx = \int \left(\frac{A}{x - 1} + \frac{B}{(x - 1)^{2}} + \frac{C}{x + 2}\right) dx
+\]
+Centrémonos ahora solo en las expresiones racionales de ambos lados de la ecuación.
+\[
+  \frac{x^{2} + 2}{(x - 1)^{2}(x + 2)} = \frac{A}{x - 1} + \frac{B}{(x - 1)^{2}} + \frac{C}{x + 2}
+\]
+Multipliquemos esta ecuación por $(x - 1)^{2} (x + 2)$ para despejar a $x^{2} + 2$.
+\[
+  x^{2} + 2 = A(x - 1)(x + 2) + B(x + 2) + C(x - 1)^{2}
+\]
+En este caso podemos usar el método de ocultamiento, el cual sigue siendo más rápido que al usar un sistema de ecuaciones, pero solo para conocer a $B$ y $C$. No es posible usarlo con $A$, porque los valores de $x$ que debemos usar para cancelar a las dos primeras constantes señaladas también conllevan a que esta última sea igual a cero.
+
+Comencemos despejando a $B$ a partir de $x = 1$.
+\begin{align*}
+  (1)^{2} + 2 &= B(3) \\
+  1 &= B
+\end{align*}
+Luego, despejemos a $C$ estableciendo que $x = -2$.
+\begin{align*}
+  (-2)^{2} + 2 &= C(-3)^{2}\\
+  \frac{2}{3} &= C
+\end{align*}
+Para despejar a $A$, la forma más fácil es darle un valor a $x$ distinto de $1$ y $-2$, así como usar  a $B = 1$ y $C = 2/3$. Establezcamos que $x = 0$, ya que es un número que no hemos usado y nos permite realizar cálculos sencillos.
+\begin{align*}
+  x^{2} + 2 &= A(x - 1)(x + 2) + B(x + 2) + C(x - 1)^{2} \\
+  0^{2} + 2 &= A(0 - 1)(0 + 2) + (1)(0 + 2) + \left(\frac{2}{3}\right)(0 - 1)^{2} \\
+  2 &= -2A + 2 + \frac{2}{3} \\
+  \frac{1}{3} &= A
+\end{align*}
+Como ahora sabemos que $A = 1/3$, $B = 1$ y $C = 2/3$, procedamos a resolver la integral.
+\begin{align*}
+  \int \left(\frac{x^{2} + 2}{(x - 1)^{2}(x + 2)}\right) dx &= \int \left(\frac{(1/3)}{x - 1} + \frac{1}{(x - 1)^{2}} + \frac{(2/3)}{x + 2}\right) dx \\
+                                                            &= \frac{1}{3} \cdot \int \left(\frac{1}{x - 1}\right) dx +
+                                                               \int \left(\frac{1}{(x - 1)^{2}}\right)dx +
+                                                               \frac{2}{3} \cdot \int \left(\frac{1}{x + 2}\right) dx \\
+                                                            &= \frac{1}{3} \ln(|x - 1|) - \frac{1}{x - 1} + \frac{2}{3} \ln(|x + 2|) + C
+\end{align*}
+Observemos que $\int (1/(x - 1)^{2}) dx$ podemos resolverla usando el método de sustitución directa.
+
+\subsection{Caso 2: \texorpdfstring{$Q(x)$}{Denominador} tiene factores no-lineales e irreductibles.}
+
+A continuación tenemos una integral con un integrando racional y cuyo denominador se encuentra factorizado.
+\[
+  \int \left(\frac{x^{2}}{(x - 1)(x^{2} + 1)}\right) dx
+\]
+Intuitivamente podemos decidir resolver esta integral descomponiendo su integrando en fracciones parciales, pero si bien el grado del polinomio del denominador (tercer grado) es mayor al del numerador (segundo grado), al factorizar el primero nos encontramos con un factor cuadrático el cual no podemos seguir reduciendo.
+
+Recordemos que todos los factores del denominador deben ser lineales al usar fracciones parciales. Cuando no es el caso como en este ejemplo, en aquella fracción con denominador no lineal debemos usar un polinomio de primer grado que involucre a dos constantes en una suma, como lo vemos en el lado derecho de la siguiente igualdad.
+\[
+  \int \left(\frac{x^{2}}{(x - 1)(x^{2} + 1)}\right) dx = \int \left(\frac{A}{x - 1} + \frac{Bx + C}{x^{2} + 1}\right) dx
+\]
+Concentrémonos en los integrandos, igualándolos y despejemos a $x^{2}$ del lado izquierdo.
+\[
+  x^{2} = A(x^{2} + 1) + (Bx + C)(x - 1)
+\]
+Para encontrar a las constantes $A$, $B$ y $C$ podemos hacer una mezcla entre el método de ocultamiento y usar un sistema de ecuaciones. En particular, utilicemos el primero estableciendo que $x = 1$.
+\begin{align*}
+  1^{2} &= A(1^{2} + 1) + (B(1) + C)(1 - 1) \\
+  \frac{1}{2} &= A
+\end{align*}
+Luego, para conocer a $B$ y $C$, reordenemos la ecuación de las fracciones parciales con respecto a $x$.
+\begin{align*}
+x^{2} &= A(x^{2} + 1) + (Bx + C)(x - 1) \\
+      &= Ax^{2} + A + Bx^{2} - Bx + Cx - C \\
+      &= (A + B)x^{2} + (-B + C)x + A - C
+\end{align*}
+Posteriormente, escribamos la igualdad resultante como un sistema de ecuaciones lineales, con cada una para su respectivo coeficiente de $x$, pero considerando que $A = 1/2$.
+\[
+\left\{
+\begin{aligned}
+1/2 + B + 0 &= 1 \\
+  0 - B + C &= 0 \\
+1/2 + 0 - C &= 0
+\end{aligned}
+\right.
+\]
+Podríamos resolver el sistema para conocer a $B$ y $C$, pero podemos ver que en la primera y tercera ecuación ambas constantes son las únicas incógnitas en ellas. Por lo tanto, las usaremos de forma individual para encontrarlas.
+\begin{align*}
+  \frac{1}{2} + B + 0 &= 1 & \frac{1}{2} + 0 - C &= 0 \\
+                    B &= \frac{1}{2}      &    C &= \frac{1}{2}
+\end{align*}
+Finalmente, calculemos la integral.
+\begin{align*}
+\int \left(\frac{x^{2}}{(x - 1)(x^{2} + 1)}\right) dx &= \int \left(\frac{1/2}{x - 1} + \frac{(1/2)x + (1/2)}{x^{2} + 1}\right) dx \\
+                                                      &= \frac{1}{2} \int \left(
+                                                                            \frac{1}{x - 1} + \frac{x}{x^{2} + 1} + \frac{1}{x^{2} + 1}
+                                                                          \right) dx \\
+                                                      &= \frac{1}{2} \left[
+                                                            \int \left(\frac{1}{x - 1}\right) dx +
+                                                            \int \left(\frac{x}{x^{2} + 1}\right) dx +
+                                                            \int \left(\frac{1}{x^{2} + 1}\right) dx
+                                                          \right]
+\end{align*}
+La primera y segunda integral de la derecha podemos resolverlas usando el método de sustitución directa, mientras que la tercera corresponde al arcotangente de $x$.
+\begin{align*}
+  \int \left(\frac{x^{2}}{(x - 1)(x^{2} + 1)}\right) dx &= \frac{1}{2} \left(\ln(|x - 1|) + \frac{1}{2} \ln(|x^{2} + 1|) + \tan^{-1}(x)\right) + C \\
+                                                        &= \frac{1}{2} \ln(|x - 1|) + \frac{1}{4} \ln(|x^{2} + 1|) + \frac{1}{2} \tan^{-1}(x) + C
+\end{align*}
+
+\subsection{Caso 3: \texorpdfstring{$\text{grado}(P(x)) \geq \text{grado}(Q(x))$}{Grado del numerador es mayor o igual al grado del denominador}.}
+
+Veamos la siguiente integral.
+\[
+  \int \left(\frac{x^{3}}{(x - 1)(x + 2)}\right) dx
+\]
+El integrando es una función racional, su denominador está factorizado, consiste de factores lineales y no se repiten, pero si lo expandimos obtenemos un polinomio cuadrático, mientras que el del numerador es cúbico.
+\[
+  \int \left(\frac{x^{3}}{x^{2} + x - 2}\right) dx
+\]
+Para usar fracciones parciales, el grado del polinomio del numerador debe ser menor al del denominador. Cuando ocurre lo contrario como en este ejemplo\footnote{Acá decimos que la fracción es \textbf{impropia}.} o si éstos son iguales, antes de llevar la expresión a una suma de fracciones simples debemos realizar una \textbf{división larga} entre ambos.
+
+\subsubsection{División Larga.}
+
+La \textbf{división larga} es un método o algoritmo para calcular el cuociente entre dos valores. Podemos aplicarlo tanto con números como con expresiones algebraicas.
+
+Para entender este método, primero veamos un ejemplo numérico: Calculemos el cuociente entre $255$ y $13$ (i.e, $255/13$).
+
+En la configuración inicial, escribimos el dividendo a la derecha y el divisor a la izquierda, tal como lo vemos a continuación.
+\[
+  13 \overline{\smash{)} 255}
+\]
+Luego, como en toda división, vemos si el último dígito del dividendo (de derecha a izquierda) es divisible por $13$. Claramente $2$ no lo es y tampoco hay un mínimo común divisor entre $13$ y $2$. Por lo tanto, avanzamos a $25$ y, en este caso, el múltiplo menor de $13$ y más cercano a $25$ es $1$, el cual lo escribimos arriba.
+\[
+\begin{array}{r}
+1 \\
+13 \overline{\smash{)} 255}
+\end{array}
+\]
+Posteriormente, multiplicamos el $1$ de arriba por el divisor, que en este caso es $13$, y el resultado lo restamos a $25$ para obtener el resto de la división.
+\[
+\begin{array}{r}
+1 \\
+13 \overline{\smash{)} 255} \\
+- \underline{13 \text{ } \text{ }} \\
+125
+\end{array}
+\]
+Si el resto sigue siendo divisible por el divisor, continuamos la división. En este caso, $125$ como un todo es divisible por $13$ y el múltiplo de éste más cercano al primero es $9$, el cual escribimos arriba y a la derecha del $1$. Posteriormente, multiplicamos este $9$ por el divisor y el resultado lo restamos al resto, tal como lo hicimos anteriormente.
+\[
+\begin{array}{r}
+19 \\
+13 \overline{\smash{)} 255} \\
+- \underline{13 \text{ } \text{ }} \\
+125 \\
+- \underline{117} \\
+8
+\end{array}
+\]
+El nuevo resto $8$ no es divisible por $13$, así que el algoritmo se termina.
+
+Por lo tanto, el cuociente entre $255$ y $13$ es $19$ el cual tiene un resto de $8$. El resultado completo de esta división corresponderá a la suma entre el cuociente y la división entre el resto y el dividendo.
+\[
+  \frac{255}{13} = 19 + \frac{8}{13}
+\]
+Revisemos ahora un ejemplo algebraico, calculando el cuociente de
+\[
+  \frac{6x^{2} - 26x + 12}{x - 4}
+\]
+Para realizar la división larga siempre \textbf{el grado del divisor debe ser menor al del dividendo}. Como ésto se cumple en este ejemplo, establecemos la configuración inicial.
+\[
+  x - 4 \overline{\smash{)} 6x^{2} - 26x + 12}
+\]
+En este caso \textbf{siempre nos concentramos en los términos de los polinomios}. En particular, comenzamos dividiendo entre los de mayor grado de la derecha y de la izquierda. Acá, el primero corresponde a $6x^{2}$ y el segundo a $x$, lo que significa que su cuociente es $6x^{2}/x = 6x$, el cual escribimos arriba.
+\[
+\begin{array}{r}
+6x \\
+x - 4 \overline{\smash{)} 6x^{2} - 26x + 12}
+\end{array}
+\]
+Para obtener el \textbf{resto}, multiplicamos el cuociente que acabamos de obtener con el divisor de la división. Es decir, $6x \cdot (x - 4)$; y luego lo restamos al dividendo, teniendo en consideración que \textbf{dicha operación sea entre términos comunes}.
+\[
+\begin{array}{r}
+6x \\
+x - 4 \overline{\smash{)} 6x^{2} - 26x + 12} \\
+- \underline{(6x^{2} - 24x) \text{ } \text{ } \text{ } \text{ } \text{ }} \\
+-2x + 12
+\end{array}
+\]
+Para continuar con el método, se debe cumplir que \textbf{el grado del término del resto sea mayor o igual al del divisor}. En este caso, ambos son $x^{1}$, por lo que seguimos dividiendo.
+
+Para seguir, calculamos la división entre el término del resto y el del divisor, que acá es $(-2x)/x = -2$. Este cuociente lo escribimos arriba, al lado derecho de $6x$.
+\[
+\begin{array}{r}
+6x - 2 \\
+x - 4 \overline{\smash{)} 6x^{2} - 26x + 12} \\
+- \underline{(6x^{2} - 24x) \text{ } \text{ } \text{ } \text{ } \text{ }} \\
+-2x + 12
+\end{array}
+\]
+El resto lo calculamos multiplicando el nuevo cuociente obtenido con el divisor. Es decir, $2 \cdot (x - 4)$ y el resultado lo restamos al anterior resto.
+\[
+\begin{array}{r}
+6x - 2 \\
+x - 4 \overline{\smash{)} 6x^{2} - 26x + 12} \\
+- \underline{(6x^{2} - 24x) \text{ } \text{ } \text{ } \text{ } \text{ }} \\
+-2x + 12 \\
+-\underline{(-2x + 8)} \\
+4
+\end{array}
+\]
+El resto $4$ es una constante y, por tanto, no podemos dividirlo por el término del divisor $x - 4$, de manera que damos por terminado el algoritmo.
+
+De igual modo a cómo lo hicimos en el ejemplo numérico, el resultado de esta división larga corresponde a la suma entre el cuociente y la división entre el resto y el divisor.
+\[
+  \frac{6x^{2} - 26x + 12}{x - 4} = 6x - 2 + \frac{4}{x - 4}
+\]
+En general, cuando tenemos una función racional
+\[
+  \frac{P(x)}{Q(x)}
+\]
+y se cumple que grado$(P(x)) \geq$ grado$(Q(x))$, la división larga entre ambos polinomios resulta en una expresión de la siguiente forma:
+\[
+  \frac{P(x)}{Q(x)} = C(x) + \frac{R(x)}{Q(x)}
+\]
+donde $C(x)$ es el cuociente y $R(x)$ corresponde al resto de la división, con ambos siendo polinomios.
+
+\subsubsection{Conociendo las fracciones parciales y resolviendo la integral.}
+
+Volvamos a la integral:
+\[
+  \int \left(\frac{x^{3}}{(x - 1)(x + 2)}\right) dx = \int \left(\frac{x^{3}}{x^{2} + x - 2}\right) dx
+\]
+Como señalamos anteriormente, no podemos escribir el integrando como una suma de fracciones parciales porque el grado del numerador es mayor al del denominador. Por lo tanto, antes realizaremos una división larga la cual, como ya sabemos, sí podemos realizar debido a la condición señalada.
+\[
+\begin{array}{r}
+x - 1 \\
+x^{2} + x - 2 \overline{\smash{)} x^{3} \text{ } \text{ } \text{ } \text{ } \text{ } \text{ } \text{ }\text{ }\text{ }\text{ }\text{ }\text{ } \text{ }\text{ }} \\
+- \underline{(x^{3} + x^{2} - 2x)} \\
+- x^{2} + 2x \text{ } \\
+- \underline{(-x^{2} - x + 2)} \\
+3x - 2
+\end{array}
+\]
+En consecuencia:
+\[
+  \frac{x^{3}}{x^{2} + x - 2} = x - 1 + \frac{3x + 2}{x^{2} + x - 2}
+\]
+Reescribamos la integral como:
+\begin{align*}
+  \int \left(\frac{x^{3}}{(x - 1)(x + 2)}\right) dx &= \int \left(x - 1 + \frac{3x - 2}{x^{2} + x - 2}\right) dx \\
+                                                    &= \int (x - 1)dx + \int \left(\frac{3x - 2}{(x + 2)(x - 1)}\right) dx
+\end{align*}
+Veamos que en la segunda integral de la derecha quedamos con una expresión que podemos escribir como una suma de fracciones parciales.
+\[
+  \int \left(\frac{x^{3}}{(x - 1)(x + 2)}\right) dx = \int (x - 1)dx + \int \left(\frac{A}{x + 2} + \frac{B}{x - 1}\right) dx
+\]
+Busquemos las constantes $A$ y $B$ resolviendo que:
+\begin{align*}
+  \frac{3x - 2}{(x + 2)(x - 1)} &= \frac{A}{x + 2} + \frac{B}{x - 1} \\
+                         3x - 2 &= A(x - 1) + B(x + 2)
+\end{align*}
+Usemos el método de ocultamiento, estableciendo que $x = 1$ y que $x = -2$.
+\begin{align*}
+3(1) - 2 &= 3B & 3(-2) - 2 &= -3A \\
+\frac{1}{3} &= B & \frac{8}{3} &= A
+\end{align*}
+Ahora reemplacemos a $A$ y $B$ para resolver la integral.
+\begin{align*}
+  \int \left(\frac{x^{3}}{(x - 1)(x + 2)}\right) dx &= \int (x - 1)dx + \int \left(\frac{8/3}{x + 2} + \frac{1/3}{x - 1}\right) dx \\
+                                                    &= \int (x - 1) dx + \int \left(\frac{8/3}{x + 2}\right) dx + \int \left(\frac{1/3}{x - 1}\right) dx \\
+                                                    &= \frac{x^{2}}{2} - x + \frac{8}{3} \ln(|x + 2|) + \frac{1}{3} \ln(|x - 1|) + C
+\end{align*}
+
+
+\section{Dificultades a tener en cuenta.}
+
+Como hemos visto\footnote{Esta parte es de la Clase 30.}, el método de integrar funciones racionales separándolas en fracciones parciales es bastante efectivo. Nos permite obtener expresiones que son más fáciles de conocer, pero a medida que los polinomios son más complejos, esta técnica también lo hace.
+
+Con ``polinomios más complejos'' se hace referencia a aquellos de un grado muy alto, como el siguiente:
+\[
+  \int \left(\frac{x^{7}}{(x + 2)^{4}(x^{2} + 2x + 3)(x^{2} + 4)^{3}}\right) dx
+\]
+Como vemos, el denominador del integrando consiste de factores repetidos, uno no lineal e irredcutible y, en conjunto, es un polinomio de grado doce, de manera que tendremos esa misma cantidad de fracciones parciales y de constantes desconocidas, así como de ecuaciones lineales si las escribimos como un sistema.
+
+Luego, al resolver este problema tenemos que calcular las integrales y, en algunas de ellas, tendremos que realizar sustituciones trigonométricas de forma repetitiva en una cantidad enorme de veces.
+
+Lo que se quiere resaltar en este último punto de la clase, es que el método de fracciones parciales sigue siendo bueno y efectivo, pero a medida que se complejiza la expresión que queremos integrar, se va haciendo \textbf{más lento}. Por lo general, en situaciones como la que acabamos de ver se suele recurrir a algún software para resolverlo más rápido, pero son casos que es posible encontrarnos y no debemos temerles.
+
+
+
+\end{document}

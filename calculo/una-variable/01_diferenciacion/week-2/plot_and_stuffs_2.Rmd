@@ -1,0 +1,978 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r packages, message=FALSE, echo=FALSE, include=FALSE}
+library(tidyverse)
+library(patchwork)
+```
+
+
+
+## Derivadas.
+
+### 1. Tirando una calabaza.
+
+$f(t) = 100 + 20t - 5t^{2}$
+
+```{r}
+tibble(time = c(0:4)) %>% 
+  mutate(f_t = 100+(20*time)-(5*(time^2)))
+```
+
+
+```{r, fig.width=7, fig.height=3}
+tirar_calabaza_plot <- 
+  ggplot() + 
+  geom_hline(aes(yintercept = 0), color = "red") + 
+  geom_hline(aes(yintercept = 100), color = "lightgrey") + 
+  stat_function(data = tibble(time = c(0, 7)), aes(x = time),
+                fun = function(x) 100+(20*x)-5*(x^2),
+                color = "blue") + 
+  geom_hline(aes(yintercept = 115), linetype = "dashed",
+             color = "#3f3f3f") + 
+  geom_segment(aes(x = 1, xend = 1, y = 0, yend = 115),
+               linetype = "dashed", color = "#3f3f3f") + 
+  geom_segment(aes(x = 3, xend = 3, y = 0, yend = 115),
+               linetype = "dashed", color = "#3f3f3f") + 
+  geom_point(data = tibble(time = c(0:4)) %>% 
+               mutate(f_t = 100+(20*time)-(5*(time^2))),
+             aes(x = time, y = f_t), color = "#febb10", size = 3.5) + 
+  scale_x_continuous(breaks = c(0:7)) + 
+  theme_classic() + 
+  labs(x = "t", y = "f(t)")
+
+tirar_calabaza_plot
+```
+
+```{r, eval=FALSE}
+ggsave(filename = "tirar_calabaza_plot.jpg", plot = tirar_calabaza_plot,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+tirar_calabaza_plot_2 <- 
+  ggplot() + 
+  geom_hline(aes(yintercept = 0), color = "red") + 
+  geom_hline(aes(yintercept = 100), color = "lightgrey") + 
+  stat_function(data = tibble(time = c(0, 7)), aes(x = time),
+                fun = function(x) 100+(20*x)-5*(x^2),
+                color = "blue") + 
+  geom_hline(aes(yintercept = 120), linetype = "dashed",
+             color = "#3f3f3f") + 
+  geom_segment(aes(x = 2, xend = 2, y = 0, yend = 120),
+               linetype = "dashed", color = "#3f3f3f") + 
+  geom_point(data = tibble(time = c(0:4)) %>% 
+               mutate(f_t = 100+(20*time)-(5*(time^2))),
+             aes(x = time, y = f_t), color = "#febb10", size = 3.5) + 
+  scale_x_continuous(breaks = c(0:7)) + 
+  expand_limits(y = c(0, 130)) + 
+  theme_classic() + 
+  labs(x = "t", y = "f(t)")
+
+tirar_calabaza_plot_2
+```
+
+```{r, eval=FALSE}
+ggsave(filename = "tirar_calabaza_plot_2.jpg", plot = tirar_calabaza_plot_2,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+```{r}
+tibble(value = c(-5:5)) %>% 
+  mutate(f_x = 0.5*(value^3)-value)
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(value = c(-5, 5)), aes(x = value)) + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) (0.5*(x^3))-x,
+                xlim = c(-2.36, 2.54), color = "#750ffc") + 
+  expand_limits(x = c(-5:5)) + 
+  geom_segment(aes(x = -1, xend = -1, y = -4.2, yend = 0.5),
+               linetype = "dashed", color = "#fc750f") + 
+  #geom_vline(xintercept = -1, linetype = "dashed", color = "#fc750f") + 
+  geom_point(data = tibble(point_x = -1, point_y = 0.5),
+             aes(point_x, point_y), size = 3.5, color = "#fc750f") + 
+  theme_classic() + 
+  labs(x = "x", y = "f(x)")
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(value = c(-5, 5)), aes(x = value)) + 
+  stat_function(fun = function(x) (0.5*(x^3))-x,
+                xlim = c(-1.0242, -0.9785), color = "#750ffc") + 
+  geom_segment(aes(x = -1, xend = -1, y = 0.487, yend = 0.5),
+               linetype = "dashed", color = "#fc750f") + 
+  geom_point(data = tibble(point_x = -1, point_y = 0.5),
+             aes(point_x, point_y), size = 3.5, color = "#fc750f") + 
+  theme_classic() + 
+  labs(x = "x", y = "f(x)")
+```
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(value = c(-5, 5)), aes(x = value)) + 
+  stat_function(fun = function(x) (0.5*(x^3))-x,
+                xlim = c(-1.0242, -0.9785), color = "#750ffc") + 
+  geom_abline(slope = 0.5, intercept = 1, color = "#02B330") + 
+  geom_segment(aes(x = -1, xend = -1, y = 0.487, yend = 0.5),
+               linetype = "dashed", color = "#fc750f") + 
+  geom_point(data = tibble(point_x = -1, point_y = 0.5),
+             aes(point_x, point_y), size = 3.5, color = "#fc750f") + 
+  theme_classic() + 
+  labs(x = "x", y = "f(x)")
+```
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(value = c(-5, 5)), aes(x = value)) + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) (0.5*(x^3))-x,
+                xlim = c(-2.36, 2.54), color = "#750ffc") + 
+  geom_abline(slope = 0.5, intercept = 1, color = "#02B330") + 
+  expand_limits(x = c(-5:5)) + 
+  geom_segment(aes(x = -1, xend = -1, y = -4.2, yend = 0.5),
+               linetype = "dashed", color = "#fc750f") + 
+  #geom_vline(xintercept = -1, linetype = "dashed", color = "#fc750f") + 
+  geom_point(data = tibble(point_x = -1, point_y = 0.5),
+             aes(point_x, point_y), size = 3.5, color = "#fc750f") + 
+  theme_classic() + 
+  labs(x = "x", y = "f(x)")
+```
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(value = c(-5, 5)), aes(x = value)) + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) (0.5*(x^3))-x,
+                xlim = c(-2.36, 2.54), color = "#750ffc") + 
+  geom_abline(slope = 0.5, intercept = 0.999) + 
+  geom_abline(slope = ((0.51-0.5)/(-0.63+1)), intercept = 0.51) + 
+  expand_limits(x = c(-5:5)) + 
+  geom_segment(aes(x = -1, xend = -1, y = -4.2, yend = 0.5),
+               linetype = "dashed", color = "#fc750f") + 
+  #geom_vline(xintercept = -1, linetype = "dashed", color = "#fc750f") + 
+  geom_point(data = tibble(point_x = -1, point_y = 0.5),
+             aes(point_x, point_y), size = 3.5, color = "#fc750f") + 
+  geom_point(data = tibble(point_x = -0.63, point_y = 0.5),
+             aes(point_x, point_y), size = 3.5, color = "#fc750f") + 
+  theme_classic() + 
+  labs(x = "x", y = "f(x)")
+```
+
+
+
+## Ejercicio.
+
+Si una función no es continua en general, entonces la derivada en un punto no existe. Lo que se hizo acá fue ver si había continuidad general en la siguiente tasa de cambio instantánea, tanto para la derecha como para la izquierda.
+
+Límite de la derecha:
+
+$\lim_{x \to 0^{+}} \frac{|x| - 0}{x - 0}$
+
+Límite de la izquierda:
+
+$\lim_{x \to 0^{-}} \frac{|x| - 0}{x - 0}$
+
+```{r}
+ tibble(values_1 = c(0, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1),
+        values_2 = c(-1, -0.5, -0.1, -0.05, -0.01, -0.005, -0.001, 0)) %>% 
+  mutate(f_x_1 = (abs(values_1)-0)/(values_1-0),
+         f_x_2 = (abs(values_2)-0)/(values_2-0))
+```
+
+
+```{r}
+tibble(values = seq(from = -1, to = 1, by = 0.1)) %>% 
+   mutate(f_x_n = (abs(values)-0)/(values-0))
+```
+
+Como podemos ver en ambos códigos, el límite de la derecha es igual a 1, pero el de la izquierda es igual a -1. Por consiguiente, **la derivada NO existe**.
+
+****
+
+
+```{r, fig.width=7, fig.height=3}
+abs_fun_plot <- 
+  ggplot(data = tibble(value = c(-1, 1)), aes(x = value)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) abs(x), color = "blue") + 
+  theme_classic() + 
+  labs(x = "x", y = "f(x)")
+
+abs_fun_plot
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "abs_fun_plot.jpg", plot = abs_fun_plot,
+       path = "img", width = 7, height = 3)
+```
+
+
+### Función Heaviside.
+
+Esta función señala lo siguiente:
+
+$\forall x \in R: \, u(x) = H(x) = \{0 \, si \, x < 0 \\ 1 \, si \, x \geq 0$
+
+
+```{r}
+tibble(values = seq(from = -1, to = 1, by = 0.1)) %>% 
+  mutate(heaviside = if_else(condition = values >= 0, true = 1, false = 0))
+```
+
+
+```{r}
+tibble(values = seq(from = -1, to = 1, by = 0.1)) %>% 
+  mutate(heaviside = ifelse(test = values >= 0, yes = 1, no = 0))
+```
+
+
+```{r, fig.width=7, fig.height=3}
+heaviside_plot <- 
+  ggplot(data = tibble(values = c(-1, 1)), aes(x = values)) + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) ifelse(test = x >= 0, yes = 1, no = 0),
+                xlim = c(-1, -0.01), color = "blue") + 
+  stat_function(fun = function(x) ifelse(test = x >= 0, yes = 1, no = 0),
+                xlim = c(0, 1), color = "blue") + 
+  geom_point(data = tibble(p_x = 0, p_y = 0), aes(p_x, p_y),
+             shape = 1, size = 2.5, color = "blue") + 
+  geom_point(data = tibble(p_x = 0, p_y = 1), aes(p_x, p_y),
+             size = 2.5, color = "blue") + 
+  expand_limits(y = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "h(x)")
+
+heaviside_plot
+```
+
+```{r, eval=FALSE}
+ggsave(filename = "heaviside_plot.jpg", plot = heaviside_plot,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+abs_fun_right_plot <- 
+  ggplot(data = tibble(values = c(-1, 1)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) abs(x), xlim = c(0, 1), color = "blue") + 
+  expand_limits(x = c(-1, 1)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f(x)")
+
+abs_fun_right_plot
+```
+
+```{r, eval=FALSE}
+ggsave(filename = "abs_fun_right_plot.jpg", plot = abs_fun_right_plot,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+abs_fun_left_plot <- 
+  ggplot(data = tibble(values = c(-1, 1)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) abs(x), xlim = c(0, -1), color = "blue") + 
+  expand_limits(x = c(-1, 1)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f(x)")
+
+abs_fun_left_plot
+```
+
+```{r}
+ggsave(filename = "abs_fun_left_plot.jpg", plot = abs_fun_left_plot,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+heaviside_right_plot <- 
+  ggplot(data = tibble(values = c(-1, 1)), aes(x = values)) + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) ifelse(test = x >= 0, yes = 1, no = 0),
+                xlim = c(0, 1), color = "blue") + 
+  geom_point(data = tibble(p_x = 0, p_y = 1), aes(p_x, p_y),
+             size = 2.5, color = "blue") + 
+  geom_point(data = tibble(p_x = 0, p_y = 0), aes(p_x, p_y),
+             shape = 1, size = 2.5, color = "blue") + 
+  expand_limits(x = c(-1, 1), y = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "h(x)")
+
+heaviside_right_plot
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "heaviside_right_plot.jpg", plot = heaviside_right_plot,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+heaviside_left_plot <- 
+  ggplot(data = tibble(values = c(-1, 1)), aes(x = values)) + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) ifelse(test = x >= 0, yes = 1, no = 0),
+                xlim = c(-1, -0.01), color = "blue") + 
+  geom_point(data = tibble(p_x = 0, p_y = 0), aes(p_x, p_y),
+             shape = 1, size = 2.5, color = "blue") + 
+  geom_point(data = tibble(p_x = 0, p_y = 1), aes(p_x, p_y),
+             size = 2.5, color = "blue") + 
+  expand_limits(x = c(-1, 1), y = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "h(x)")
+
+heaviside_left_plot
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "heaviside_left_plot.jpg", plot = heaviside_left_plot,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+### Función Raíz Cúbica.
+
+$g(x) = \sqrt[3]{x}$
+
+
+```{r}
+tibble(values = c(-2:2)) %>% 
+  mutate(f_x = ifelse(test = values < 0,yes = -abs(values)^(1/3),
+                      no = values^(1/3)))
+```
+
+
+```{r}
+tibble(values = seq(from = -2, to = 2, by = 0.1)) %>% 
+  mutate(f_x = ifelse(test = values < 0,yes = -abs(values)^(1/3),
+                      no = values^(1/3)))
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+cubic_root_plot <- 
+  ggplot(data = tibble(values = c(-1, 1)), aes(x = values)) + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) ifelse(test = x < 0,
+                                         yes = -abs(x)^(1/3),
+                                         no = x^(1/3)),
+                color = "blue") + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "g(x)")
+
+cubic_root_plot
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "cubic_root_plot.jpg", plot = cubic_root_plot,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+sec_power_fun <- 
+  ggplot(data = tibble(values = c(-1, 1)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) x^2,
+                xlim = c(-1, 1), color = "blue") + 
+  expand_limits(x = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f(x)")
+
+sec_power_fun
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "sec_power_fun.jpg", plot = sec_power_fun,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+tang_secpow_one_pt <- 
+  ggplot(data = tibble(values = c(-4, 4)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) x^2,
+                xlim = c(-4, 4), color = "blue") + 
+  geom_abline(slope = 6, intercept = -9, color = "#750ffc") + 
+  geom_point(data = tibble(x = 3, y = 9), aes(x = x, y = y),
+             size = 3, color = "#d85e06") + 
+  expand_limits(x = c(-8, 8)) + 
+  scale_x_continuous(breaks = c(-5, 0, 3, 5)) + 
+  scale_y_continuous(breaks = c(0, 5, 9, 10, 15)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f(x)")
+
+tang_secpow_one_pt
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "tang_secpow_one_pt.jpg", plot = tang_secpow_one_pt,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+deriv_secpow_one_pt <- 
+  ggplot(data = tibble(value_x = 3, value_y = 6), aes(value_x, value_y)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_point(size = 3, color = "#d85e06") + 
+  expand_limits(x = c(-6, 6), y = c(-8, 8)) + 
+  scale_y_continuous(breaks = c(-5, 0, 5, 6)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f ' (x)")
+
+deriv_secpow_one_pt
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "deriv_secpow_one_pt.jpg", plot = deriv_secpow_one_pt,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+deriv_secpow_fun <- 
+  ggplot(data = tibble(values = c(-4, 4)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) 2*x, xlim = c(-4, 4),
+                color = "#750ffc") + 
+  expand_limits(x = c(-6, 6)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f ' (x)")
+
+deriv_secpow_fun
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "deriv_secpow_fun.jpg", plot = deriv_secpow_fun,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+deriv_secpow_fun_2 <- 
+  ggplot(data = tibble(values = c(-4, 4)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) 2*x, xlim = c(-4, 4),
+                color = "#750ffc") + 
+  geom_point(data = tibble(x = 3, y = 6), aes(x, y),
+             size = 3, color = "#d85e06") + 
+  expand_limits(x = c(-6, 6)) + 
+  scale_y_continuous(breaks = c(-5, 0, 5, 6)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f ' (x)")
+
+deriv_secpow_fun_2
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "deriv_secpow_fun_2.jpg", plot = deriv_secpow_fun_2,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+tang_secpow_2 <- 
+  ggplot(data = tibble(values = c(-4, 4)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) x^2,
+                xlim = c(-4, 4), color = "blue") + 
+  geom_abline(slope = -4, intercept = -4, color = "#750ffc") + 
+  geom_point(data = tibble(x = -2, y = 4), aes(x = x, y = y),
+             size = 3, color = "#d85e06") + 
+  expand_limits(x = c(-8, 8)) + 
+  scale_x_continuous(breaks = c(-5, -2, 0, 5)) + 
+  scale_y_continuous(breaks = c(0, 4, 5, 10, 15)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f(x)")
+
+
+deriv_secpow_fun_3 <- 
+  ggplot(data = tibble(values = c(-4, 4)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) 2*x, xlim = c(-4, 4),
+                color = "#750ffc") + 
+  geom_point(data = tibble(x = -2, y = -4), aes(x, y),
+             size = 3, color = "#d85e06") + 
+  expand_limits(x = c(-6, 6)) + 
+  scale_x_continuous(breaks = c(-6, -3, -2, 0, 3, 6)) + 
+  scale_y_continuous(breaks = c(-5, -4, 0, 5)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f ' (x)")
+
+deriv_tang_secpow <- tang_secpow_2+deriv_secpow_fun_3
+
+deriv_tang_secpow
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "deriv_tang_secpow.jpg", plot = deriv_tang_secpow,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r}
+tibble(values = c(-3:3)) %>% 
+  mutate(f_x = ((1/2)*values)-1)
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+linear_fun <- 
+  ggplot(data = tibble(values = c(-3, 3)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) (0.5*x)-1, color = "blue",
+                xlim = c(-0.5, 3)) + 
+  expand_limits(y = c(-2, 1)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "g(x)")
+
+linear_fun
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "linear_fun.jpg", plot = linear_fun,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.width=7, fig.height=3}
+deriv_linear_fun <- 
+  ggplot(data = tibble(values = c(-3, 3)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) 0.5, color = "blue") + 
+  expand_limits(y = c(-1, 1)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "g ' (x)")
+
+deriv_linear_fun
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "deriv_linear_fun.jpg", plot = deriv_linear_fun,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+## Segunda Derivada y Concavidad hacia abajo y hacia arriba.
+
+```{r}
+tibble(x = seq(from = -2, to = 2, by = 0.1)) %>% 
+  mutate(f_x = x^3,
+         d_fx = 3*(x^2),
+         d2_fx = 6*x)
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(values = c(-2, 2)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) x^3, xlim = c(-2, 2)) + 
+  geom_point(data = tibble(x = -1.5, y = -3.375), aes(x = x, y = y),
+             color = "red", size = 3) + 
+  expand_limits(x = c(-4, 4)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f(x)")
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(values = c(-2, 2)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) 3*(x^2), xlim = c(-2, 2)) + 
+  geom_point(data = tibble(x = -1.5, y = 6.75), aes(x = x, y = y),
+             color = "red", size = 3) + 
+  expand_limits(x = c(-4, 4)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f ' (x)")
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(values = c(-2, 2)), aes(x = values)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) 6*x, xlim = c(-2, 2)) + 
+  geom_point(data = tibble(x = -1.5, y = -9.0), aes(x = x, y = y),
+             color = "red", size = 3) + 
+  expand_limits(x = c(-4, 4)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f '' (x)")
+```
+
+
+
+
+## Derivadas Seno y Coseno.
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(x = c(-2*pi, 2*pi)), aes(x = x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) sin(x), color = "blue") + 
+  scale_x_continuous(
+    breaks = c(-2*pi, -(3*pi)/2, -pi, (-pi/2), 0,
+               (pi/2), pi, (3*pi)/2, 2*pi),
+    labels = c(expression("-2"*pi), expression("-3"*pi*"/2"),
+               expression("-"*pi), expression("-"*pi*"/2"),
+               0, expression(pi*"/2"), expression(pi),
+               expression("3"*pi*"/2"), expression("2"*pi))
+  ) + 
+  expand_limits(y = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(y = "sen(x)")
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(x = c(-pi/2, 2*pi)), aes(x = x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) sin(x), color = "blue") + 
+  scale_x_continuous(
+    breaks = c(0, pi, 2*pi),
+    labels = c(0, expression(pi), expression("2"*pi))
+  ) + 
+  scale_y_continuous(breaks = c(-1, 0, 1)) + 
+  expand_limits(y = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(y = "sen(x)")
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+deriv_sin_theta <- 
+  ggplot(data = tibble(x = c(-pi/2, 2*pi)), aes(x = x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) sin(x), color = "blue") + 
+  geom_abline(slope = 1, intercept = 0, color = "#ed6015") + 
+  annotate(geom = "text", x = 2.3, y = 1.5,
+           label = "sen ' (0) = 1", color = "#ed6015") + 
+  scale_x_continuous(
+    breaks = c(0, pi, 2*pi),
+    labels = c(0, expression(pi), expression("2"*pi))
+  ) + 
+  scale_y_continuous(breaks = c(-1, 0, 1)) + 
+  expand_limits(y = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = expression(theta), y = expression("sen("*theta*")"))
+
+deriv_sin_theta
+```
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "deriv_sin_theta.jpg", plot = deriv_sin_theta,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+
+```{r}
+tibble(x = c(-90, 0, 90, 180, 270, 360),
+       y = c(-pi/2, 0, pi/2, pi, (3*pi)/2, 2*pi)) %>% 
+  mutate(sin_x = round(sin(x), digits = 3),
+         sin_y = round(sin(y), digits = 3)) %>% 
+  select(x, sin_x, y, sin_y)
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+(tibble(x = c(-180, -90, 0, 90, 180, 270, 360)) %>% 
+  mutate(sin_x = sin(x)) %>% 
+  ggplot(aes(x = x, y = sin_x)) + 
+  geom_point() + 
+  geom_line() + 
+   expand_limits(y = c(-2, 2)) + 
+   scale_x_continuous(breaks = c(-180, -90, 0, 90, 180, 270, 360)))+
+(tibble(y = c(-pi, -pi/2, 0, pi/2, pi, (3*pi)/2, 2*pi)) %>% 
+  mutate(sin_y = sin(y)) %>% 
+  ggplot(aes(x = y, y = sin_y)) + 
+  geom_point() + 
+   geom_line() + 
+   geom_abline(slope = 1, intercept = 0, color = "#ed6015") + 
+   expand_limits(y = c(-2, 2)) + 
+   scale_x_continuous(
+     breaks = c(-pi, -pi/2, 0, pi/2, pi, (3*pi)/2, 2*pi),
+     labels = c(expression("-"*pi), 
+       expression("-"*pi*"/2"), 0, expression(pi*"/2"),
+                expression(pi), expression("3"*pi*"/2"),
+                expression("2"*pi))
+   ))
+```
+
+
+```{r}
+tibble(x = c((-pi/2):(2*pi))) %>% 
+  mutate(sin_x = sin(x)) %>%
+  ggplot(aes(x, sin_x)) + 
+  geom_point()
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(x = c(-2*pi, 2*pi)), aes(x = x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) cos(x), color = "blue") + 
+  scale_x_continuous(
+    breaks = c(-2*pi, -(3*pi)/2, -pi, (-pi/2), 0,
+               (pi/2), pi, (3*pi)/2, 2*pi),
+    labels = c(expression("-2"*pi), expression("-3"*pi*"/2"),
+               expression("-"*pi), expression("-"*pi*"/2"),
+               0, expression(pi*"/2"), expression(pi),
+               expression("3"*pi*"/2"), expression("2"*pi))
+  ) + 
+  expand_limits(y = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(y = "cos(x)")
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+deriv_cos_theta <- 
+  ggplot(data = tibble(theta = c(-pi, pi)), aes(x = theta)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  stat_function(fun = function(x) cos(x), color = "blue") + 
+  geom_abline(slope = 0, intercept = 1, color = "#ed6015") + 
+  annotate(geom = "text", x = 1, y = 1.3,
+           label = "cos ' (0) = 0", color = "#ed6015") + 
+  scale_x_continuous(
+    breaks = c(-pi, 0, pi),
+    labels = c(expression("-"*pi), 0, expression(pi))
+  ) + 
+  scale_y_continuous(breaks = c(-1, 0, 1)) + 
+  expand_limits(y = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = expression(theta), y = expression("cos("*theta*")"))
+
+deriv_cos_theta
+```
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "deriv_cos_theta.jpg", plot = deriv_cos_theta,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+```{r}
+tibble(x = c(-2*pi, ((-3*pi)/2), -pi, (-pi/2), 0,
+             (pi/2), pi, ((3*pi)/2), 2*pi)) %>% 
+  mutate(x = round(x = x, digits = 2),
+         sin_x = sin(x),
+         cos_x = cos(x))
+```
+
+----
+
+## Circunferencia Unitaria.
+
+La fórmula se calculó de la siguiente manera. Primero, tenemos la ecuación de la circunferencia, donde su centro corresponde al punto $C(h, k)$.
+
+\[r^{2} = (x - h)^{2} + (y - k)^{2}\]
+
+Nuestra circunferencia estará centrada en el punto $C(0, 0)$, por lo tanto:
+
+\[r^{2} = (x - h)^{2} + (y - k)^{2}\]
+\[r^{2} = (x - 0)^{2} + (y - 0)^{2}\]
+\[r^{2} = ^{2} + y^{2}\]
+
+Del mismo modo, su $r = 1$, entonces:
+
+\[x^{2} + y^{2} = 1\]
+
+Y si despejamos $y$, obtendremos la fórmula que usamos para graficar la circunferencia acá:
+
+\[y = \sqrt{1 - x^{2}}\]
+
+Ahora apliquémosla.
+
+```{r, message=FALSE}
+tibble(x = seq(from = -1, to = 1, by = 0.01)) %>% 
+  mutate(y_circ = sqrt(1-(x^2)))
+```
+
+
+
+```{r, fig.height=5, fig.width=5}
+tibble(x = seq(from = -1, to = 1, length = 200)) %>% 
+  mutate(y_circ = sqrt(1 - (x^2))) %>% 
+  ggplot() + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(aes(x = x, y = y_circ)) + 
+  geom_line(aes(x = x, y = -y_circ)) + 
+  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 0)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank())
+```
+
+----
+
+Ejemplo: Sea $t = \pi/3$, y las funciones trigonométricas seno se definen como:
+
+(a) $sen \, t = y$
+(b) $cos \, t = x$
+
+Entonces el punto $P(sen \, t, \, cos \, t)$, que corresponderá a $P(\sqrt{3}/2, \, 1/2)$, estará ubicado como se ve en el siguiente gráfico:
+
+
+```{r, fig.height=5, fig.width=5}
+tibble(x = seq(from = -1, to = 1, length = 200)) %>% 
+  mutate(y_circ = sqrt(1 - (x^2))) %>% 
+  ggplot() + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(aes(x = x, y = y_circ)) + 
+  geom_line(aes(x = x, y = -y_circ)) + 
+  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 0)) + 
+  geom_point(aes(x = cos(pi/3), y = sin(pi/3)), size = 2.5) + 
+  theme_light() + 
+  theme(panel.grid = element_blank())
+```
+
+
+Acá necesitamos ver en qué valores la función $f(x) = sen(x)$ es cóncava hacia arriba (i.e., en qué valores de $x$ $f''(x)$ es positiva o mayor a cero).
+
+```{r}
+tibble(x = seq(from = (-2*pi), to = (2*pi), length = 200)) %>% 
+  mutate(sin_x = sin(x),
+         deriv_sin = cos(x),
+         sec_deriv_sin = -sin(x))
+```
+
+
+
+```{r}
+tibble(x = seq(from = (-2*pi), to = (2*pi), length = 20)) %>% 
+  mutate(sin_x = sin(x),
+         deriv_sin = cos(x),
+         sec_deriv_sin = -sin(x)) %>% 
+  filter(sin_x > 0)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

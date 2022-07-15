@@ -1,0 +1,232 @@
+---
+title: "Untitled"
+author: "Ricardo Díaz Sarmiento"
+date: "24-01-2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r package, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(tibble)
+```
+
+
+## 1. Diferenciales y Aproximación Lineal.
+
+Para el gráfico, uso la función exponencial natural $e^{x}$ y evalúo la aproximación lineal de $e^{1.4}$ en $x_{0} = 1$. La fórmula de dicha aproximación está dada por $L(x) = e^{1} + e^{1}(x - 1) = e^{1}x + 0$ (pongo el cero para saber que corta a $y$ en $x = 0$.) y la asigno a `lin_approx`.
+
+```{r}
+lin_approx <- function(x) exp(1)*x
+```
+
+
+```{r}
+diff_lin <- list(
+  lines = tibble(x = seq(from = -2, to = 2, length.out = 200),
+                 "f(x)" = exp(x),
+                 "L(x)" = lin_approx(x)) %>% 
+          pivot_longer(cols = 2:3, names_to = "fun", values_to = "output"),
+
+  points = tibble(x = c(1, rep(1.4, 2)),
+                  point = c(rep("tan_pt", 2), "true_pt"),
+                  values = c(exp(x[1]), lin_approx(x[2]), exp(x[3])))
+)
+```
+
+
+Para separar las legendas, en `geom_point()` puse como argumento "pch = 21" (círculos vacíos) y el color lo puse como relleno "fill = point" (categoría). Saqué la idea de acá: https://stackoverflow.com/questions/29528915/assign-color-to-2-different-geoms-and-get-2-different-legends#29531292
+
+
+```{r, fig.height= 3, fig.width = 5}
+# Init and lines.
+diff_lin_plot <- ggplot(data = diff_lin$point) + 
+  geom_hline(aes(yintercept = values[1]), lty = 2, color = "#c1c1c1") + 
+  geom_hline(aes(yintercept = values[2]), lty = 2, color = "#c1c1c1") + 
+  geom_hline(aes(yintercept = values[3]), lty = 2, color = "#c1c1c1") + 
+  geom_vline(xintercept = 1.4, lty = 2, color = "#c1c1c1") + 
+  geom_segment(aes(x = 1, xend = 1, y = 0, yend = exp(1)),
+               lty = 2, color = "#c1c1c1")
+
+# Main elements.
+diff_lin_plot <- diff_lin_plot + 
+  geom_line(data = diff_lin$lines, aes(x = x, y = output, color = fun)) + 
+  geom_point(aes(x = x, y = values, fill = point), pch = 21, size = 2,
+             show.legend = FALSE)
+
+# Some lines and text.
+diff_lin_fig <- diff_lin_plot + 
+  geom_segment(aes(x = 1.45, xend = 1.45, y = values[1], yend = values[2]),
+               arrow = arrow(length = unit(2.5, "mm"), type = "closed")) + 
+  geom_segment(aes(x = 1.7, xend = 1.7, y = values[1], yend = values[3]),
+               arrow = arrow(length = unit(2.5, "mm"), type = "closed")) + 
+  annotate(geom = "text", x = 1.76, y = 3.4, label = "Delta*f", parse = TRUE,
+           size = 5.2)
+
+# Design.
+diff_lin_design <- list(
+  coord_cartesian(xlim = c(0.5, 2), ylim = c(1.5, 5)), 
+  scale_fill_manual(values = c("#a847a6", "#2f28fc")), 
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 10),
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = "transparent",
+                                        color = "#c1c1c1"),
+        legend.position = c(0.9, 0.85),
+        legend.background = element_rect(fill = "transparent"),
+        legend.key = element_rect(fill = "transparent"),
+        legend.text = element_text(size = 11)), 
+  labs(x = NULL, y = NULL, color = NULL)
+)
+```
+
+
+```{r, fig.height= 3, fig.width = 7}
+diff_lin_plot_1 <- diff_lin_plot + 
+  scale_x_continuous(breaks = c(1, 1.4),
+                     labels = expression(x[0], x[0]+Delta*x)) + 
+  scale_y_continuous(breaks = c(exp(1), lin_approx(1.4), exp(1.4)),
+                     labels = expression(f(x[0]), L(x[0]+Delta*x),
+                                         f(x[0]+Delta*x))) + 
+  diff_lin_design
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "diff_examp_plot.jpg", plot = diff_lin_plot_1,
+       path = "img", height = 3, width = 7)
+```
+
+
+
+
+```{r, fig.height= 3, fig.width = 7}
+diff_lin_plot_2 <- diff_lin_fig +
+  annotate(geom = "text", x = 1.2, y = 2.6, label = "Delta*x", parse = TRUE,
+           size = 5) + 
+  annotate(geom = "text", x = 1.5, y = 3.3, label = "Delta*L", parse = TRUE,
+           size = 5) + 
+  scale_x_continuous(breaks = c(1, 1.4),
+                     labels = expression(x[0], x[0]+Delta*x)) + 
+  scale_y_continuous(breaks = c(exp(1), lin_approx(1.4), exp(1.4)),
+                     labels = expression(f(x[0]), L(x[0]+Delta*x),
+                                         f(x[0]+Delta*x))) + 
+  diff_lin_design
+```
+
+```{r, eval=FALSE}
+ggsave(filename = "diff_examp_plot_2.jpg", plot = diff_lin_plot_2,
+       path = "img", height = 3, width = 7)
+```
+
+
+
+```{r, fig.height= 3.5, fig.width = 7}
+diff_lin_plot_3 <- diff_lin_fig + 
+  annotate(geom = "text", x = 1.2, y = 2.6, label = "d*x", parse = TRUE,
+           size = 5) + 
+  annotate(geom = "text", x = 1.5, y = 3.3, label = "df", parse = TRUE,
+           size = 5) + 
+  scale_x_continuous(breaks = c(1, 1.4),
+                     labels = expression(x[0], x[0]+d*x)) + 
+  scale_y_continuous(breaks = c(exp(1), lin_approx(1.4), exp(1.4)),
+                     labels = expression(f(x[0]), L(x[0]+d*x), f(x[0]+d*x))) + 
+  diff_lin_design
+```
+
+
+```{r, eval=FALSE}
+ggsave(filename = "diff_examp_plot_3.jpg", plot = diff_lin_plot_3,
+       path = "img", height = 3, width = 7)
+```
+
+
+
+
+## 2. Ejercicios Ecuaciones Diferenciales.
+
+Acá se grafica la función:
+\[
+  y = 3e^{(x^2/2) + 2}
+\]
+
+```{r, fig.height= 3, fig.width = 7}
+diff_eq_exer <- tibble(x = seq(from = -4, to = 4, length.out = 200),
+       f_x = 3*exp(((-x^2)/2) + 2)) %>% 
+  ggplot(aes(x = x, y = f_x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_segment(aes(x = 2, xend = 2, y = 0, yend = 3), lty = "dashed",
+               color = "#727272") + 
+  geom_segment(aes(x = -6, xend = 2, y = 3, yend = 3), lty = "dashed",
+               color = "#727272") + 
+  geom_line(color = "#62079b") + 
+  geom_point(aes(x = 2, y = 3), size = 2, color = "#dd250d") + 
+  annotate(geom = "text", x = 2.35, y = 3.7, label = "(2, 3)") + 
+  annotate(geom = "text", x = 1.7, y = 16,
+           label = "y == 3*e^{(-x^2/2) + 2}", parse = TRUE, size = 5,
+           color = "#62079b") + 
+  coord_cartesian(xlim = c(-4, 4)) + 
+  scale_y_continuous(breaks = c(0, 3, 5, 10, 15, 20)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL)
+```
+
+```{r, eval=FALSE}
+ggsave(filename = "diff_eq_exer.jpg", plot = diff_eq_exer, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+```{r, fig.height= 3, fig.width = 7}
+diff_eq_data_2 <- tibble(x = seq(from = -8, to = 8, length.out = 200),
+       f_x = (x^2)/8,
+       ray = if_else(x >= 0, x/2, NULL)) 
+
+diff_eq_exer_2 <- diff_eq_data_2 %>% 
+  ggplot(aes(x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_line(aes(y = f_x), color = "#62079b") + 
+  geom_line(data = subset(x = diff_eq_data_2, subset = !is.na(ray)),
+            aes(y = ray), lty = 2) + 
+  geom_abline(slope = 1, intercept = -2, color = "#dd250d") + 
+  geom_point(data = tibble(x = c(0, 4), y = (x^2)/8), aes(x = x, y = y),
+             size = 2, color = "#138f96") + 
+  geom_text(data = tibble(x = c(0, 4), y = (x^2)/8),
+            aes(x = x, y = y, label = paste0("(", x, ", ", y, ")")),
+            nudge_y = 0.25, nudge_x = -0.35) + 
+  annotate(geom = "text", x = 4, y = 3, label = "y == over(1, 8) ~~ x^{2}",
+           parse = TRUE, color = "#62079b") + 
+  annotate(geom = "text", x = 4, y = 1, label = "y'(4) = 1",
+           color = "#dd250d") + 
+  annotate(geom = "text", x = 6, y = 2.1,
+           label = "y = 0.5x + 0 \n(el rayo)") + 
+  scale_x_continuous(breaks = c(-5, 0, 4, 5)) + 
+  coord_cartesian(xlim = c(-8, 8), ylim = c(0, 3.5)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL)
+```
+
+
+```{r}
+ggsave(filename = "diff_eq_exer_2.jpg", plot = diff_eq_exer_2, path = "img",
+       width = 7, height = 3)
+```
+
+
+
+
+
+

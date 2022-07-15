@@ -1,0 +1,776 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref} % Siempre debe ir al final.
+
+% Opciones de Paquetes.
+\decimalpoint   % {babel}
+\onehalfspacing % {setspace}
+
+% Encabezado.
+\title{Clase 38. Series Infinitas II: Series de Potencia.}
+\author{MIT 18.01: Single Variable Calculus.}
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent Una serie infinita puede contener variables además de solo constantes (como las vistas en la clase anterior). Aquellas que siguen la forma de un polinomio reciben el nombre de \textbf{Series de Potencia}. En esta ocasión las estudiaremos y revisaremos dos tipos de ella: las series de Taylor y de Maclaurin.
+\end{abstract}
+
+
+\section{Series de Potencia.}
+
+Considere la serie de una sucesión $\{a_{n}\}_{n = 0}^{\infty}$.
+\[
+  \sum_{n = 0}^{\infty} a_{n} = a_{0} + a_{1} + a_{2} + \cdots + a_{n} + \cdots
+\]
+Luego, multiplique cada $a_{n}$ de esta serie por una \textbf{variable} elevada a una potencia $n$, $x^{n}$.
+\[
+  \sum_{n = 0}^{\infty} a_{n}x^{n} = a_{0}x^{0} + a_{1}x^{1} + a_{2}x^{2} + \cdots + a_{n}x^{n} + \cdots
+\]
+Esta suma infinita se conoce como \textbf{Serie de Potencia}\footnote{De ahora en adelante daré por asumido en esta definición que $x^{0} = 1$ y $x^{1} = x$}.
+
+Una serie de potencia puede ser entendida como una \textbf{función} cuyo \textbf{dominio} son todos los valores de $x$ en donde \textbf{converge esta suma}.
+\[
+  f(x) = a_{0} + a_{1}x + a_{2}x^{2} + \cdots + a_{n}x^{n} + \cdots = \sum_{n = 0}^{\infty} a_{n}x^{n}
+\]
+En cuanto a la \textbf{\textit{n}-ésima suma parcial} de esta serie, corresponde a un \textbf{polinomio de \textit{n}-ésimo grado}\footnote{\textbf{OJO}: Una serie de potencia \textbf{no es un polinomio}. Sí lo es la suma de una parte finita de ella.}, $P(x)$.
+
+\[
+  P(x) = a_{0} + a_{1}x + a_{2}x^{2} + \cdots + a_{n}x^{n} = \sum_{i = 0}^{n} a_{i}x^{i}
+\]
+La versión generalizada de la definición de una serie de potencia considera su \textbf{traslación} con respecto a $x$ mediante una constante $c$.
+\[
+  \sum_{n = 0}^{\infty} a_{n} (x - c)^{n} = a_{0} + a_{1} (x - c) + a_{2} (x - c)^{2} + \cdots + a_{n} (x - c)^{n} + \cdots
+\]
+En el contexto de las series de potencia, los $a_{n}$ se conocen como \textbf{coeficientes}, mientras que $c$ recibe el nombre de \textbf{centro}.
+
+Una de las fortalezas de las series de potencia es que, cuando son convergentes, podemos \textbf{obtener nuevas funciones} a partir de ellas que también lo son.
+
+Por ejemplo, digamos que $f(x)$ es una serie de potencia con cada $a_{n} = 1$ y con $c = 0$.
+\[
+  f(x) = \sum_{n = 0}^{\infty} x^{n} = x + x^{2} + x^{3} + \cdots + x^{n} + \cdots
+\]
+Como vemos, $f(x)$ es una \textbf{serie geométrica} de razón común $r = x$. Si $|x| < 1$, converge a $1/(1 - x)$.
+\[
+  f(x) = \sum_{n = 0}^{\infty} x^{n} = \frac{1}{1 - x} \iff |x| < 1
+\]
+donde $1/(1 - x)$ podemos considerarla como una \textbf{nueva función} $g(x)$.
+\[
+  g(x) = \frac{1}{1 - x}
+\]
+La función $g(x)$ también se puede interpretar como la \textbf{fórmula} de $f(x)$ cuando $|x| < 1$. En ese sentido, el polinomio de la $n$-ésima suma parcial de esta serie, $P(x)$, es la \textbf{mejor aproximación} de $g(x)$.
+\[
+  P(x) = \sum_{i = 0}^{n} x^{i} \approx \frac{1}{1 - x} \iff |x| < 1
+\]
+Digamos que $f(x)$ y $g(x)$ son dos series de potencia convergentes. Debido a la \textbf{similitud} que tienen con los \textbf{polinomios}, podemos realizar la siguientes \textbf{operaciones}:
+
+\begin{enumerate}
+\item Adición: $f(x) \pm g(x)$.
+\item Producto (o división): $f(x) \cdot g(x)$ o $\frac{f(x)}{g(x)}$.
+\item Sustitución: $f(g(x))$.
+\item \textbf{Derivación}: $\frac{d}{dx} f(x)$ o $\frac{d}{dx} g(x)$.
+\item \textbf{Integración}: $\int f(x)dx$ o $\int g(x)dx$.
+\end{enumerate}
+
+Se han marcado en negrita a las operaciones de derivación e integración, porque son las de mayor interés en cálculo y más adelante también las aplicaremos.
+
+
+\section{Convergencia de una serie de potencia.}
+
+Volvamos al ejemplo de la serie geométrica de potencias vista en la sección anterior.
+\[
+  \sum_{n = 0}^{\infty} x^{n} = x + x^{2} + x^{3} + \cdots + x^{n} + \cdots = \frac{1}{1 - x} \iff |x| < 1
+\]
+Como vemos, esta serie de potencias es convergente cuando $|x| < 1$ o, dicho de otro modo, en $-1 < x < 1$. Es decir, lo hace en un rango de valores definidos para $x$.
+
+A diferencia de las series infinitas estudiadas en la clase anterior, las de potencia convergen adentro de un \textbf{intervalo} de valores de $x$. Como veremos a continuación, para encontrarlo debemos buscar un número $R$ que lo determina llamado \textbf{radio de convergencia}.
+
+\subsection{Radio e intervalo de convergencia de una serie de potencia.}
+
+Al evaluar la convergencia de una serie de potencia, esta puede:
+
+\begin{enumerate}
+\item Converger solo en $x = c$ y diverger en el resto de los valores, donde $c$ es su centro.
+\item Converger absolutamente para todo $x \in \mathbb{R}$.
+\item Converger absolutamente en $x$ cuando $|x - c| < R$ y diverger en $|x - c| > R$, con $R > 0$.
+\end{enumerate}
+
+El número $R$ del punto 3 recibe el nombre de \textbf{radio de convergencia}. Por convención, los valores para los puntos 1 y 2 son $R = 0$ y $R = \infty$, respectivamente.
+
+Con el radio de convergencia y el centro de una serie de potencia se puede obtener el \textbf{rango de valores de $x$ en donde ésta converge}, también conocido como \textbf{intervalo de convergencia}. En otras palabras, es el \textbf{dominio} de la función de esta suma.
+
+El intervalo de convergencia en el punto 1 es $[c]$, mientras que en el 2 es $(-\infty, \ \infty)$.
+
+Por la propiedad de las desigualdades con valor absoluto, $|x - c| < R$ es lo mismo que $c - R < x < c + R$. Esto implica que para el punto 3 existen cuatro intervalos de convergencia:
+\[
+  \text{a. } [c - R, \ c + R] \qquad
+  \text{b. } (c - R, \ c + R] \qquad
+  \text{c. } [c - R, \ c + R) \qquad
+  \text{d. } (c - R, \ c + R)
+\]
+Es decir, puede converger en ambos puntos terminales del intervalo (a), en solo uno de ellos (b y c) o en ninguno (d).
+
+En la siguiente tabla se resume todo lo visto sobre el radio e intervalo de convergencia.
+
+\begin{table}[hbt!]
+\centering
+
+{\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{c c p{3cm}}
+\hline\hline
+Convergencia & Radio & Intervalo \\
+\hline\hline
+$x = c$ & $R = 0$ & $[c]$ \\
+$x \in \mathbb{R}$ & $R = \infty$ & $(-\infty, \ \infty)$ \\
+$|x - c| < R$ & $R > 0$ & $[c - R, \ c + R]$ $[c - R, \ c + R)$ $(c - R, \ c + R]$ $(c - R, \ c + R)$ \\
+\hline\hline
+\end{tabular}
+}
+
+\end{table}
+
+Por lo tanto, para saber \textbf{dónde} converge una serie de potencia, es necesario:
+
+\begin{enumerate}
+\item Conocer tanto el radio como el intervalo de convergencia.
+\item Evaluar si converge en los puntos terminales del intervalo.
+\end{enumerate}
+
+Gran parte del trabajo se hace en el punto 1. Las \textbf{pruebas de convergencia} estudiadas en la Clase 37 son suficientes para ese objetivo, aunque las más usadas en las series de potencia son las \textbf{de la razón} y \textbf{de la raíz}. Acá se utilizará la primera ya que es más fácil de calcular.
+
+El punto 2 consiste en reemplazar los puntos terminales del intervalo en la variable $x$ de la serie de potencia y ver si converge en uno de ellos, en ambos o en ninguno.
+
+\textbf{Ejemplo 1.} Evalúe si la serie
+\[
+  \sum_{n = 0}^{\infty} 3(x - 2)^{n}
+\]
+es convergente y para qué valores de $x$ lo es.
+
+\textbf{Solución} Claramente es una serie de potencia centrada en $2$. Usemos la prueba de la razón para conocer su radio e intervalo de convergencia.
+\[
+  \lim_{n \to \infty} \left|\frac{3(x - 2)^{n + 1}}{3(x - 2)^{n}}\right| = \lim_{n \to \infty} \left|\frac{3(x - 2)^{n}(x - 2)}{3(x - 2)^{n}}\right|
+                                                                         = \lim_{n \to \infty} |x - 2|
+                                                                         = |x - 2|
+\]
+A partir de lo estudiado en la Clase 37, el límite que acabamos de obtener debe ser menor a $1$ para que la serie de este ejemplo sea convergente.
+\[
+  |x - 2| < 1
+\]
+La convergencia de la serie es de la forma $|x - c| < R$ con $c = 2$. Por lo tanto, su \textbf{radio de convergencia} es $R = 1$.
+
+La desigualdad $|x - 2| < 1$ es lo mismo que
+\[
+  -1 < x - 2 < 1
+\]
+Al despejar a $x$ en esta desigualdad compuesta obtenemos el \textbf{intervalo de convergencia}.
+\[
+  1 < x < 3
+\]
+Ahora necesitamos saber si la serie converge en los puntos terminales de este intervalo.
+
+Para el caso de $x = 3$ vemos que la serie diverge.
+\[
+  \sum_{n = 0}^{\infty} 3((3) - 2)^{n} = \sum_{n = 0}^{\infty} (1)^{n} \cdot 3 = 3 + 3 + 3 + \cdots = \infty
+\]
+Cuando $x = 1$, la serie de potencia se convierte en una serie alternante.
+\[
+  \sum_{n = 0}^{\infty} 3((1) - 2)^{n} = \sum_{n = 0}^{\infty} (-1)^{n} \cdot 3 = 3 - 3 + 3 - 3 \cdots
+\]
+Si bien se cumple que
+\[
+  0 < 3 \leq 3,
+\]
+el límite de sus términos no es igual a cero:
+\[
+  \lim_{n \to \infty} 3 = 3 \neq 0
+\]
+Por lo tanto, la serie alternante obtenida es \textbf{divergente}, lo que implica que la serie de potencia también lo es cuando $x = 1$.
+
+En conclusión, el \textbf{intervalo de convergencia} de la serie de potencia es $(1, \ 3)$.
+
+\textbf{Ejemplo 2.} Determine tanto el radio como el intervalo de convergencia de la serie
+\[
+  \sum_{n = 0}^{\infty} \frac{(-3)^{n} x^{n}}{\sqrt{n + 1}}
+\]
+\textbf{Solución.} Apliquemos la prueba de la razón en esta serie para encontrar su radio e intervalo de convergencia.
+\[
+\lim_{n \to \infty} \left|\frac{(-3)^{n + 1} x^{n + 1}}{\sqrt{n + 2}} \cdot \frac{\sqrt{n + 1}}{(-3)^{n} x^{n}}\right|
+  = |-3x| \cdot \lim_{n \to \infty} \left|\frac{\sqrt{1 + (1/n)}}{\sqrt{1 + (2/n)}}\right|
+  = 3|x|
+\]
+Por lo tanto, debe cumplirse que $3|x| < 1$ para que la serie sea convergente. Esta desigualdad es lo mismo que:
+\[
+  |x| < \frac{1}{3}
+\]
+La desigualdad de arriba nos indica que el radio de convergencia de la serie de este ejemplo es $R = 1/3$ y que su intervalo es:
+\[
+  -\frac{1}{3} < x < \frac{1}{3}
+\]
+Cuando $x = -1/3$, la serie de potencia de este ejemplo se convierte en una serie $p$.
+\[
+  \sum_{n = 0}^{\infty} \frac{(-3)^{n} (-1/3)^{n}}{\sqrt{n + 1}} = \sum_{n = 0}^{\infty} \frac{1^{n}}{(n + 1)^{1/2}}
+                                                                 = \sum_{n = 0}^{\infty} \frac{1}{(n + 1)^{1/2}}
+\]
+Debido a que $p = 1/2 < 1$, se concluye que la serie de potencia \textbf{diverge} en $x = -1/3$.
+
+Para el caso donde $x = 1/3$, obtenemos una serie alternante.
+\[
+  \sum_{n = 0}^{\infty} \frac{(-3)^{n} (1/3)^{n}}{\sqrt{n + 1}} = \sum_{n = 0}^{\infty} \frac{(-1)^{n}}{(n + 1)^{1/2}}
+                                                                = \sum_{n = 0}^{\infty} (-1)^{n} \cdot \frac{1}{(n + 1)^{1/2}}
+\]
+Veamos que
+\[
+  0 < \frac{1}{(n + 2)^{1/2}} \leq \frac{1}{(n + 1)^{1/2}}
+\]
+y que
+\[
+  \lim_{n \to \infty} \frac{1}{(n + 1)^{1/2}} = 0
+\]
+La serie alternante es \textbf{convergente} y, por tanto, \textbf{también lo es} la de potencia en $x = 1/3$.
+
+En consecuencia, el intervalo de convergencia de $\sum_{n = 0}^{\infty} \frac{(-3)^{n} x^{n}}{\sqrt{n + 1}}$ es $(-1/3, \ 1/3]$.
+
+
+\section{Derivación e integración de series de potencia.}
+
+En la sección 1 se mencionó que es posible calcular la derivada e integral de una serie de potencia. Como veremos, todo depende de su radio de convergencia.
+
+Sea $f(x)$ una función definida por una serie de potencia.
+\[
+  f(x) = \sum_{n = 0}^{\infty} a_{n} (x - c)^{n}
+\]
+Si el \textbf{radio de convergencia} de esta serie es $R > 0$, entonces $f(x)$ \textbf{es derivable e integrable} a lo largo del intervalo $(c - R, \ c + R)$.
+\[
+  \frac{d}{dx} f(x) = \frac{d}{dx} \left[\sum_{n = 0}^{\infty} a_{n} (x - c)^{n}\right]
+  \qquad \text{y} \qquad
+  \int f(x)dx = \int \left[\sum_{n = 0}^{\infty} a_{n} (x - c)^{n}\right] dx
+\]
+Al expandir las series de las dos igualdades de arriba, veremos que estamos calculando la derivada e integral en \textbf{cada término}.
+\begin{align*}
+  &\frac{d}{dx} f(x) = a_{1} + 2a_{2}(x - c) + 3a_{3}(x - c)^{2} + \cdots + a_{n} \left[n(x - c)^{n - 1}\right] + \cdots \\
+  &\int f(x)dx = C + a_{1} \frac{(x - c)^{2}}{2} + a_{2} \frac{(x - c)^{3}}{3} + \cdots + a_{n} \frac{(x - c)^{n + 1}}{n + 1} + \cdots
+\end{align*}
+Es por ello que reciben el nombre de \textbf{derivación e integración término a término}.
+
+Cuando $R > 0$, existen las derivadas de $f(x)$ de todos los órdenes. Es decir, es \textbf{infinitamente derivable}.
+
+Tanto la derivada como la integral tienen \textbf{el mismo radio de convergencia} de la serie original, pero suelen \textbf{diferir en los puntos terminales} del \textbf{intervalo}.
+
+\textbf{Ejemplo 3.} Determine el radio e intervalo de convergencia de la serie
+\[
+  f(x) = \sum_{n = 1}^{\infty} \frac{x^{n}}{n}
+\]
+Y, si es posible, evalué el intervalo de convergencia para la derivada y la integral de $f(x)$.
+
+\textbf{Solución.} Apliquemos la prueba de la razón en la serie para obtener el radio de convergencia.
+\[
+\lim_{n \to \infty} \left|\frac{x^{n + 1}}{n + 1} \cdot \frac{n}{x^{n}}\right| =
+  |x| \cdot \lim_{n \to \infty} \left|\frac{n}{n + 1}\right| =
+  |x|
+\]
+Por la prueba de la razón, se debe cumplir que $|x| < 1$ para que esta serie converja. En consecuencia, $R = 1$ y converge en $-1 < x < 1$.
+
+Cuando $x = -1$, obtenemos una serie alternante.
+\[
+  f(-1) = \sum_{n = 1}^{\infty} (-1)^{n} \frac{1}{n}
+\]
+Esta serie alternante es \textbf{convergente}, porque $0 < 1/(n + 1) \leq 1/n$ y el $\lim_{n \to \infty} (1/n) = 0$. Por consiguiente, la serie de potencia \textbf{también lo es} en $x = -1$.
+
+Para $x = 1$, la serie de potencia se transforma en una \textbf{serie armónica}, lo que significa que es \textbf{divergente} para dicho valor.
+\[
+  f(1) = \sum_{n = 1}^{\infty} \frac{1^{n}}{n} = \sum_{n = 1}^{\infty} \frac{1}{n}
+\]
+Por lo tanto, el \textbf{intervalo de convergencia} de esta serie de potencia es $[-1, \ 1)$.
+
+Debido a que $R = 1 > 0$, es posible calcular su derivada e integral de la serie de este ejemplo. Comencemos con la primera operación.
+\[
+  \frac{d}{dx} f(x) = \frac{d}{dx} \left(\sum_{n = 1}^{\infty} \frac{x^{n}}{n}\right)
+                    = \sum_{n = 1}^{\infty} \frac{d}{dx} \left(\frac{x^{n}}{n}\right)
+                    = \sum_{n = 1}^{\infty} \frac{1}{n} \left(\frac{d}{dx} x^{n}\right)
+                    = \sum_{n = 1}^{\infty} x^{n - 1}
+\]
+Evaluemos la convergencia de $\frac{d}{dx} f(x)$ en $x = -1$.
+\[
+  \left. \frac{d}{dx} f(x) \right|_{x = -1} = (-1)^{n - 1} 1
+\]
+Obtuvimos una serie alternante que es \textbf{divergente}, ya que no pasa su prueba de convergencia. Por lo tanto, la derivada término a término también lo es en $x = -1$.
+
+Cuando $x = 1$, la derivada término a término también es \textbf{divergente}.
+\[
+  \left. \frac{d}{dx} f(x) \right|_{x = 1} = (1)^{n - 1} = 1 + 1 + 1 + \cdots = \infty
+\]
+Por lo tanto, el \textbf{intervalo de convergencia} de la derivada término a término es $(-1, \ 1)$.
+
+Luego, calculemos la integral término a término de la serie de este ejemplo.
+\[
+  \int f(x)dx = \int \left(\sum_{n = 1}^{\infty} \frac{x^{n}}{n}\right) dx
+              = \sum_{n = 1}^{\infty} \frac{1}{n} \left(\int x^{n} dx\right)
+              = C + \sum_{n = 1}^{\infty} \frac{x^{n + 1}}{n(n + 1)}
+\]
+En $x = -1$, la serie dada por $\int f(x)dx$ es una alternante.
+\[
+  \int f(-1)dx = \sum_{n = 1}^{\infty} (-1)^{n + 1} \frac{1}{n(n + 1)}
+\]
+Esta serie alternante es \textbf{convergente} ya que
+\[
+  0 < \frac{1}{(n + 1)(n + 2)} \leq \frac{1}{n(n + 1)}
+  \qquad \text{y} \qquad
+  \lim_{n \to \infty} \frac{1}{n(n + 1)} = 0
+\]
+Por lo tanto, la serie $\int f(x)dx$ es \textbf{convergente} en $x = -1$.
+
+Cuando $x = 1$, obtenemos la siguiente serie:
+\[
+  \int f(1)dx = \sum_{n = 1}^{\infty} \frac{1^{n + 1}}{n(n + 1)} = \sum_{n = 1}^{\infty} \frac{1}{n(n + 1)}
+\]
+Representemos a $1/(n(n + 1))$ de $\int f(1)dx$ como una \textbf{fracción parcial}.
+\[
+  \frac{1}{n(n + 1)} = \frac{A}{n} + \frac{B}{n + 1}
+\]
+La idea es conocer las constantes $A$ y $B$ que son válidas para esta igualdad. Para ello, multipliquemos esta igualdad por $n(n + 1)$.
+\[
+  1 = A(n + 1) + Bn
+\]
+Con $n = 0$ y $n = -1$ obtenemos los valores de $A$ y $B$, respectivamente.
+\begin{align*}
+  1 &= A(0 + 1) + B(0) & 1 &= A(-1 + 1) + B(-1) \\
+  1 &= A               & -1 &= B
+\end{align*}
+Por lo tanto, la serie de $\int f(1)dx$ podemos expresarla como:
+\[
+  \int f(1)dx = \sum_{n = 1}^{\infty} \frac{1}{n} - \frac{1}{n + 1}
+\]
+$\int f(1)dx$ es una \textbf{serie telescópica} y es \textbf{convergente} porque:
+\[
+  \lim_{n \to \infty} \frac{1}{n} = 0
+\]
+La igualdad de arriba implica que $\int f(x)dx$ es \textbf{convergente} en $x = 1$.
+
+En consecuencia, el \textbf{intervalo de convergencia} de la integral término a término es $[-1, \ 1]$.
+
+
+\section{Funciones expresadas como series de potencia.}
+
+Las series de potencia son de gran ayuda para representar funciones que pueden ser difíciles de estudiar analíticamente.
+
+Por ejemplo, pensemos en una integral que no es posible conocer su antiderivada. Un camino que podemos tomar es expresar su integrando como una serie de potencia y luego realizar esta operación en cada uno de sus términos (siempre que $R > 0$).
+
+Por ahora nos restringiremos a la siguiente función para estudiar el tema de esta sección.
+\[
+  f(x) = \frac{1}{1 - x}
+\]
+Sabemos que $f(x)$ puede ser expresada como una serie geométrica para todo $|x| < 1$. En la siguiente sección veremos el caso general.
+
+\textbf{Ejemplo 4.} Represente a la siguiente función como una serie de potencia y determine su radio e intervalo de convergencia.
+\[
+  f(x) = \frac{1}{1 + x^{2}}
+\]
+\textbf{Solución.} La fórmula de $f(x)$ podemos expresar de la siguiente manera:
+\[
+  f(x) = \frac{1}{1 + x^{2}} = \frac{1}{1 - (-x^{2})}
+\]
+Para mayor legibilidad, sustituyamos a $-x^{2}$ por una variable $u$.
+\[
+  f(x) = \frac{1}{1 - u}
+\]
+Es posible expresar a $f(x)$ como una serie geométrica en $|u| < 1$.
+\[
+  f(x) = \sum_{n = 0}^{\infty} u^{n}
+\]
+Al reemplazar a $u$ por $-x^{2}$, obtenemos la representación de $f(x)$ como una serie de potencia.
+\[
+  f(x) = \sum_{n = 0}^{\infty} \left[-x^{2}\right]^{n}
+       = \sum_{n = 0}^{\infty} \left[(-1) \cdot x^{2}\right]^{n}
+       = \sum_{n = 0}^{\infty} (-1)^{n} \cdot x^{2n}
+\]
+Anteriormente vimos que esta serie converge en $|u| < 1$. Como $u = -x^{2}$, entonces esta desigualdad es lo mismo a
+\begin{align*}
+  |-x^{2}| &< 1 \\
+  x^{2} &< 1 \\
+  x &< 1 \\
+  |x| &< 1
+\end{align*}
+Por lo tanto, el radio de convergencia de $f(x)$ es $R = 1$ y converge en $(-1, \ 1)$.\footnote{Como viene de una serie geométrica, sabemos que diverge en ambos puntos terminales del intervalo.}
+
+\textbf{Ejemplo 5.} Exprese a la función $f(x) = \ln(1 + x)$ como una serie de potencia y determine su radio de convergencia.
+
+\textbf{Solución.} Por ahora, la idea es expresar a $f(x)$ como la fórmula de una serie geométrica. Para ello, comencemos calculando la derivada logarítmica de esta función.
+\[
+  \frac{d}{dx} f(x) = \frac{d}{dx} \ln(1 + x) = \frac{1}{1 + x}
+\]
+Esta derivada es equivalente a
+\[
+  \frac{d}{dx} \ln(1 + x) = \frac{1}{1 - (-x)}
+\]
+Si restringimos a $|-x| < 1$, obtenemos la siguiente serie geométrica para $\frac{d}{dx} f(x)$.
+\[
+  \frac{d}{dx} \ln(1 + x) = \sum_{n = 0}^{\infty} (-x)^{n}
+                          = \sum_{n = 0}^{\infty} [(-1) \cdot x]^{n}
+                          = \sum_{n = 0}^{\infty} (-1)^{n} \cdot x^{n}
+\]
+Ahora, la tarea es conocer la serie de $\ln(1 + x)$. La serie obtenida en su derivada es válida siempre que $|-x| < 1$. Esta desigualdad es lo mismo que $|x| < 1$. Por lo tanto, su radio de convergencia es $R = 1$. Debido a que este valor es positivo, podemos calcular su integral término a término que, además, nos trae devuelta a $f(x)$.
+\begin{align*}
+  \int \left[\frac{d}{dx} \ln(1 + x)\right] dx &= \int \left[\sum_{n = 0}^{\infty} (-1)^{n} \cdot x^{n}\right] dx \\
+  \ln(1 + x) &= \int \left[1 - x + x^{2} - x^{3} + \cdots \right] dx \\
+  \ln(1 + x) &= C + x - \frac{x^{2}}{2} + \frac{x^{3}}{3} - \frac{x^{4}}{4} + \cdots \\
+  \ln(1 + x) &= C + \sum_{n = 1}^{\infty} (-1)^{n - 1} \cdot \frac{x^{n}}{n}
+\end{align*}
+Aún necesitamos conocer a la constante de integración $C$. Para ello, establezcamos que $x = 0$ en la ecuación de arriba.
+\begin{align*}
+  \ln(1 + 0) &= C + \sum_{n = 1}^{\infty} (-1)^{n - 1} \cdot \frac{0^{n}}{n} \\
+  \ln(1) &= C \\
+  0 &= C
+\end{align*}
+Por lo tanto,
+\[
+  \ln(1 + x) = \sum_{n = 1}^{\infty} (-1)^{n - 1} \cdot \frac{x^{n}}{n}
+\]
+Así, el \textbf{radio de convergencia} de la serie de $\ln(1 + x)$ es $R = 1$, ya que en la integración término a término se mantiene dicho valor de la suma infinita original.
+
+
+\section{Series de Taylor y de Maclaurin.}
+
+Ahora veamos un método general para expresar una función mediante una serie de potencia. Consiste en calcular sus \textbf{coeficientes} que permiten representar mejor a dicha función dentro un intervalo determinado.
+
+Comencemos igualando una función continua e infintamente derivable en un intervalo $I$, $f(x)$, a una serie de potencia centrada en $c \in I$ con radio de convergencia $R > 0$.
+\[
+  f(x) = a_{0} + a_{1}(x - c) + a_{2}(x - c)^{2} + a_{3}(x - c)^{3} + \cdots + a_{n}(x - c)^{n} + \cdots
+\]
+El primer coeficiente, $a_{0}$, podemos encontrarlo al calcular el valor de $f(x)$ en el centro de la serie. Es decir, en $x = c$.
+\[
+  f(c) = a_{0} + a_{1}(c - c) + a_{2}(c - c)^{2} + \cdots + a_{n}(c - c)^{n} + \cdots = a_{0}
+\]
+Luego, calculemos todas las derivadas de $f(x)$ en $x = c$. Podemos aplicar las mismas operaciones en la serie de potencia porque $R > 0$.
+\begin{align*}
+  f'(c) &= (1) a_{1} + (2) a_{2}(c - c) + (3) a_{3}(c - c)^{2} + \cdots = 1! \cdot a_{1} \\
+  f''(c) &= (1) (2) a_{2} + (2) (3) a_{3} (c - c) + \cdots = 2! \cdot a_{2} \\
+  f'''(c) &= (1) (2) (3) a_{3} + (2) (3) (4) a_{4}(c - c) + \cdots = 3! \cdot a_{3} \\
+  \vdots
+\end{align*}
+En ese sentido, la \textbf{derivada de \textit{n}-ésimo orden} de $f(x)$ en $x = c$, $f^{(n)}(c)$, corresponde a:
+\[
+  f^{(n)}(c) = n! \cdot a_{n}
+\]
+Posteriormente, multipliquemos cada $\{f^{(n)}(c)\}_{n = 1}^{\infty}$ por el recíproco de los factoriales de sus lados derechos. Con ello, obtenemos una fórmula para los coeficientes $\{a_{n}\}_{n = 1}^{\infty}$.
+\begin{align*}
+  a_{1} &= \frac{f'(c)}{1!}, &
+  a_{2} &= \frac{f''(c)}{2!}, &
+  a_{3} &= \frac{f'''(c)}{3!}, &
+  \cdots, \
+  a_{n} &= \frac{f^{(n)}(c)}{n!}, &
+  \cdots
+\end{align*}
+Reemplacemos $a_{0}, \ a_{1}, \ \ldots$ en la serie de potencia de $f(x)$.
+\[
+  f(x) = f(c) + f'(c)(x - c) + \frac{f''(c)}{2!}(x - c)^{2} + \frac{f'''(c)}{3!}(x - c)^{3} + \cdots
+         + \frac{f^{(n)}(c)}{n!}(x - c)^{n} + \cdots
+\]
+Si definimos que $f^{(0)}(c) = f(c)$ y que $0! = 1$, la igualdad de arriba podemos expresarla como:
+\[
+  f(x) = \sum_{n = 0}^{\infty} \frac{f^{(n)}(c)}{n!}(x - c)^{n}
+\]
+La serie de potencia que iguala a $f(x)$ arriba recibe el nombre de \textbf{Serie de Taylor}. Cuando su centro es $c = 0$, se conoce como \textbf{Serie de Maclaurin}.
+\[
+  f(x) = \sum_{n = 0}^{\infty} \frac{f^{(n)}(0)}{n!} x^{n}
+\]
+La \textbf{\textit{n}-ésima suma parcial} de una serie de Taylor es el siguiente polinomio:
+\[
+  P_{n}(x) = f(c) + f'(c)(x - c) + \frac{f''(c)}{2!}(x - c)^{2} + \cdots + \frac{f^{(n)}(c)}{n!}(x - c)^{n}
+           = \sum_{i = 0}^{n} \frac{f^{(i)}(c)}{i!}(x - c)^{i}
+\]
+$P_{n}(x)$ se conoce como \textbf{Polinomio de Taylor} de $n$-ésimo orden.
+
+Cada polinomio de Taylor es un \textbf{tipo de aproximación} a $f(x)$ desde $x = c$.
+
+\begin{table}[hbt!]
+\centering
+
+\renewcommand{\arraystretch}{1.5}
+
+\begin{tabular}{c l}
+\hline
+\hline
+Aproximación & Expresión \\
+\hline
+Constante & $f(x) \approx f(c) = P_{0}(x)$ \\
+Lineal & $f(x) \approx f(c) + f'(c)(x - c) = P_{1}(x)$ \\
+Cuadrática & $f(x) \approx f(c) + f'(c)(x - c) + {\displaystyle \frac{f''(c)}{2!}}(x - c)^{2} = P_{2}(x)$ \\
+\vdots & \vdots \\
+\hline
+\hline
+\end{tabular}
+
+\end{table}
+
+Ya que siempre usaremos solo una parte de una serie de Taylor, sería bueno manejar algunas técnicas para evaluar cómo \textbf{converge} el polinomio a su función de origen o saber \textbf{cuántos términos} son necesarios para llegar a esa conclusión. Todo esto lo revisaremos a continuación.
+
+\subsection{Convergencia de una serie de Taylor.}
+
+Sea $P_{n}(x)$ el polinomio de Taylor de $n$-ésimo orden de una función $f(x)$ continua e infinitamente derivable en un intervalo $I$.
+\[
+  P_{n}(x) = \sum_{i = 0}^{n} \frac{f^{(i)}(c)}{i!}(x - c)^{i}
+\]
+En otras palabras, $P_{n}(x)$ es una aproximación a $f(x)$ desde $x = c \in I$.
+\[
+  f(x) \approx P_{n}(x)
+\]
+Para medir la precisión entre $P_{n}(x)$ y $f(x)$ en $I$, podemos añadir un término adicional $R_{n + 1}(x)$ conocido como \textbf{residuo} y proponer que con él la aproximación de arriba pasa a ser una igualdad.
+\[
+  f(x) = P_{n}(x) + R_{n + 1}(x)
+\]
+Usando la igualdad de arriba podemos obtener una fórmula para medir el \textbf{error} asociado a $P_{n}(x)$, la aproximación de $f(x)$.
+\[
+  |R_{n + 1}(x)| = |f(x) - P_{n}(x)|
+\]
+Tomemos el límite de $f(x)$ a medida que $n \to \infty$.
+\begin{align*}
+  \lim_{n \to \infty} f(x) &= \lim_{n \to \infty} [P_{n}(x) + R_{n + 1}(x)] \\
+  f(x) &= \lim_{n \to \infty} P_{n}(x) + \lim_{n \to \infty} R_{n + 1}(x)
+\end{align*}
+Veamos que si
+\[
+  \lim_{n \to \infty} R_{n + 1}(x) = 0
+\]
+entonces:
+\[
+  f(x) = \lim_{n \to \infty} P_{n}(x)
+       = \lim_{n \to \infty} \left[\sum_{i = 0}^{n} \frac{f^{(i)}(c)}{i!}(x - c)^{i}\right]
+       = \sum_{n = 0}^{\infty} \frac{f^{(n)}(c)}{n!}(x - c)^{n}
+\]
+Es decir, si $R_{n + 1}(x)$ se va achicando mientras $P_{n}(x)$ tiene más terminos, se puede concluir que $P_{n}(x)$ \textbf{es una buena aproximación} a $f(x)$ ya que la serie de Taylor \textbf{converge a ella}.
+
+Por lo tanto, necesitamos conocer a $R_{n + 1}(x)$ y en esta clase veremos dos maneras de hacerlo. La primera será mediante una fórmula explícita conocida como \textbf{forma de Lagrange}.\footnote{El residuo también es dado por otras fórmulas. En el siguiente enlace aparecen algunas de ellas: \url{https://en.wikipedia.org/wiki/Taylor's_theorem\#Explicit_formulas_for_the_remainder}.} Ésta lleva consigo un importante teorema.
+
+La otra forma de conocer el residuo será \textbf{estimándolo}. Cuando es posible aquello, suele ser más sencillo que resolver la forma de Lagrange.
+
+\subsubsection{Forma de Lagrange del residuo y el teorema de Taylor.}
+
+Digamos que $f(x)$ es una función continua y derivable $(n + 1)$ veces dentro de un intervalo $I$ y que $P_{n}(x)$ es su polinomio de Taylor de $n$-ésimo orden centrado en $c \in I$.
+\[
+  P_{n}(x) = \sum_{i = 0}^{n} \frac{f^{(i)}(c)}{i!}(x - c)^{i}
+\]
+Luego, definamos una nueva función $Q_{n}(x)$ definida como la suma entre $P_{n}(x)$ y una expresión $K(x - c)^{n + 1}$
+\[
+  Q_{n}(x) = P_{n}(x) + K(x - c)^{n + 1}
+\]
+donde $K$ es una constante arbitraria que nos permite igualar a $Q_{n}(x)$ y a $f(x)$ en un punto $x = b \in I$, con $b > c$.
+\[
+  Q_{n}(b) = f(b), \ \text{con } b \in I
+\]
+Por otra parte, veamos que si $x = c$, entonces:
+\[
+  Q_{n}(c) = P_{n}(c) + K(c - c)^{n + 1}
+           = \left[f(c) + f'(c)(c - c) + \cdots + \frac{f^{(n)}(c)}{n!}(c - c)^{n}\right] + 0
+           = f(c)
+\]
+En otras palabras, $Q_{n}(x)$ es una aproximación a $f(x)$ tanto en $x = c$ como en $x = b$.
+
+Ahora definamos que $g(x)$ es una función que mide la diferencia entre $f(x)$ (la original) y $Q_{n}(x)$ (su aproximación) dentro del intervalo $[c, \ b]$.
+\[
+  g(x) = f(x) - Q_{n}(x)
+\]
+Como $Q_{n}(b) = f(b)$ y $Q_{n}(c) = f(c)$, entonces $g(b) = g(c) = 0$. Debido a esta igualdad de $g(x)$ en los puntos terminales de $[c, \ b]$ podemos aplicar el \textbf{teorema de Rolle} para señalar que
+\[
+  g'(t_{1}) = 0; \ \forall t_{1} \in (c, \ b)
+\]
+La derivada de $Q_{n}(x)$ en $x = c$ corresponde a:
+\[
+  Q_{n}'(c) = P_{n}'(c) + [K(c - c)^{n + 1}]' = f'(c)
+\]
+Por lo tanto, la derivada de $g(x)$ en $x = c$ es:
+\[
+  g'(c) = f'(c) - Q_{n}'(c) = f'(c) - f'(c) = 0
+\]
+En otras palabras, $g'(c) = g'(t_{1}) = 0$. Aplicando otra vez el teorema de Rolle podemos garantizar que:
+\[
+  g''(t_{2}) = 0; \ \text{para } t_{2} \in (c, \ t_{1})
+\]
+Si calculamos las derivadas de $Q_{n}(x)$ y $g(x)$ $n$ veces en $x = c$, podremos aplicar el teorema de Rolle la misma cantidad de ocasiones, obteniendo que:
+\[
+  g^{(n + 1)}(t_{n + 1}) = 0; \ \text{para } t_{n + 1} \in (c, \ t_{n})
+\]
+Para mayor comodidad, establezcamos que $t = t_{n + 1}$. Esto implica que $g^{(n + 1)}(t) = 0$ para $t \in (c, \ t_{n})$.
+
+Calculemos la derivada de $(n + 1)$ orden de $g(x)$.
+\begin{align*}
+  g^{(n + 1)}(x) &= f^{(n + 1)}(x) - Q^{(n + 1)}(x) \\
+                 &= f^{(n + 1)}(x) - \left[P^{(n + 1)}(x) + (K(x - c)^{n + 1})^{(n + 1)}\right] \\
+  g^{(n + 1)}(x) &= f^{(n + 1)}(x) - 0 - (n + 1)!K
+\end{align*}
+Despejemos a $K$ en la igualdad de arriba.
+\[
+  K = \frac{f^{(n + 1)}(x) - g^{(n + 1)}(x)}{(n + 1)!}
+\]
+Si $x = t$, entonces $g^{(n + 1)}(t) = 0$. Por lo tanto,
+\[
+  K = \frac{f^{(n + 1)}(t)}{(n + 1)!}; \ \text{para } t \in (c, \ b)
+\]
+Anteriormente definimos que $Q_{n}(b) = f(b)$. Esto significa que
+\[
+  f(b) = P_{n}(b) + K(b - c)^{n + 1}
+\]
+Al reemplazar a $K$ obtenemos lo siguiente:
+\[
+  f(b) = P_{n}(b) + \frac{f^{(n + 1)}(t)}{(n + 1)!} (b - c)^{n + 1}
+\]
+Esta igualdad corresponde al \textbf{Teorema de Taylor}. Como acabamos de ver en lo que fue su demostración, indica que si $f(x)$ es continua en $[c, \ b] \in I$ y $(n + 1)$ veces derivable en $(c, \ b)$, entonces existe un valor $t \in (c, \ b)$ que permite que sea expresada como dicho polinomio.
+
+Cuando se reemplaza a $b$ por una variable $x \in I$, obtenemos la \textbf{fórmula de Taylor}.
+\[
+  f(x) = P_{n}(x) + R_{n + 1}(x)
+\]
+Donde
+\[
+  R_{n + 1}(x) = \frac{f^{(n + 1)}(t)}{(n + 1)!} (x - c)^{n + 1}, \ \text{para } t \in (c, \ x)
+\]
+recibe el nombre de \textbf{forma de Lagrange del Residuo}.
+
+Al considerar la forma de Lagrange del residuo en la fórmula de Taylor, lo que estamos haciendo es aproximarnos a $f(x)$ ya no solo con respecto a $x = c$ sino que también en $x = t$, lo que aumenta su nivel de precisión.
+
+Si usamos la fórmula de Taylor para conocer a $R_{n + 1}(x)$, tendríamos que buscar el $x = t$ exacto para que $f(x) = P_{n}(x) + R_{n + 1}(x)$ se cumpla. Como aquello solo es posible mediante ensayo y error, se suele optar por \textbf{estimarlo} mediante una \textbf{cota superior} en $f^{(n + 1)}(x)$ calculada en un punto adentro de $[c, \ x]$ distinto de $t$.
+
+\subsubsection{Desigualdad de Taylor y la estimación del residuo.}
+
+Digamos que $M > 0$ es la cota superior de la derivada de $(n + 1)$-ésimo orden de una función $f(x)$ continua y derivable esa cantidad de veces en un intervalo $I$, evaluada en $x = z \in [c, \ x]$.
+\[
+  f^{(n + 1)}(z) \leq M, \ \text{para cierto } z \in [c, \ x]
+\]
+donde $c \in I$ es el centro de su serie de Taylor.
+
+Es decir, más allá de que conozcamos o no el valor de $f^{(n + 1)}(z)$ y asumiendo que $c \leq z \leq x$, hemos definido que no puede ser estrictamente mayor a $M$.
+
+Luego, multipliquemos esta desigualdad por $|(x - c)^{n + 1}/(n + 1)!|$.
+\[
+  \left|\frac{f^{(n + 1)}(z)}{(n + 1)!}(x - c)^{n + 1}\right| \leq M \cdot \left|\frac{(x - c)^{n + 1}}{(n + 1)!}\right|
+\]
+Si nos damos cuenta, el lado derecho de esta desigualdad es el valor absoluto de la \textbf{forma de Lagrange del residuo} de un polinomio de Taylor de $f(x)$ de $n$-ésimo orden.
+\[
+  |R_{n + 1}(x)| \leq M \cdot \frac{|x - c|^{n + 1}}{(n + 1)!}
+\]
+Lo que acabamos de obtener se conoce como \textbf{Desigualdad de Taylor} y es usado para \textbf{estimar} el residuo de un polinomio del mismo tipo de $f(x)$.
+
+Por lo tanto, para estimar a $R_{n + 1}(x)$ tenemos que definir a $M > 0$ como el \textbf{valor máximo} de la $(n + 1)$ derivada de $f(x)$ en un punto adentro de $[c, \ x]$ y luego aplicar la desigualdad de Taylor.
+
+A partir de lo que hemos aprendido sobre series de Taylor, resolvamos el siguiente ejemplo.
+
+\textbf{Ejemplo 6.} Para la función $f(x) = \exp(x)$:
+
+\begin{itemize}
+\item [(a)] Calcule la serie de Maclaurin de $f(x)$ (i.e, la serie de Taylor en $c = 0$).
+\item [(b)] Calcule el radio y el intervalo de convergencia de la serie.
+\item [(c)] Evalúe si la serie calculada en (a) converge a $f(x)$.
+\item [(d)] Estime el error de los polinomios de segundo y cuarto orden de la serie en $x = 2$.
+\end{itemize}
+
+\textbf{Solución (a).} Comencemos buscando la serie de Taylor de $\exp(x)$. El valor de esta función en $x = c$ es $\exp(c)$ y el de sus derivadas también.
+\[
+  \left. \frac{d}{dx} \exp(x)\right|_{x = c} = \exp(c), \
+  \left. \frac{d^{2}}{dx^{2}} \exp(x)\right|_{x = c} = \exp(c), \
+  \cdots, \
+  \left. \frac{d^{(n)}}{dx^{(n)}} \exp(x)\right|_{x = c} = \exp(c), \
+  \cdots
+\]
+Por lo tanto, la serie de Taylor de $\exp(x)$ es:
+\[
+  \exp(x) \approx \sum_{n = 0}^{\infty} \frac{\exp(c)}{n!}(x - c)^{n}
+\]
+Al establecer que $c = 0$, obtenemos la serie de Maclaurin de $\exp(x)$.
+\[
+  \exp(x) \approx \sum_{n = 0}^{\infty} \frac{x^{n}}{n!}
+\]
+Se ha definido la relación de arriba con el símbolo ``$\approx$'' porque aún no sabemos si la serie converge (o no) a $\exp(x)$.
+
+\textbf{Solución (b).} Usemos la prueba de la razón para calcular el radio de convergencia de la serie de $\exp(x)$.
+\begin{align*}
+\lim_{n \to \infty} \left|\frac{x^{n + 1}}{(n + 1)!} \cdot \frac{n!}{x^{n}}\right| =
+\lim_{n \to \infty} \left|\frac{xn!}{n! \cdot (n + 1)}\right| =
+\lim_{n \to \infty} \left|\frac{x}{n + 1}\right| = x \cdot 0 = 0
+\end{align*}
+Como $0 < 1$, podemos concluir que la serie de Maclaurin de $\exp(x)$ es \textbf{absolutamente convergente para todo} $x$. Esto implica que su \textbf{radio de convergencia} es $R = \infty$ y lo hace en el \textbf{intervalo} $(-\infty, \ \infty)$.
+
+\textbf{Solución (c).} En (b) observamos el comportamiento de la serie de $\exp(x)$ con respecto a sus términos. Ahora veámoslo en relación a su función.
+
+Sea $P_{n}(x)$ el polinomio de Maclaurin de $n$-ésimo orden de $\exp(x)$.
+\[
+  P_{n}(x) = \sum_{i = 0}^{n} \frac{x^{i}}{i!}
+\]
+Calculemos la $(n + 1)$ derivada de $\exp(x)$ en $x = z \in [0, \ x]$ y establezcamos que el valor resultante es su \textbf{cota superior}.
+\[
+  \left.\frac{d^{(n + 1)}}{dx^{(n + 1)}} \exp(x) \right|_{x = z} \leq \exp(z); \ \text{para } z \in [0, \ x]
+\]
+Luego, usemos la \textbf{desigualdad de Taylor} para definir al residuo de $P_{n}(x)$, $R_{n + 1}(x)$.
+\[
+  |R_{n + 1}(x)| \leq \frac{\exp(z) |x|^{n + 1}}{(n + 1)!}
+\]
+Tomemos el límite de este residuo a medida que $n \to \infty$.
+\[
+  \lim_{n \to \infty} |R_{n + 1}(x)| = \lim_{n \to \infty} \left(\frac{\exp(z) |x|^{n + 1}}{(n + 1)!}\right)
+                                     = \exp(z) \cdot \lim_{n \to \infty} \left(\frac{|x|^{n + 1}}{(n + 1)!}\right)
+                                     = \exp(z) \cdot 0
+                                     = 0
+\]
+Como $\lim_{n \to \infty} |R_{n + 1}(x)| = 0$, podemos confirmar que la serie de Maclaurin de $\exp(x)$ \textbf{converge} a dicha función. Para comprobarlo, tomemos el límite de su \textbf{fórmula de Taylor}.
+\begin{align*}
+  \lim_{n \to \infty} \exp(x) &= \lim_{n \to \infty} (P_{n}(x) + |R_{n + 1}(x)|) \\
+                      \exp(x) &= \lim_{n \to \infty} P_{n}(x) + \lim_{n \to \infty} |R_{n + 1}(x)| \\
+                              &= \sum_{n = 0}^{\infty} \frac{x^{n}}{n!} + 0 \\
+                      \exp(x) &= \sum_{n = 0}^{\infty} \frac{x^{n}}{n!}
+\end{align*}
+
+\textbf{Solución (d).} En $(c)$ comprobamos que el residuo del polinomio de Maclaurin de $\exp(x)$ se reduce a medida que aumentamos la cantidad de términos. Ahora veámoslo numéricamente.
+
+Calculemos el valor del polinomio de segundo orden de Maclaurin de $\exp(x)$ en $x = 2$.
+\[
+  P_{2}(2) = 1 + 2 + \frac{4}{2!} = 5
+\]
+Luego, estimemos el término de residuo de $P_{2}(2)$.
+\[
+  |R_{3}(2)| \leq \frac{\exp(z)|2|^{3}}{3!}
+            = \frac{4}{3} \exp(z)
+\]
+Definamos que $z = 1$, ya que $1 \in [0, \ 2]$. Por lo tanto,
+\[
+  |R_{3}(2)| \leq \frac{4}{3} \exp(1) \approx 3.62
+\]
+En otras palabras, el residuo de $P_{2}(2)$ se encuentra entre
+\[
+  -\frac{4}{3} \exp(1) \leq R_{3}(2) \leq \frac{4}{3} \exp(1)
+\]
+Ahora calculemos el polinomio de cuarto orden de la serie de $\exp(x)$ en $x = 2$.
+\[
+  P_{4}(2) = P_{2}(2) + \frac{2^{3}}{3!} + \frac{2^{4}}{4!} = 7
+\]
+Posteriormente, estimemos el residuo de $P_{4}(2)$ con $z = 1$.
+\[
+  |R_{5}(2)| \leq \frac{|2|^{5}}{5!} \exp(1)
+             = \frac{32}{120} \exp(1)
+             \approx 0.73
+\]
+Con solo agregar dos términos a $P_{2}(2)$, la estimación del residuo de los polinomios \textbf{disminuye} de $\approx 3.624$ a $\approx 0.725$. El valor exacto de $\exp(2) \approx 7.39$.
+
+Usando una calculadora podemos ver que $\exp(2) \approx 7.39$ y que
+\begin{align*}
+|R_{3}(2)| &= |\exp(2) - P_{2}(2)| \approx 2.39 &
+|R_{5}(2)| &= |\exp(2) - P_{4}(2)| \approx 0.39
+\end{align*}
+Es decir, se cumplen las desigualdades de Taylor.
+\begin{align*}
+-3.62 \leq 2.39 \leq 3.62 \\
+-0.73 \leq 0.39 \leq 0.73
+\end{align*}
+En el siguiente enlace se puede ver una visualización animada de los polinomios de Maclaurin de $\exp(x)$ (curva azul), junto con aquella función (curva roja) y el residuo (recta violeta) calculados en $x = 2$:
+
+\begin{center}
+\url{https://www.desmos.com/calculator/wafj2jgtdj}
+\end{center}
+
+\end{document}

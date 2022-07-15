@@ -1,0 +1,202 @@
+---
+title: ''
+output: html_document
+---
+
+```{r libraries, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+
+
+```{r}
+geom_axis <- function() {
+  list(
+    geom_vline(xintercept = 0, color = "lightgrey"), 
+    geom_hline(yintercept = 0, color = "lightgrey")
+  )
+}
+```
+
+
+
+```{r, fig.width = 5, fig.height = 3.5}
+shell_method_1 <- tibble(
+  x = seq(from = -1, to = 1, length.out = 200),
+  f_x = x^2,
+) %>% 
+  ggplot(aes(x = x, y = f_x)) + 
+  geom_axis() + 
+  geom_path(color = "#2d7bb1") + 
+  geom_hline(yintercept = c(0.45^2, 1), linetype = "dashed") + 
+  geom_rect(
+    aes(xmin = 0.35, xmax = 0.45, ymin = (0.45^2), ymax = 1),
+    fill = "#ef5f5f"
+  ) + 
+  geom_point(
+    data = tibble(x = c(0.45, 1), y = x^2), 
+    aes(x = x, y = y),
+    size = 2
+  ) + 
+  annotate(
+    geom = "text",
+    x = c(-1.3, 0.75, 1.3, 0.95, 0.4),
+    y = c(1.1, (0.41^2), 0.9, (0.45^2)+((1-(0.45^2))/2), 1.06),
+    label = c("f(x) == x^2", "(list(x[i], f(x[i])))", "(list(x[k], f(x[k])))",
+              "h == f(x[k]) - f(x[i])", "dx"),
+    parse = TRUE,
+    color = c("#2d7bb1", rep(x = "black", 4)),
+    size = rep(5, 5)
+  ) + 
+  scale_x_continuous(
+    breaks = c(0, 0.45, 1), labels = expression(0, x[i], x[k])
+  ) + 
+  scale_y_continuous(
+    breaks = c(0, (0.45^2), 1), labels = expression(0, f(x[i]), f(x[k]))
+  ) + 
+  expand_limits(x = c(-1.5, 1.5), y = c(0, 1.3)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_text(size = 11)) + 
+  labs(x = NULL, y = NULL)
+
+shell_method_1
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "shell-method-1.jpg", plot = shell_method_1, path = "img",
+       width = 5, height = 3.5)
+```
+
+
+
+
+
+```{r, fig.width = 5, fig.height = 3.5}
+tibble(
+  x = seq(from = -1, to = 1, length.out = 200),
+  f_x = x^2,
+) %>% 
+  ggplot(aes(x = x, y = f_x)) + 
+  geom_axis() + 
+  geom_path(color = "#2d7bb1") + 
+  geom_hline(yintercept = c(0.45^2, 1), linetype = "dashed") + 
+  geom_rect(
+    aes(xmin = 0.35, xmax = 0.45, ymin = (0.45^2), ymax = 1),
+    fill = "#ef5f5f"
+  ) + 
+  #geom_segment(aes(x = 0, xend = 0.45, y = 0.45^2, yend = 0.45^2),
+  #             linetype = "dashed") + 
+  geom_point(
+    data = tibble(x = c(0.45, 1), y = x^2), 
+    aes(x = x, y = y),
+    size = 2
+  ) + 
+  annotate(
+    geom = "text",
+    x = c(-1.3, 0.75, 1.3, 0.95, 0.4),
+    y = c(1.1, (0.41^2), 0.9, (0.45^2)+((1-(0.45^2))/2), 1.06),
+    label = c("f(x) == x^2", "(list(x[i], f(x[i])))", "(list(x[k], f(x[k])))",
+              "h == f(x[k]) - f(x[i])", "dx"),
+    parse = TRUE,
+    color = c("#2d7bb1", rep(x = "black", 4)),
+    size = rep(5, 5)
+  ) + 
+  scale_x_continuous(
+    breaks = c(0, 0.45, 1), labels = expression(0, x[i], x[k])
+  ) + 
+  scale_y_continuous(
+    breaks = c(0, (0.45^2), 1), labels = expression(0, f(x[i]), f(x[k]))
+  ) + 
+  expand_limits(x = c(-1.5, 1.5), y = c(0, 1.3)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_text(size = 11)) + 
+  labs(x = NULL, y = NULL)
+```
+
+
+
+
+```{r, fig.width = 5, fig.height = 3.5}
+cauldron_example_2 <- tibble(
+  x = seq(from = -1, to = 1, length.out = 200),
+  f_x = x^2
+) %>% 
+  ggplot(aes(x = x, y = f_x)) + 
+  geom_vline(xintercept = 0, color = "lightgrey") + 
+  geom_hline(yintercept = 0, color = "lightgrey") + 
+  geom_path() + 
+  geom_rect(aes(xmin = 0.3, xmax = 0.5, ymin = 0.5^2, ymax = 1)) + 
+  geom_hline(yintercept = 1, linetype = "dashed") + 
+  geom_segment(aes(x = 1, xend = 1, y = 0, yend = 1), linetype = "dashed") + 
+  annotate(
+    geom = "text",
+    x = c(-1, 0.4), y = c(0.5, 1.07),
+    label = c("f(x) == x^2", "dx"), parse = TRUE,
+    color = c("black", "#595959")
+  ) + 
+  expand_limits(x = c(-1.5, 1.5), y = 1.3) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = NULL, y = NULL)
+
+cauldron_example_2
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "cauldron-example-2.jpg", plot = cauldron_example_2,
+       path = "img", width = 5, height = 3.5)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

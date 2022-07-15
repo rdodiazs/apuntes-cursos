@@ -1,0 +1,73 @@
+---
+title: "Plot and Stuff Week 4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r packages, message=FALSE}
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(patchwork)
+```
+
+
+
+```{r}
+draft_plot_fun <- function(x) ((x^5)/20) + ((x^4)/4)
+
+(draft_plot_data <- 
+  tibble(
+    x = seq(from = -5.1, to = 3, length.out = 200),
+    f_x = draft_plot_fun(x)
+  ))
+```
+
+
+```{r, fig.height=2.6, fig.width=7}
+(
+  final_draft_original <- draft_plot_data %>%
+    ggplot(aes(x = x, y = f_x)) + 
+    geom_vline(xintercept = 0, color = "lightgrey") + 
+    geom_hline(yintercept = 0, color = "lightgrey") + 
+    geom_line(color = "blue") + 
+    geom_point(data = tibble(x = c(-5, -4, -3, 0), y = draft_plot_fun(x)),
+               aes(x = x, y = y), color = "#b20709") + 
+    geom_text(data = tibble(x = c(-5, -4, -3, 0), y = draft_plot_fun(x)),
+              aes(x = x, y = y, label = paste0("(", x, ", ", y, ")")),
+              nudge_y = 2) + 
+    theme_light() + 
+    theme(panel.grid = element_blank()) + 
+    labs(x = NULL, y = NULL)
+)
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+ggsave(filename = "final_draft_original.jpg", plot = final_draft_original,
+       path = "img", width = 7, height = 2.6)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

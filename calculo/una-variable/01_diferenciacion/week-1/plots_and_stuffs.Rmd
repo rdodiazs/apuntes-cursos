@@ -1,0 +1,471 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r, message=FALSE, echo=FALSE, include=FALSE}
+library(tidyverse)
+library(ggrepel)
+```
+
+
+```{r}
+some_fun <- function(x) {
+    a <- sqrt(3-(5*x)+(x)^2+(x)^3)/(x-1)
+    return(a)
+}
+```
+
+
+
+```{r}
+(limit_data <- tibble(data = c(0, 0.5, 0.9, 1.1, 1.5, 2)) %>% 
+  mutate(f_x = some_fun(data), 
+         f_x = round(f_x, digits = 2))) 
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+limit_plot <- 
+  ggplot() + 
+  geom_hline(yintercept = -2, linetype = "dashed", color = "#bcbcbc") + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = 2, linetype = "dashed", color = "#bcbcbc") + 
+  stat_function(data = tibble(value = c(0, 2)), aes(x = value),
+                fun = some_fun, color = "#133cc4") + 
+  geom_point(data = limit_data, aes(x = data, y = f_x)) + 
+  geom_point(data = tibble(x = c(1, 1), y = c(-2, 2)),
+             aes(x, y), shape = 1, size = 3, color = "#133cc4") + 
+  geom_text(data = limit_data,
+            aes(x = data, y = f_x, label = paste0("(", data, ", ", f_x, ")")),
+            size = 3.5, nudge_y = 0.4) + 
+  geom_text(data = tibble(x = 1, y = -2),
+             aes(x, y, label = paste0("(", x, ", ", y, ")")),
+            size = 4, nudge_x = 0.09, color = "#133cc4") + 
+  geom_text(data = tibble(x = 1, y = 2),
+             aes(x, y, label = paste0("(", x, ", ", y, ")")),
+            size = 4, nudge_x = -0.09, color = "#133cc4") + 
+  expand_limits(y = c(-3, 3)) + 
+  theme_classic() + 
+  labs(x = "x", y = "f(x)")
+
+limit_plot
+```
+
+
+```{r}
+ggsave(filename = "limit_plot.jpg", plot = limit_plot,
+       path = "img",
+       width = 7, height = 3)
+```
+
+
+
+## Ejercicios Límites.
+
+**Ojo**: Las funciones trigonométricas en R devuelven el resultado en radianes.
+
+### Ejercicio 1.
+
+Ecuación a simular:
+
+$$g(x) = \frac{x}{tan(2x)}$$
+
+Recordar que la $tan(2x)$ (ángulo doble), se calcula de como sigue:
+
+$$tan(2x) = \frac{2tanx}{1-tan^{2}x}$$
+
+```{r}
+some_fun <- function(x) {
+  # La tangente del angulo doble.
+  tan_double <- function(x) {
+    a <- (2*tan(x))/(1-(tan(x))^2)
+    return(a)
+  }
+  
+  b <- x/(tan_double(x))
+  return(b)
+}
+```
+
+
+```{r}
+tibble(value = c(1, 0.5, 0.1, 0.05, 0.01)) %>% 
+  mutate(f_x = some_fun(value),
+         f_x = round(x = f_x, digits = 4))
+```
+
+
+```{r}
+tibble(value = c(-1, -0.5, -0.1, -0.05, -0.01)) %>% 
+  mutate(f_x = some_fun(value),
+         f_x = round(x = f_x, digits = 4))
+```
+
+
+```{r, fig.width=7, fig.height=3}
+limit_plot_g <- 
+  ggplot() + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = 0.5, color = "#9e9e9e", linetype = "dashed") + 
+  stat_function(data = tibble(value_fun = c(-1:1)), aes(x = value_fun),
+                fun = some_fun, color = "blue") + 
+  geom_point(data = tibble(x = 0, y = 0.5), aes(x, y), size = 3,
+             shape = 1, color = "blue") + 
+  theme_light() + 
+  expand_limits(y = c(-2, 2)) + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "g(x)")
+
+limit_plot_g
+```
+
+```{r, echo=FALSE}
+ggsave(filename = "limit_plot_g.jpg", plot = limit_plot_g,
+       path = "img", width = 7, height = 3)
+```
+
+
+### Ejercicio 2.
+
+Ecuación a simular:
+
+$$h(x) = \frac{|x| + sen(x)}{x^{2}}$$
+
+```{r}
+some_fun <- function(x) {
+  a <- (abs(x)+sin(x))/(x)^2
+  return(a)
+}
+```
+
+
+```{r}
+tibble(value = c(-1, -0.5, -0.1, -0.01, -0.001)) %>% 
+  mutate(f_x = some_fun(value),
+         f_x = round(x = f_x, digits = 4))
+```
+
+
+```{r}
+tibble(value = c(1, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001)) %>% 
+  mutate(f_x = some_fun(value),
+         f_x = round(x = f_x, digits = 4))
+```
+
+
+```{r, fig.width=7, fig.height=3, message=FALSE}
+limit_plot_h <- 
+  ggplot() + 
+  geom_vline(xintercept = 0, linetype = "dashed", "#9e9e9e") + 
+  stat_function(data = tibble(value_fun = c(-1:1)), aes(x = value_fun),
+                fun = some_fun, color = "blue") + 
+  geom_point(data = tibble(x = -0.001, y = 0.0002), aes(x, y),
+             shape = 1, size = 3, color = "blue") + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "h(x)")
+
+limit_plot_h
+```
+
+```{r}
+ggsave(filename = "limit_plot_h.jpg", plot = limit_plot_h,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+### Ejercicio 3.
+
+Ecuación a simular:
+
+$$j(x) = sen (\frac{x}{13})$$
+
+```{r}
+some_fun <- function(x) {
+  a <- sin(13/x)
+  return(a)
+}
+```
+
+
+```{r}
+tibble(value = c(1, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001)) %>% 
+  mutate(f_x = some_fun(value),
+         f_x = round(x = f_x, digits = 4))
+```
+
+
+```{r, fig.width=7, fig.height=3}
+# Ah! que lindo grafico xd
+limit_plot_j <- 
+  ggplot() + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = -1, linetype = "dashed", "#9e9e9e") + 
+  geom_hline(yintercept = 1, linetype = "dashed", "#9e9e9e") + 
+  stat_function(data = tibble(value_fun = c(0, 1)), aes(x = value_fun),
+                fun = some_fun, color = "blue") + 
+  ylim(-2, 2) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "j(x)")
+
+limit_plot_j
+```
+
+```{r}
+ggsave(filename = "limit_plot_j.jpg", plot = limit_plot_j,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+## Ejercicios "Continuidad".
+
+```{r, fig.width=7, fig.height=3}
+continuity_f <- 
+  ggplot(data = tibble(value = c(-1, 1)), aes(x = value)) + 
+  geom_vline(xintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  stat_function(fun = function(x) {x <- 3},
+                color = "blue") + 
+  expand_limits(y = c(-6, 6)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f(x)")
+
+continuity_f
+```
+
+
+```{r}
+ggsave(filename = "continuity_f.jpg", plot = continuity_f,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+continuity_g <- 
+  ggplot(data = tibble(value = c(-1, 1)), aes(x = value)) + 
+  geom_vline(xintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  stat_function(fun = function(x) return(x),
+                color = "blue") + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "g(x)")
+
+continuity_g
+```
+
+
+```{r}
+ggsave(filename = "continuity_g.jpg", plot = continuity_g,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+continuity_h <- 
+  ggplot(data = tibble(value = c(-1, 1)), aes(x = value)) + 
+  geom_vline(xintercept = 0, color = "#bcbcbc") + 
+  stat_function(fun = abs, color = "blue") + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "h(x)")
+
+continuity_h
+```
+
+
+```{r}
+ggsave(filename = "continuity_h.jpg", plot = continuity_h,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+sen_continuity <- 
+  ggplot(data = tibble(value = c(-10, 10)), aes(x = value)) + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  geom_vline(xintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = -1, color = "#bcbcbc", linetype = "dashed") + 
+  geom_hline(yintercept = 1, color = "#bcbcbc", linetype = "dashed") + 
+  stat_function(fun = sin, color = "blue") + 
+  expand_limits(y = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "sen(x)", title = "Función Seno")
+
+cos_continuity <- 
+  ggplot(data = tibble(value = c(-10, 10)), aes(x = value)) + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  geom_vline(xintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = -1, color = "#bcbcbc", linetype = "dashed") + 
+  geom_hline(yintercept = 1, color = "#bcbcbc", linetype = "dashed") + 
+  stat_function(fun = cos, color = "blue") + 
+  expand_limits(y = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "cos(x)", title = "Función Coseno")
+
+sen_cos_continuity <- sen_continuity+cos_continuity
+
+sen_cos_continuity
+```
+
+
+```{r}
+ggsave(filename = "sen_cos_continuity.jpg", plot = sen_cos_continuity,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(value = c(-1, 22)), aes(x = value)) +
+  stat_function(fun = function(x) {
+                  a <- (1/(x-17))
+                  return(a)
+                }, xlim = c(-1, 16), color = "blue") + 
+  stat_function(fun = function(x) {
+                  a <- (1/(x-17))
+                  return(a)
+                }, xlim = c(18, 22), color = "blue") + 
+  geom_vline(xintercept = 17, linetype = "dashed") + 
+  geom_vline(xintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = -1, linetype = "dashed", color = "#bcbcbc") + 
+  geom_hline(yintercept = 1, linetype = "dashed", color = "#bcbcbc") + 
+  expand_limits(y = c(-2, 2)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank())
+```
+
+
+
+```{r, fig.width=7, fig.height=3}
+ggplot(data = tibble(value = c(-1, 1)), aes(x = value)) +
+  stat_function(fun = function(x) {
+                  a <- (1/((x^2)+1))
+                  return(a)
+                }, color = "blue") + 
+  theme_light() + 
+  theme(panel.grid = element_blank())
+```
+
+
+
+## Gráfico ejemplo Teorema del Valor Intermedio.
+
+```{r, fig.height=3, fig.width=7}
+interm_value_plot <- 
+  tibble(x = c(1, 3)) %>% 
+  mutate(f_x = ((x^4)-x-1)) %>% 
+  ggplot(aes(x = x, y = f_x)) + 
+  geom_hline(yintercept = 0, linetype = "dashed", color = "#bcbcbc") + 
+  geom_point() + 
+  geom_text(aes(label = paste0("(", x, ", ", f_x, ")")),
+            size = 3.5, nudge_y = 4) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(y = "f(x)")
+
+interm_value_plot
+```
+
+```{r}
+ggsave(filename = "interm_value_plot.jpg", plot = interm_value_plot,
+       path = "img", width = 7, height = 3)
+```
+
+
+## Ejemplo Límite Infinito.
+
+```{r, fig.height=3, fig.width=7}
+infinite_limit_plot <- 
+  tibble(value = c(0.01, 0.0001)) %>% 
+  ggplot(aes(x = value)) + 
+  geom_vline(xintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  stat_function(fun = function(x) 1/x, color = "blue",
+                xlim = c(0.0001, 0.01)) + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "f(x)")
+
+infinite_limit_plot
+```
+
+```{r}
+ggsave(filename = "infinite_limit_plot.jpg", plot = infinite_limit_plot,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+```{r, fig.height=3, fig.width=7}
+infint_posit_neg <- 
+  ggplot(data = tibble(value = c(-0.0001, 0.0001)), aes(x = value)) + 
+  geom_vline(xintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  stat_function(fun = function(x) 1/x, xlim = c(0.0001, 0.01),
+                   color = "blue") + 
+  stat_function(fun = function(x) 1/x, xlim = c(-0.01, -0.0001),
+                   color = "blue") + 
+  theme_light() + 
+  theme(panel.grid = element_blank(),
+        plot.title = element_text(hjust = 0.5)) + 
+  labs(x = "x", y = "", title = "1/x")
+
+infint_posit <- 
+  ggplot(data = tibble(value = c(-0.0001, 0.0001)), aes(x = value)) + 
+  geom_vline(xintercept = 0, color = "#bcbcbc") + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  stat_function(fun = function(x) 1/(x^2), xlim = c(0.0001, 0.01),
+                   color = "blue") + 
+  stat_function(fun = function(x) 1/(x^2), xlim = c(-0.01, -0.0001),
+                   color = "blue") + 
+  theme_light() + 
+  theme(panel.grid = element_blank(),
+        plot.title = element_text(hjust = 0.5)) + 
+  labs(x = "x", y = "", title = expression(paste("1/", x^{2})))
+
+infinite_limit_plot_2 <- infint_posit_neg + infint_posit
+
+infinite_limit_plot_2
+```
+
+```{r}
+ggsave(filename = "infinite_limit_plot_2.jpg", plot = infinite_limit_plot_2,
+       path = "img", width = 7, height = 3)
+```
+
+
+
+```{r, fig.height=3, fig.width=7}
+infinite_limit_plot_3 <- 
+  ggplot(data = tibble(value = c(1.9, 2.01)), aes(x = value)) + 
+  geom_vline(xintercept = 2, color = "#303030", linetype = "dashed") + 
+  geom_hline(yintercept = 0, color = "#bcbcbc") + 
+  stat_function(fun = function(x) (3*x)/(4-(x^2)),
+                xlim = c(1.99, 1.9999), color = "blue") + 
+  stat_function(fun = function(x) (3*x)/(4-(x^2)),
+                xlim = c(2.0001, 2.01), color = "blue") + 
+  theme_light() + 
+  theme(panel.grid = element_blank()) + 
+  labs(x = "x", y = "h(x)")
+
+infinite_limit_plot_3
+```
+
+```{r}
+ggsave(filename = "infinite_limit_plot_3.jpg", plot = infinite_limit_plot_3,
+       path = "img", width = 7, height = 3)
+```
+

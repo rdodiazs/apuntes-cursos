@@ -1,0 +1,278 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{hyperref} % Siempre debe ir al final.
+
+% Opciones de Paquetes.
+\decimalpoint % {babel}
+\onehalfspacing % {setspace}
+
+% Encabezado.
+\title{Clase 35. Formas Indeterminadas y la Regla de L'Hôpital.}
+\author{MIT 18.01: Single Variable Calculus.}
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent Desde esta clase iniciamos el último tema del curso, que es trabajar con la idea del infinito. En esta ocasión nos concentraremos en evaluar límites que, en principio, no podemos conocer porque obtenemos una forma indeterminada. Para ello, utilizaremos un método llamado \textbf{Regla de L'Hôpital}.
+\end{abstract}
+
+
+\section{Regla de L'Hôpital.}
+
+Cuando evaluamos el límite de una función en relación al valor de entrada al que se está acercando, es posible que resulte en una de las siguientes dos \textbf{formas indeterminadas}:
+\[
+  \frac{0}{0} \qquad \text{y} \qquad \frac{\pm \infty}{\pm \infty}
+\]
+Las fracciones de arriba y otras expresiones se conocen como formas indeterminadas porque no nos entregan información suficiente sobre el límite que estamos evaluando. En otras palabras, es posible que existan como que no.
+
+En ocasiones, si nos encontramos con una forma indeterminada al evaluar el límite de una función racional, podemos resolver este problema dividiendo el numerador y el denominador por la potencia de $x$ mayor del denominador, como lo vemos a continuación con $x^{2}$.
+\[
+  \lim_{x \to \infty} \frac{x^{2} - 1}{2x^{2} + 1} = \lim_{x \to \infty} \frac{\displaystyle \frac{x^{2} - 1}{x^{2}}}{\displaystyle \frac{2x^{2}+1}{x^{2}}}
+                                                   = \lim_{x \to \infty} \frac{1 - \displaystyle \frac{1}{x^{2}}}{2 + \displaystyle \frac{1}{x^{2}}}
+                                                   = \frac{1 - 0}{2 + 0}
+                                                   = \frac{1}{2}
+\]
+Sin embargo, muchas veces puede ser muy lento el dividir el numerador y denominador por la potencia mayor del segundo en una función racional o, simplemente, no es posible realizar aquello en éstas o en otro tipo de funciones. Un método alternativo para resolver este problema proviene del Cálculo y se conoce como la \textbf{Regla de L'Hôpital}.
+
+La regla de L'Hôpital señala que es posible establecer que:
+\[
+  \lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}
+\]
+siempre que se cumplan las siguientes \textbf{tres condiciones}:
+
+\begin{enumerate}
+\item $\displaystyle \lim_{x \to a} \frac{f(x)}{g(x)} = \frac{0}{0}$ o $\displaystyle \lim_{x \to a} \frac{f(x)}{g(x)} = \frac{\infty}{\infty}$.
+\item $f(x)$ y $g(x)$ sean derivables.
+\item $g'(x) \neq 0$.
+\end{enumerate}
+
+Ahora, es posible que al usar la regla de L'Hôpital sigamos obteniendo una forma indeterminada. Si esta corresponde a $0/0$ o a $\infty/\infty$, podemos \textbf{volver a utilizarla otra vez}.
+
+Por ejemplo, si
+\[
+  \lim_{x \to a} \frac{f(x)}{g(x)} = \frac{0}{0}
+\]
+y al aplicar la regla de L'Hôpital obtenemos que
+\[
+  \lim_{x \to a} \frac{f'(x)}{g'(x)} = \frac{0}{0},
+\]
+podemos volver a utilizar esta regla, pero siempre que, además, podamos calcular las derivadas del numerador y denominador que, en este caso, serían las segundas derivadas de las funciones iniciales.
+
+El razonamiento detrás de casos este, es que \textbf{el límite que obtuvimos en el último uso de la regla de L'Hôpital se aplica a los anteriores}.
+
+Al usar repetidamente la regla de L'Hôpital, debemos considerar: 1) que se sigan cumpliendo las tres condiciones y 2) tener certeza de que el límite existe. Si no tomamos en cuenta lo último, podemos terminar en un cíclo infinito. Para evitarlo, se recomienda \textbf{analizar si hay otra manera de simplificar la fracción antes de aplicar esta regla}.
+
+\subsection{Regla de L'Hôpital y la forma indeterminada \texorpdfstring{$0/0$}{0/0}.}
+
+Cuando obtenemos que:
+\[
+  \lim_{x \to a} \frac{f(x)}{g(x)} = \frac{0}{0}
+\]
+por el hecho de que $f(a) = g(a) = 0$, podemos resolver este límite usando la regla de L'Hôpital para aquella forma indeterminada si, además de las tres condiciones mencionadas anteriormente, \textbf{se cumple} que:
+\[
+  \lim_{x \to a} \frac{f'(x)}{g'(x)} = L
+\]
+donde $L$ es un número.
+
+En otras palabras, al aplicar la regla de L'Hôpital para la forma indeterminada $0/0$, \textbf{el límite} del cuociente de las derivadas del numerador y del denominador \textbf{debe existir}.
+
+\subsubsection{Demostración de la regla de L'Hôpital para forma indeterminada \texorpdfstring{$0/0$}{0/0}.}
+
+Es posible demostrar la regla de L'Hôpital para la forma indeterminada $0/0$.
+
+Digamos que $f(x)$ y $g(x)$ son funciones derivables y que $f(a) = g(a) = 0$, para lo cual:
+\[
+  \lim_{x \to a} \frac{f(x)}{g(x)} = \frac{f(a)}{g(a)} = \frac{0}{0}
+\]
+Luego, restemos el numerador de la fracción del límite por $f(a)$ y su denominador por $g(a)$. Esto no la alterará ya que $f(a) = g(a) = 0$.
+\[
+  \lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f(x) - f(a)}{g(x) - g(a)}
+\]
+Posteriormente, dividamos tanto el numerador como el denominador de la fracción del límite de la derecha por $(x - a)$.
+\[
+  \lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{\displaystyle \frac{f(x) - f(a)}{x - a}}{\displaystyle \frac{g(x) - g(a)}{x - a}}
+\]
+Usando la propiedad del cuociente de los límites, podemos reescribir el lado derecho de la igualdad como:
+\[
+  \lim_{x \to a} \frac{f(x)}{g(x)} = \frac{\displaystyle \lim_{x \to a} \frac{f(x) - f(a)}{x - a}}{\displaystyle \lim_{x \to a} \frac{g(x) - g(a)}{x - a}}
+\]
+Tanto el numerador como el denominador de la fracción de la derecha de la ecuación corresponden a la definición de la derivada para $f(x)$ y $g(x)$ en $x = a$.
+\[
+  \lim_{x \to a} \frac{f(x)}{g(x)} = \frac{f'(a)}{g'(a)}
+\]
+Si $g'(a) \neq 0$, podemos interpretar el lado derecho de la igualdad como el límite del cuociente entre $f'(x)$ y $g'(x)$ siendo evaluado a medida que $x \to a$.
+\[
+  \lim_{x \to a} \frac{f(x)}{g(x)} = \frac{\displaystyle \lim_{x \to a} f'(x)}{\displaystyle \lim_{x \to a} g'(x)}
+                                   = \lim_{x \to a} \frac{f'(x)}{g'(x)} \qquad \text{(Q. E. D)}
+\]
+
+\subsubsection{Ejemplos.}
+
+Veamos algunos ejemplos donde podemos usar la regla de L'Hôpital.
+
+\textbf{Ejemplo 1.} Calcule el siguiente límite.
+\[
+  \lim_{x \to 1} \frac{x^{10} - 1}{x^{2} - 1}
+\]
+\textbf{Solución.} Al evaluar el límite a medida que $x \to 1$, obtenemos la forma indeterminada $0/0$.
+\[
+  \lim_{x \to 1} \frac{x^{10} - 1}{x^{2} - 1} = \frac{1^{10} - 1}{1^{2} - 1} = \frac{0}{0}
+\]
+Como el límite que estamos evaluando es una función racional, podemos simplificar el numerador y el denominador por la potencia mayor de este último, pero seguiríamos en el mismo problema. No obstante, puesto que ambos polinomios son derivables y a que el límite de esta expresión es $0/0$, podemos usar la regla de L'Hôpital.
+\[
+  \lim_{x \to 1} \frac{x^{10} - 1}{x^{2} - 1} = \lim_{x \to 1} \frac{10x^{9}}{2x} = \frac{10(1^{9})}{2(1)} = 5
+\]
+Veamos, además, que estamos usando de forma correcta la regla de L'Hôpital porque el $\lim_{x \to 1} 2x \neq 0$.
+
+\textbf{Ejemplo 2.} Evalúe el límite.
+\[
+  \lim_{x \to 0} \frac{\sin(5x)}{\sin(2x)}
+\]
+\textbf{Solución.} Si bien al evaluar este límite obtenemos la forma indeterminada $0/0$, la forma más fácil de conocer su valor es usando la regla de L'Hôpital, ya que tanto el numerador como el denominador son derivables y $\frac{d}{dx} \sin(2x) \neq 0$ en $x = 0$.
+\[
+  \lim_{x \to 0} \frac{\sin(5x)}{\sin(2x)} = \lim_{x \to 0} \frac{5 \cos(5x)}{2 \cos(2x)}
+                                           = \frac{5 \cos(5 \cdot 0)}{2 \cos(2 \cdot 0)}
+                                           = \frac{5}{2}
+\]
+
+\textbf{Ejemplo 3.} Resuelva.
+\[
+  \lim_{x \to 0} \frac{\cos(x) - 1}{x^{2}}
+\]
+\textbf{Solución.} Evaluemos este límite con respecto al valor de $x$ al cual se está acercando.
+\[
+  \lim_{x \to 0} \frac{\cos(x) - 1}{x^{2}} = \frac{\cos(0) - 1}{0^{2}} = \frac{1 - 1}{0} = \frac{0}{0}
+\]
+Obtuvimos la forma indeterminada $0/0$. No podemos simplificar algebraicamente la fracción, pero tanto las expresiones del numerador y denominador son derivables y la derivada de este último es distinta de cero para $x = 0$, por lo que podemos usar la regla de L'Hôpital.
+\[
+  \lim_{x \to 0} \frac{\cos(x) - 1}{x^{2}} = \lim_{x \to 0} \frac{- \sin(x)}{2x} = \frac{- \sin(0)}{2(0)} = \frac{0}{0}
+\]
+Otra vez la evaluación del límite resultó en la forma indeterminada $0/0$. Debido a que las derivadas del numerador y del denominador siguen siendo funciones derivables y a que $\frac{d}{dx} 2x \neq 0$ en $x = 0$, podemos usar otra vez la regla de L'Hôpital.
+\[
+  \lim_{x \to 0} \frac{\cos(x) - 1}{x^{2}} = \lim_{x \to 0} \frac{- \sin(x)}{2x}
+                                           = \lim_{x \to 0} \frac{- \cos(x)}{2}
+                                           = \frac{- \cos(0)}{2}
+                                           = \frac{-1}{2}
+\]
+Recordemos que al usar repetidamente la regla de L'Hôpital, debemos estar seguros de que el límite existirá, como lo fue en este ejemplo.
+
+\subsection{Regla de L'Hôpital y la forma indeterminada \texorpdfstring{$\pm \infty / \pm \infty$}{infinito sobre infinito}.}
+
+Al calcular el límite de un cuociente de funciones también podemos obtener la forma indeterminada:
+\[
+  \lim_{x \to a} \frac{f(x)}{g(x)} = \frac{\pm \infty}{\pm \infty}
+\]
+Acá también podemos usar la regla de L'Hôpital para ver a qué valor se aproxima este cuociente a medida que $x \to a$. Para aplicarla, deben cumplirse las tres condiciones señaladas anteriormente (ver pág. 2), pero tenemos permitido lo siguiente:
+\[
+  \lim_{x \to a} \frac{f'(x)}{g'(x)} = L \qquad \mathrm{o} \qquad \lim_{x \to a} \frac{f'(x)}{g'(x)} = \pm \infty
+\]
+Además, también es posible aplicar la regla de L'Hôpital al evaluar límites laterales o al infinito. Es decir, cuando $a = a^{\pm}$ o $a = \pm \infty$.
+
+
+\section{Tasas de crecimiento y otras formas indeterminadas.}
+
+Al evaluar límites de expresiones distintas a las que hemos visto, también podemos encontrarnos otras formas indeterminadas, tales como:
+\[
+  0 \cdot \infty, \quad \infty - \infty, \quad 0^{0}, \quad \infty^{0}, \quad 1^{\infty}, \quad \cdots
+\]
+Es posible evaluar límites de funciones que resultan en una de las formas indeterminadas de arriba usando la regla de L'Hôpital. Para eso, antes debemos aplicar un poco de álgebra con el fin de que sus límites en el mismo punto sean $0/0$ o $\pm \infty / \pm \infty$ sin alterarlas y debe cumplirse que sus numeradores y denominadores sean derivables.
+
+A continuación veremos algunos ejemplos donde, además de aplicar la regla de L'Hôpital a formas indeterminadas distintas de $0/0$ y $\pm \infty / \pm \infty$, interpretaremos la rapidez con que crecen algunas de las funciones a partir de los resultados que obtengamos usando esta técnica.
+
+\textbf{Ejemplo 4.} Evalúe el siguiente límite y compare cuál de las funciones crece más rápido.
+\[
+  \lim_{x \to 0^{+}} x \ln(x)
+\]
+\textbf{Solución.} En primer lugar, podemos identificar que estamos calculando el límite del producto entre dos funciones: $x$ y $\ln(x)$. Éstas serán las que compararemos su tasa de crecimiento.
+
+Luego, evaluemos el límite de esta expresión.
+\[
+  \lim_{x \to 0^{+}} x \ln(x) = 0 \cdot \ln(0) = 0 \cdot (-\infty)
+\]
+Obtuvimos una forma indeterminada. Podríamos tener la intención de usar la regla de L'Hôpital, pero no es de la forma $0/0$ o $\pm \infty / \pm \infty$ por lo que, en principio, eso no es posible. Sin embargo, usando un poco de álgebra podemos ver que:
+\[
+  x \ln(x) = \frac{\ln(x)}{\displaystyle \frac{1}{x}}
+\]
+Ahora evaluemos el límite en la expresión que está en la derecha de la igualdad de arriba.
+\[
+  \lim_{x \to 0^{+}} \frac{\ln(x)}{\displaystyle \frac{1}{x}} = \frac{\ln(0)}{\displaystyle \frac{1}{0}} = \frac{- \infty}{\infty}
+\]
+En este caso sí podemos aplicar la regla de L'Hôpital, debido a la forma indeterminada que obtuvimos y a que podemos calcular las derivadas de las funciones del numerador y denominador.
+\[
+  \lim_{x \to 0^{+}} \frac{\ln(x)}{\displaystyle \frac{1}{x}} = \lim_{x \to 0^{+}} \frac{\displaystyle \frac{1}{x}}{\displaystyle \frac{-1}{x^{2}}}
+                                                              = \lim_{x \to 0^{+}} \frac{1}{x} \cdot \frac{x^{2}}{-1}
+                                                              = \lim_{x \to 0^{+}} -x
+                                                              = 0
+\]
+Por lo tanto, podemos concluir que mientras $x \to 0^{+}$, $x \to 0$ más rápido en comparación a como $\ln(x) \to -\infty$. Es algo que en el límite inicial no era posible saber debido a la forma indeterminada, pero luego de aplicar la regla de L'Hôpital sí lo fue.
+
+\textbf{Ejemplo 5.} Calcule e interprete la tasa de crecimiento del siguiente límite.
+\[
+  \lim_{x \to \infty} x \exp(-px); \quad (p > 0)
+\]
+\textbf{Solución.} Comencemos evaluando el límite.
+\[
+  \lim_{x \to \infty} x \exp(-px) = \infty \cdot \exp(-p \cdot \infty) = \infty \cdot 0
+\]
+Apliquemos la regla de L'Hôpital. Para ello, establezcamos primero que\footnote{También podríamos haber establecido que $x \exp(-px) = \exp(-px)/(1/x)$, pero al aplicar la regla de L'Hôpital hubiésemos entrado en un cíclo infinito repitiéndola porque los límites siempre serán iguales a $0/0$.}:
+\[
+  x \exp(-px) = x (\exp(-px))^{-1} = \frac{x}{\exp(px)}
+\]
+Calculemos el límite de la última igualdad de arriba cuando $x \to \infty$.
+\[
+  \lim_{x \to \infty} \frac{x}{\exp(px)} = \frac{\infty}{\infty}
+\]
+Ahora podemos usar la regla de L'Hôpital.
+\[
+  \lim_{x \to \infty} \frac{x}{\exp(px)} = \lim_{x \to \infty} \frac{1}{p \cdot \exp(px)} = \frac{1}{1 \cdot \infty} = 0
+\]
+Por lo tanto, es claro que a medida que $x \to \infty$, la función $\exp(-px)$ es la que se acerca más rápidamente a $0$ en comparación a como lo hace $x$ al $\infty$. En otras palabras, la primera es la más determinante con respecto a que $x \exp(-px) \to 0$.
+
+\textbf{Ejemplo 6.} Evalúe el siguiente límite.
+\[
+  \lim_{x \to 0^{+}} x^{x}
+\]
+\textbf{Solución.} Inicialmente, este límite resulta en:
+\[
+  \lim_{x \to 0^{+}} x^{x} = 0^{0}
+\]
+Al trabajar con límites u otras expresiones con exponentes continuos, se determina que $0^{0}$ es una forma indeterminada.
+
+La expresión $0^{0}$ que resulta de calcular un límite es una forma indeterminada distinta de las que hemos visto anteriormente, pero que de igual modo es posible volver a evaluar usando la regla de L'Hôpital. Si el exponente de la función varía, podemos usar la siguiente propiedad de las funciones exponenciales y logaritmicas:
+\[
+  x = \exp(\ln(x))
+\]
+donde $x$ es la función del límite que estamos evaluando.
+
+La idea es \textbf{calcular el límite del exponente de la potencia de base} $e$ (expresada acá como $\exp$). Si resulta en una forma indeterminada $0/0$ o $\infty/\infty$, aplicamos la regla de L'Hôpital y el resultado obtenido lo utilizamos para calcular la potencia, el cual a su vez corresponderá al valor del límite inicial.
+
+Por lo tanto, para este ejemplo establecemos primero que:
+\[
+  x^{x} = \exp(\ln(x^{x})) = \exp(x \ln(x))
+\]
+Luego, evaluamos el límite mientras $x \to 0^{+}$ del exponente de la potencia de base $e$.
+\[
+  \lim_{x \to 0^{+}} x^{x} = \exp\left(\lim_{x \to 0^{+}} x \ln(x)\right)
+\]
+Este límite lo resolvimos en el Ejemplo 4, donde vimos que:
+\[
+  \lim_{x \to 0^{+}} x \ln(x) = \lim_{x \to 0^{+}} \frac{\ln(x)}{\displaystyle \frac{1}{x}}
+                              = \lim_{x \to 0^{+}} \frac{\displaystyle \frac{1}{x}}{\displaystyle \frac{-1}{x^{2}}}
+                              = \lim_{x \to 0^{+}} (-x)
+                              = 0
+\]
+En consecuencia:
+\[
+  \lim_{x \to 0^{+}} x^{x} = \exp\left(\lim_{x \to 0^{+}} x \ln(x)\right) = \exp(0) = 1
+\]
+
+\end{document}
