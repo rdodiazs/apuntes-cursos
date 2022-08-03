@@ -1,6 +1,8 @@
 # Apuntes de cursos.
 
-En este repositorio se encuentran apuntes de los cursos que he ido tomando. Principalmente, están aquellos que he terminado.
+En este repositorio se encuentran apuntes de cursos en línea que he ido tomando. Principalmente, están aquellos que he terminado o que están en proceso de ser completados.
 
-Muchos de estos apuntes aún requieren modificaciones. Mi idea es ir registrando ese proceso, tanto para revisar lo que tenía antes como para tener un respaldo ante posibles ~~cagazos~~ emergencias.
+Mi idea es usar este repositorio como respaldo (*backup*) de estos apuntes y para hacer un seguimiento de las modificaciones que vaya realizando en ellos.
+
+También pretendo agregar en este repositorio más información sobre los cursos, los libros que he usado, entre otras cosas.
 
