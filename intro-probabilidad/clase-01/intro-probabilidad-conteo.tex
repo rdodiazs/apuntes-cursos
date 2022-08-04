@@ -479,40 +479,19 @@ Por lo tanto,
 
 \subsubsection{Combinaciones de \textit{r} elementos con reemplazo.}
 
-Calcular las $r$-combinaciones de un conjunto de tamaño $n$ a partir de sus $r$-permutaciones es un proceso más tedioso si se permite que hayan \textbf{objetos repetidos}. A continuación veremos un método alternativo conocido como ``\textbf{círculos y barras}'' que permitirá reducir este trabajo y, a la vez, obtener una formalización para este tipo de conteo.
+Calcular las $r$-combinaciones de un conjunto de tamaño $n$ a partir de sus $r$-permutaciones es un proceso más tedioso si se permite que hayan \textbf{objetos repetidos}. A continuación veremos un método alternativo que permitirá reducir este trabajo y, a la vez, obtener una formalización para este tipo de conteo.
 
-\textbf{Ejemplo 2.} Suponga que en una caja hay papeles de igual medida escritos con una de las siguientes letras: $E$, $X$, $V$, $Z$, $U$ y $T$. Calcule cuántos pares de letras (repetidos o no) se pueden formar con estos papeles.
+\textbf{Ejemplo 2.} Suponga que en una caja hay papeles escritos con solo una de las siguientes letras: $E, \ X, \ V, \ Z, \ U$ y $T$. Calcule cuántos pares de letras iguales o distintas se pueden formar con estos papeles.
 
-\textbf{Solución.} Usar las $r$-permutaciones del conjunto original desde un inicio implicaría construir $P(6, \ 2) = 6^{2} = 36$ pares ordenados, con $n = 6$ y $r = 2$, y luego contarlos como pares no-ordenados. Al no tener una fórmula para este tipo de conteo, tendría que realizarse de forma explícita\footnote{Por ejemplo, mediante un diagrama de árbol.}, pero es claro que eso tomaría mucho tiempo.
+\textbf{Solución.} Como nos están pidiendo contar el número de $2$-combinaciones que es posible formar de un conjunto de seis elementos, podemos comenzar definiendo que $n = 6$ y $r = 2$.
 
-Una forma más eficiente de resolver este problema es usando el método conocido como ``\textbf{círculos y barras}''. En términos generales, consiste en llevar el conteo de $r$-combinaciones con repetición a uno sin reemplazo, pero sin alterar el objetivo original.
+Ahora, en este ejemplo se indica que debemos considerar las $2$-combinaciones que tengan elementos repetidos. Debido a que no manejamos una técnica de conteo que integre a estas últimas, buscaremos una que permita aquello.
 
-Comencemos usando los siguientes subconjuntos de $\{E, \ X, \ V, \ Z, \ U, \ T\}$:
-\[
-  \{E, \ Z\} \qquad \qquad \{V, \ V\}
-\]
-Luego, dibujemos una caja para cada letra de este ejemplo.
+Una manera de calcular $C(6, \ 2)$ sería formar todas las $2$-permutaciones y luego contarlas como pares no ordenados. El problema con este enfoque es que, como hay elementos repetidos, tendríamos que hacerlo con $6^{2} = 36$. Es claro que tomaría mucho tiempo.
 
-\begin{figure}[hbt!]
-\centering
+Usaremos una estrategia que es más eficiente para estos casos. Se conoce como \textbf{método de círculos y barras} y consiste en dibujar contenedores para cada elemento del conjunto $\{E, \ X, \ V, \ Z, \ U, \ T\}$ y círculos adentro de ellos para cada miembro de los pares no ordenados que podemos formar.
 
-\begin{tikzpicture}
-% Líneas de ayuda.
-%\draw[color = lightgray] (-8, 0) grid (8, 3);
-%\draw[color = gray] (0, 0) -- (0, 3);
-
-% Cajas y letras.
-\draw (-6, 2) -- (-6, 1) -- node [below] {$E$} (-4, 1) -- (-4, 2);
-\draw (-4, 1) -- node [below] {$X$} (-2, 1) -- (-2, 2);
-\draw (-2, 1) -- node [below] {$V$} (0, 1) -- (0, 2);
-\draw (0, 1) -- node [below] {$Z$} (2, 1) -- (2, 2);
-\draw (2, 1) -- node [below] {$U$} (4, 1) -- (4, 2);
-\draw (4, 1) -- node [below] {$T$} (6, 1) -- (6, 2);
-\end{tikzpicture}
-
-\end{figure}
-
-Ubiquemos un círculo en las cajas de las letras que pertenecen al subconjunto $\{E, \ Z\}$.
+Por ejemplo, un par no ordenado que es posible formar del conjunto $\{E, \ X, \ V, \ Z, \ U, \ T\}$ es $\{E, \ Z\}$. Usando el método de círculos y barras, podemos dibujarlo como:
 
 \begin{figure}[hbt!]
 \centering
@@ -537,7 +516,7 @@ Ubiquemos un círculo en las cajas de las letras que pertenecen al subconjunto $
 
 \end{figure}
 
-Hagamos lo mismo con $\{V, \ V\}$.
+Del mismo conjunto también podemos dibujar el multiconjunto $\{V, \ V\}$.
 
 \begin{figure}[hbt!]
 \centering
@@ -562,7 +541,7 @@ Hagamos lo mismo con $\{V, \ V\}$.
 
 \end{figure}
 
-Si continuamos esta tarea con el resto de los pares no-ordenados, veremos que estamos intercambiando posiciones entre los círculos y los separadores internos de las cajas. Estas corresponden a $2$-permutaciones (los dos círculos) sin repetición de siete objetos.
+Al dibujar cada multiconjunto, lo que estamos haciendo es ordenar sin repetición los dos círculos y las cinco barras internas de los contenedores. Como solo estamos moviendo a los primeros, entonces son $2$-permutaciones.
 
 \begin{figure}[hbt!]
 \centering
@@ -575,47 +554,46 @@ Si continuamos esta tarea con el resto de los pares no-ordenados, veremos que es
 % Cajas y letras.
 \draw (-6, 2) -- (-6, 1) -- node [below] {$E$} (-4, 1) -- (-4, 2) node [above] {$1$};
 \draw (-4, 1) -- node [below] {$X$} (-2, 1) -- (-2, 2) node [above] {$2$};
-\draw (-2, 1) -- node [below] {$V$} (0, 1) -- (0, 2) node [above] {$5$};
+\draw (-2, 1) -- node [below] {$V$} (0, 1) -- (0, 2) node [above] {$4$};
 \draw (0, 1) -- node [below] {$Z$} (2, 1) -- (2, 2) node [above] {$6$};
 \draw (2, 1) -- node [below] {$U$} (4, 1) -- (4, 2) node [above] {$7$};
 \draw (4, 1) -- node [below] {$T$} (6, 1) -- (6, 2);
 
 % Círculos.
-\draw (-1.5, 1.5) circle (0.27);
-  \node at (-1.5, 2) {$3$};
-\draw (-0.5, 1.5) circle (0.27);
-  \node at (-0.5, 2) {$4$};
+\draw (-1, 1.5) circle (0.27);
+  \node at (-1, 2) {$3$};
+\draw (1, 1.5) circle (0.27);
+  \node at (1, 2) {$5$};
 \end{tikzpicture}
 
 \end{figure}
 
-Como nuestro interés es calcular cuántos pares de letras podemos formar, el conteo de las $2$-permutaciones podemos llevarlo a uno de $2$-\textbf{combinaciones} sin repetición.
-\[
-  C(7, \ 2) = \frac{7!}{2! (7 - 2)!} = \binom{7}{2} = 21
-\]
-Es decir, podemos formar $21$ pares con las letras $E$, $X$, $V$, $Z$, $U$ y $T$, con repetición incluida.
+La idea del método de círculos y barras es contar las $2$-combinaciones con repetición del conjunto original como uno sin reemplazo mediante las $2$-permutaciones que acabamos de ver. En otras palabras, se está llevando el problema original a uno que podemos abordar.
 
-Usando los valores $n = 6$ y $r = 2$, podemos ver que $7 = 6 + 2 - 1$. Al reemplazar este valor en el coeficiente binomial que acabamos de calcular, obtenemos lo siguiente:
+Por lo tanto, es posible contar todas las $2$-combinaciones del conjunto $\{E, \ X, \ V, \ Z, \ U, \ T\}$ como:
+\[
+  C(7, \ 2) = \binom{7}{2} = \frac{7!}{2! (7 - 2)!} = 21
+\]
+Es decir, se pueden formar $21$ pares con o sin letras repetidas del conjunto de seis letras.
+
+Mediante $n = 6$ y $r = 2$, podemos ver que $7 = 6 + 2 - 1$. Reemplacemos el lado derecho de esa igualdad en el coeficiente binomial que acabamos de calcular.
 \[
   C(6 + 2 - 1, \ 2) = \binom{6 + 2 - 1}{2}
                     = \frac{(6 + 2 - 1)!}{2! ((6 + 2 - 1) - 2)!}
                     = \frac{(6 + 2 - 1)!}{2! (6 - 1)!}
                     = 21
 \]
-El procedimiento que acabamos de realizar se puede generalizar a la siguiente fórmula que permite calcular las \textbf{\textit{r}-combinaciones con repetición} (o multiconjuntos) de un conjunto de $n$ elementos.
+El procedimiento que acabamos de realizar se puede generalizar para cualquier $n$ y $r$. Así, es posible obtener la siguiente fórmula para calcular las \textbf{\textit{r}-combinaciones con repetición} de un conjunto de $n$ elementos.
 \[
   C(n + r - 1, \ r) = \binom{n + r - 1}{r} = \frac{(n + r - 1)!}{r!(n - 1)!}
 \]
-De esta fórmula podemos llegar a la siguiente consecuencia:
-\[
-  C(n + r - 1, \ n - 1) = \binom{n + r - 1}{n - 1}
-                        = \frac{(n + r - 1)!}{(n - 1)!([n + r - 1] - [n - 1])!}
-                        = \frac{(n + r - 1)!}{r!(n - 1)!}
-\]
-Por lo tanto:
-\[
-  C(n + r - 1, \ r) = C(n + r - 1, \ n - 1)
-\]
+La cantidad de barras internas en el método de círculos y barras siempre será $n - 1$. Si dibujamos y calculamos el número de $(n - 1)$-combinaciones sin repetición que podemos formar con ellas, veremos que es el mismo de los círculos. Esto puede ser demostrado usando la fórmula que acabamos de obtener.
+\begin{align*}
+  C(n + r - 1, \ n - 1) &= \binom{n + r - 1}{n - 1}
+                        = \frac{(n + r - 1)!}{(n - 1)!([n + r - 1] - [n - 1])!} \\
+                        &= \frac{(n + r - 1)!}{r!(n - 1)!}
+                        = C(n + r - 1, \ r)
+\end{align*}
 
 \subsection{Síntesis sobre métodos de conteo.}
 
