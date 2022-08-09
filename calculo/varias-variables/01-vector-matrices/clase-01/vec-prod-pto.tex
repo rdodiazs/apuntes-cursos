@@ -1,20 +1,19 @@
 \documentclass[12pt]{article}
-\usepackage[utf8]{inputenc}
 \usepackage[margin=1in]{geometry}
-\usepackage[spanish]{babel}\decimalpoint
-\usepackage{setspace}\onehalfspacing
-\usepackage{parskip} % Espacio entre parrafos.
-\usepackage{graphicx} % Para usar comando \includegraphics[]{}
-\usepackage{amssymb} % Para usar el simbolo del conj. de los Reales.
-\usepackage{amsmath} % Para usar columnas vectoriales.
-\usepackage{multirow} % Para unir multiples filas en una tabla.
-\usepackage{hyperref} % Siempre debe ser el ultimo paquete.
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage{amsmath, amssymb}
+\usepackage{tikz}
+\usepackage{hyperref} % Siempre debe ir al final.
 
+% Opciones de Paquetes.
+\decimalpoint          % {babel}
+\onehalfspacing        % {setspace}
+\usetikzlibrary{babel} % {tikz}: Para que tikz no conflictue con {babel} con figuras como "->".
 
-\setcounter{tocdepth}{2} % Que no incluya subsubsections en la tabla de contenidos (toc).
-
-%================================
-
+% Encabezado.
 \title{Clase 1. Vectores y el Producto Punto.}
 \author{MIT 18.02: Multivariable Calculus.}
 \date{}
@@ -22,364 +21,777 @@
 
 \begin{document}
 
+% Comandos personalizados.
+\newcommand{\vecmat}[1]{\mathbf{#1}}                          % Vectores o matrices en negrita en math mode.
+\newcommand{\overvec}[1]{\overrightarrow{#1}}                 % Vector como segmento orientado.
+\newcommand{\proy}[2]{\text{proy}_{\vecmat{#2}}{\vecmat{#1}}} % Proyección vectorial.
+\newcommand{\R}[0]{\mathbb{R}}                                % Símbolo conjunto de los números reales.
+\newcommand{\N}[0]{\mathbb{N}}                                % Símbolo conjunto de los números naturales.
+
 \maketitle
 
 \begin{abstract}
-\noindent En esta primera clase haremos una revisión de conceptos y operaciones básicas con \textbf{vectores}, con un especial énfasis en el \textbf{producto punto} entre dos o más vectores.
+\noindent En esta primera clase revisaremos el concepto de \textbf{vector}. Veremos las formas de representarlo y las operaciones básicas que podemos realizar entre ellos. También profundizaremos en una de estas últimas conocida como \textbf{producto punto}.
 \end{abstract}
 
 \section{Vectores.}
 
-Un \textbf{vector} es una \textbf{cantidad} que consiste de una:
+En este curso, un \textbf{vector} será entendido como una cantidad que posee una \textbf{magnitud} y una \textbf{dirección}. Si consiste \textbf{solo de una magnitud}, entonces será llamado como \textbf{escalar}.
 
-\begin{itemize}
-\item Dirección.
-\item Magnitud (o longitud).
-\end{itemize}
+Los vectores se denotan con una letra minúscula escrita en negrita (por ej., $\vecmat{a}$) o con una flecha arriba de ella (por ej., $\vec{a}$). Acá optaremos por la primera.
 
-\textbf{Toda cantidad que no tenga una dirección}, se califica como \textbf{Escalar} (o cantidad escalar). En general, las palabras ``número'', ``constante'' y ``escalar'' son sinónimos.
-
-Por ejemplo, la magnitud de un vector es un escalar, ya que es solo un número. En cambio, si decimos que ``un vehículo se mueve a $5$ km/hr al norponiente'', aquella cantidad corresponde a un vector.
-
-Un hecho que es bueno tener en cuenta, es que \textbf{dos o más vectores son iguales sí y solo sí sus componentes y dirección son equivalentes}.
-
-%\subsection{Formas de representar a un vector.}
-
-\subsection{Expresando a un vector de forma escrita.}
-
-De forma escrita, los vectores suelen ser representados de dos maneras:
-\begin{align*}
-  \vec{a} &= \text{vector } a & \mathbf{a} &= \text{vector } a
-\end{align*}
-En ambos casos nos referimos al vector $a$. En este curso usaremos la notación en negrita.
-
-\subsection{Representación geométrica y componentes de un vector.}
-
-Geométricamente, los vectores se representan como una \textbf{flecha}, donde su largo es la magnitud y el sentido corresponde a la dirección.
-
-%\newpage
+A nivel geométrico, los vectores son \textbf{segmentos orientados}\footnote{Un segmento es una parte de una recta acotado por dos puntos extremos distintos.} que están acotados por un \textbf{punto inicial} y otro \textbf{terminal} que indica su \textbf{dirección}. La \textbf{magnitud} es dada por el \textbf{largo} de esta figura.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.6]{img/vector-arrow.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (-8, -2) grid (8, 2);
+%\draw[color = gray] (-8, 0) -- (8, 0);
+%\draw[color = gray] (0, -2) -- (0, 2);
+
+% Recta.
+\draw[color = red] (-5, 0) -- (5, 0) node [above] {$L$};
+
+% Magnitud del vector.
+% Sobre loops en tikz: https://latexdraw.com/how-to-use-the-foreach-loop-in-latex
+\foreach \i in {-2.5, 2.5} {
+  \draw[line width = 0.2mm, color = gray] (\i, 1) -- (\i, 1.45);  % Líneas verticales.
+}
+\foreach \j \k in {-2.5 / -1.35, 2.5 / 1.35} {
+  \draw[line width = 0.2mm, color = gray] (\j, 1.2) -- (\k, 1.2); % Líneas horizontales.
+}
+\node[font = \small] at (0, 1.2) {Magnitud de $\vecmat{a}$};
+
+% Puntos terminales.
+\draw[fill = black] (-2.5, 0) circle (0.1) node [above] {$A$} node [below, align = center, font = \small] {Punto \\ inicial};
+\draw[fill = black] (2.5, 0) circle (0.1) node [above] {$B$} node [below, align = center, font = \small] {Punto \\ terminal};
+
+% Vector.
+\draw[-stealth, line width = 0.7mm] (-2.37, 0) -- node [above] {$\vecmat{a} = \overvec{AB}$} (2.37, 0);
+\end{tikzpicture}
+
+\caption{Vector $\vecmat{a}$ representado como un segmento orientado, $\overvec{AB}$, de una recta $L$.}
+
 \end{figure}
 
-Los vectores son graficados en un \textbf{plano de coordenadas}. Por ejemplo, acá trazamos al vector $\mathbf{a}$ en un plano de tres dimensiones (o un plano $xyz$).
+
+\section{Representación de un vector.}
+
+Es posible representar a un vector mediante sus componentes, usando vectores unitarios o a partir de la relación entre su magnitud y dirección. A continuación los revisamos.
+
+\subsection{Forma componente.}
+
+Un vector puede ser expresado algebraicamente como la \textbf{posición de su punto terminal} en un \textbf{sistema de coordenadas}.
+
+Consideremos un vector $\vecmat{a}$ en un plano cartesiano, con su punto inicial $A$ ubicado en $(x_{0}, \ y_{0})$ y su punto terminal en $(x_{1}, \ y_{1})$.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.5]{img/vector-xyz-plane.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (-2, -1) grid (14, 6); % Celdas.
+%\draw[color = gray] (0, -1) -- (0, 6);          % Línea vertical.
+%\draw[color = gray] (-2, 0) -- (14, 0);         % Línea horizontal.
+
+% Ejes de coordenadas del plano cartesiano.
+\draw[-latex, line width = 0.3mm] (0, -0.3) -- (0, 4.4) node [left] {$y$}; % Eje vertical.
+\draw[-latex, line width = 0.3mm] (-0.3, 0) -- (5, 0) node [below] {$x$};  % Eje horizontal.
+
+% Etiquetas de los ejes de coordenadas.
+\foreach \i \j \l in {1/0/1, 4/1/3.5} {
+  \node at (\i, -0.3) {$x_{\j}$};
+  \node at (-0.3, \l) {$y_{\j}$};
+}
+
+% Delimitación de coordenadas.
+\draw[style = dashed, color = gray] (1, 0) -- (1, 1) -- (0, 1);
+\draw[style = dashed, color = gray] (4, 0) -- (4, 3.5) -- (0, 3.5);
+
+% Vector.
+\draw[-stealth, line width = 0.6mm] (1, 1) -- node [above left] {$\vecmat{a}$} (3.91, 3.44);
+
+% Puntos terminales.
+\draw[fill = black] (1, 1) circle (0.1) node[below right] {$A(x_{0}, \ y_{0})$};
+\draw[fill = black] (4, 3.5) circle (0.1) node [right] {$B(x_{1}, \ y_{1})$};
+
+\end{tikzpicture}
+
 \end{figure}
 
-La gráfica de arriba es posible obtenerla cuando conocemos los \textbf{componentes} de un vector, que indican su \textbf{distancia con respecto a sus ejes}. La \textbf{dimensión} de dicho vector está determinado por la cantidad de éstos.
-
-Los componentes de un vector suelen escribirse en paréntesis angulares $\langle \cdot \rangle$. Por ejemplo, si los componentes de un vector $\mathbf{a}$ son $a_{1}$, $a_{2}$ y $a_{3}$, entonces podemos denotarlo como:
+Para dos constantes $a_{1}$ y $a_{2}$, podemos definir las coordenadas del punto $B(x_{1}, \ y_{1})$ como:
 \[
-  \mathbf{a} = \langle a_{1}, \ a_{2}, \ a_{3} \rangle
+  x_{1} = x_{0} + a_{1} \qquad \qquad y_{1} = y_{0} + a_{2}
 \]
-donde:
-\begin{align*}
-  a_{1} &= x_{2} - x_{1} & a_{2} &= y_{2} - y_{1} & a_{3} &= z_{2} - z_{1}
-\end{align*}
+Es decir, $B$ puede ser entendido como un punto desplazado desde $A$ hasta su ubicación donde el vector $\vecmat{a}$ indica su trayectoria en forma de segmento orientado.
 
-\subsection{Magnitud de un vector.}
-
-La \textbf{magnitud de un vector} se calcula a partir de sus componentes y se denota como $||\mathbf{a}||$. Sea $\mathbf{a} = \langle a_{1}, \ a_{2}, \ a_{3} \rangle$, su magnitud corresponde a:
+Al despejar a las constantes $a_{1}$ y $a_{2}$ en $x_{1}$ e $y_{1}$, obtenemos los \textbf{componentes} del vector $\vecmat{a}$.
 \[
-  ||\mathbf{a}|| = \sqrt{a_{1}^{2} + a_{2}^{2} + a_{3}^{2}}
+  a_{1} = x_{1} - x_{0} \qquad \qquad a_{2} = y_{1} - y_{0}
 \]
-Esta fórmula se puede aplicar a vectores de cualquier dimensionalidad y está basada en el \textbf{Teorema de Pitágoras}.
+Así, la representación \textbf{forma componente} de un vector es aquella que indica su posición en un sistema de coordenadas como la distancia de su punto terminal con respecto al inicial.
+\[
+  \vecmat{a} = \langle a_{1}, \ a_{2} \rangle = \langle x_{1} - x_{0}, \ y_{1} - y_{0} \rangle
+\]
+Una consecuencia de esta representación es que, independiente de la ubicación de \textbf{dos o más vectores} en un sistema de coordenadas, estos \textbf{serán iguales} si \textbf{tienen la misma magnitud} y están en la \textbf{misma dirección}.
 
-\textbf{Demostración.} Sea $\mathbf{a} = \langle a_{1}, \ a_{2} \rangle$, con $a_{1} = x_{2} - x_{1}$ y $a_{2} = y_{2} - y_{1}$.
-
-Con la distancia horizontal y vertical entre el punto terminal $Q(x_{2}, \ y_{2})$ y el inicial $P(x_{1}, \ y_{1})$ de $\mathbf{a}$, podemos formar un triángulo rectángulo donde el largo de su hipotenusa es $||\mathbf{a}||$.
+Cuando se representa a un vector en forma componente, comúnmente se usa el \textbf{origen} como punto inicial. Estos reciben el nombre de \textbf{vector de posición} o \textbf{vector estándar}.
+\[
+  \vecmat{b} = \langle b_{1}, \ b_{2} \rangle = \langle x_{1} - 0, \ y_{1} - 0 \rangle = \langle x_{1}, \ y_{1} \rangle
+\]
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.65]{img/magn-proof.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (-2, -1) grid (14, 6); % Celdas.
+%\draw[color = gray] (0, -1) -- (0, 6);          % Línea vertical.
+%\draw[color = gray] (-2, 0) -- (14, 0);         % Línea horizontal.
+
+% Ejes de coordenadas del plano cartesiano.
+\draw[-latex, line width = 0.3mm] (0, -0.3) -- (0, 4) node [left] {$y$}; % Eje vertical.
+\draw[-latex, line width = 0.3mm] (-0.3, 0) -- (4, 0) node [below] {$x$};  % Eje horizontal.
+
+% Etiquetas de los ejes de coordenadas.
+\node at (3, -0.3) {$x_{1}$};
+\node at (-0.3, 3) {$y_{1}$};
+
+% Delimitación coordenadas.
+\draw[style = dashed, color = gray] (3, 0) -- (3, 3) -- (0, 3);
+
+% Vector.
+\draw[-stealth, line width = 0.6mm] (0, 0) -- node [above left] {$\vecmat{b}$} (2.96, 2.92);
+
+% Puntos terminales.
+\draw[fill = black] (0, 0) circle (0.1) node[below left] {$C(0, \ 0)$};
+\draw[fill = black] (3, 3) circle (0.1) node[right] {$B(x_{1}, \ y_{1})$};
+
+\end{tikzpicture}
+
+\caption{Vector de posición $\vecmat{b} = \langle b_{1}, \ b_{2} \rangle$.}
+
 \end{figure}
 
-Por medio del Teorema de Pitágoras, podemos conocer el valor de $||\mathbf{a}||$ como la raíz cuadrada de la suma de sus catetos $a_{1}$ y $a_{2}$ elevados al cuadrado.
-\begin{align*}
-  ||\mathbf{a}||^{2} &= (x_{2} - x_1)^{2} + (y_{2} - y_{1})^{2} \\
-                     &= a_{1}^{2} + a_{2}^{2} \\
-      ||\mathbf{a}|| &= \sqrt{a_{1}^{2} + a_{2}^{2}} \quad \text{(Q.E.D)}
-\end{align*}
-En ese sentido, si tenemos un vector $\mathbf{a}$ de $n$ componentes, su magnitud se calcula como:
+La \textbf{cantidad de componentes} de un vector está determinado por la \textbf{dimensión} del sistema de coordenadas en el que estemos trabajando. En ese sentido, en uno de tres con valores reales, o $\R^{3}$, se denotaría como:
 \[
-  ||\mathbf{a}|| = \sqrt{a_{1}^{2} + a_{2}^{2} + \cdots + a_{n}^{2}} = \sqrt{\sum_{i = 1}^{n} a_{i}^{2}}
+  \vecmat{a} = \langle a_{1}, \ a_{2}, \ a_{3} \rangle
+             = \langle x_{1} - x_{0}, \ y_{1} - y_{0}, \ z_{1} - z_{0} \rangle;
+             \text{ para } \vecmat{a} \in \R^{3}
+\]
+Y para uno de $n$ componentes, con $n \in \N$:
+\[
+  \vecmat{a} = \langle a_{1}, \ a_{2}, \ \ldots, \ a_{n} \rangle; \text{ para } \vecmat{a} \in \R^{n}
 \]
 
-\subsection{Vectores Unitarios.}
+\subsubsection{Operaciones básicas con vectores.}
 
-Un vector puede ser representado como la suma de las multiplicaciones entre sus componentes y \textbf{vectores unitarios}, que son aquellos magnitud igual a $1$ y se denotan con un $\hat{\cdot}$ arriba.
+La forma componente de un vector permite realizar operaciones básicas como la adición vectorial y la multiplicación escalar.
 
-Por ejemplo, el vector $\mathbf{a} = \langle a_{1}, \ a_{2}, \ a_{3} \rangle$ es equivalente a:
+Si $\vecmat{a}$ y $\vecmat{b}$ son dos vectores de \textbf{igual dimensión}, entonces la \textbf{suma} entre ellos resulta en el \textbf{vector}:
 \[
-  \mathbf{a} = a_{1}\hat{\mathbf{i}} + a_{2}\hat{\mathbf{j}} + a_{3}\hat{\mathbf{k}}
+  \vecmat{a} + \vecmat{b} = \langle a_{1} + b_{1}, \ a_{2} + b_{2}, \ \ldots, \ a_{n} + b_{n} \rangle
 \]
-donde $\hat{\mathbf{i}}$, $\hat{\mathbf{j}}$ y $\hat{\mathbf{k}}$ son \textbf{vectores unitarios} de componentes:
-\begin{align*}
-  \hat{\mathbf{i}} &= \langle 1, \ 0, \ 0 \rangle &
-  \hat{\mathbf{j}} &= \langle 0, \ 1, \ 0 \rangle &
-  \hat{\mathbf{k}} &= \langle 0, \ 0, \ 1 \rangle
-\end{align*}
-y magnitudes:
-\begin{align*}
-  ||\hat{\mathbf{i}}|| &= \sqrt{1^{2} + 0^{2} + 0^{2}} = 1 &
-  ||\hat{\mathbf{j}}|| &= \sqrt{0^{2} + 1^{2} + 0^{2}} = 1 &
-  ||\hat{\mathbf{k}}|| &= \sqrt{0^{2} + 0^{2} + 1^{2}} = 1
-\end{align*}
-Observemos que al sumar estas multiplicaciones, obtenemos el mismo vector escrito con $\langle \cdot \rangle$.
-\begin{align*}
-\mathbf{a} &= a_{1}\hat{\mathbf{i}} + a_{2}\hat{\mathbf{j}} + a_{3}\hat{\mathbf{k}} \\
-           &= a_{1} \langle 1, \ 0, \ 0 \rangle + a_{2} \langle 0, \ 1, \ 0 \rangle + a_{3} \langle 0, \ 0, \ 1 \rangle \\
-           &= \langle a_{1}, \ 0, \ 0 \rangle + \langle 0, \ a_{2}, \ 0 \rangle + \langle 0, \ 0, \ a_{3} \rangle \\
-\mathbf{a} &= \langle a_{1}, \ a_{2}, \ a_{3} \rangle
-\end{align*}
-Estas sumas de las multiplicaciones entre una cantidad\footnote{Puede ser un número o un vector. Cuando se aplica a este último se obtiene un nuevo vector.} y una constante, también se conoce como \textbf{Combinación Lineal}.
+Una interpretación geométrica de la adición vectorial es que corresponde al vector que cierra el triángulo que se forma al unir el punto inicial de uno de ellos con el terminal del otro.
 
-En general, todo vector de magnitud igual a $1$ es unitario. Por ejemplo, podría interesarnos buscar un \textbf{vector unitario $\hat{\mathbf{i}}$} que esté en la \textbf{misma dirección} de $\mathbf{a}$. Aquello es posible lograrlo de la siguiente forma:
-\[
-  \hat{\mathbf{i}} = \left(\frac{1}{||\mathbf{a}||}\right) \cdot \mathbf{a}
-                   = \left(\frac{1}{||\mathbf{a}||}\right) \cdot \langle a_{1}, \ a_{2}, \ a_{3} \rangle
-                   = \left\langle \frac{a_{1}}{||\mathbf{a}||}, \ \frac{a_{2}}{||\mathbf{a}||}, \frac{a_{3}}{||\mathbf{a}||} \right\rangle
-\]
-La fórmula de arriba se aplica también a aquellos de $n$ dimensiones y se conoce como \textbf{Normalización} del vector $\mathbf{a}$, donde siempre se cumplirá que:
-\[
-  ||\hat{\mathbf{i}}|| = \sqrt{
-                                \left(\frac{a_{1}}{||\mathbf{a}||}\right)^{2} +
-                                \left(\frac{a_{2}}{||\mathbf{a}||}\right)^{2} +
-                                \left(\frac{a_{3}}{||\mathbf{a}||}\right)^{2}
-                              }
-                       = 1
-\]
-
-\subsection{Vectores y Ángulos.}
-
-Cuando trabajamos con vectores de forma geométrica en un plano, suele ser de interés el ángulo que se forma con respecto a otro objeto.
-
-Por ejemplo, la \textbf{dirección de un vector} de dos dimensiones se puede conocer a partir del ángulo $\theta$ que se forma entre su punto inicial y una recta horizontal que pasa por él. Para ello, podemos ubicarlo en una circunferencia unitaria entre el origen y el punto $(x, \ y)$.
-
-%\newpage
+\newpage
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.6]{img/direction-vector-1.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (-2, -0.5) grid (14, 4);
+%\draw[color = gray] (0, -0.5) -- (0, 4);
+%\draw[color = gray] (-2, 0) -- (14, 0);
+
+% Vectores.
+\draw[-stealth, line width = 0.5mm, color = red!85] (2, 0) -- node[left] {$\vecmat{a} +\vecmat{b}$} (2.97, 2.9); % vector a + b.
+\draw[-stealth, line width = 0.5mm] (2, 0) -- node[right] {$\vecmat{a}$} (4, 1.5); % vector a.
+\draw[-stealth, line width = 0.5mm] (4, 1.5) -- node[above right] {$\vecmat{b}$} (3, 3); % vector b.
+\end{tikzpicture}
+
 \end{figure}
 
-El radio de una circunferencia es la distancia entre ésta y su centro. En el caso de la unitaria es igual a $1$ y, como vemos en la gráfica de arriba, coincide con la magnitud de $\mathbf{a}$. Por lo tanto, acá $||\mathbf{a}|| = 1$.
+Otra interpretación de la adición vectorial es ser entendida como la diagonal de un paralelogramo formado entre los dos vectores que la originan.
 
-También se puede observar que $a_{1} = x - 0$ y $a_{2} = y - 0$, donde $a_{1}$ y $a_{2}$ son las componentes de $\mathbf{a}$ los que, en conjunto, forman un triángulo rectángulo. En ese sentido, con el ángulo $\theta$ podemos usar funciones trigonométricas para conocer su relación con los componentes y la magnitud de este vector:
-\begin{align*}
-\sin(\theta) &= \frac{a_{2}}{||\mathbf{a}||} = \frac{a_{2}}{1} = a_{2} &
-\cos(\theta) &= \frac{a_{1}}{||\mathbf{a}||} = \frac{a_{1}}{1} = a_{1} &
-\tan(\theta) &= \frac{a_{2}}{a_{1}} = \frac{\cos(\theta)}{\sin(\theta)}
-\end{align*}
-Así, con la inversa de una de ellas podemos conocer al ángulo de dirección $\theta$ de un vector.
-\begin{align*}
-\sin^{-1}(a_{2}) &= \theta &
-\cos^{-1}(a_{1}) &= \theta &
-\tan^{-1}\left(\frac{a_{2}}{a_{1}}\right) &= \theta
-\end{align*}
-Por tanto, un vector también puede ser expresado a partir de su ángulo director, puesto que:
-\begin{align*}
-\sin(\theta) &= \frac{a_{2}}{||\mathbf{a}||} & \cos(\theta) &= \frac{a_{1}}{||\mathbf{a}||} \\
-||\mathbf{a}|| \cdot \sin(\theta) &= a_{2} & ||\mathbf{a}|| \cdot \cos(\theta) &= a_{1}
-\end{align*}
-Y, en consecuencia, $\mathbf{a} = \langle ||\mathbf{a}|| \cos(\theta), \ ||\mathbf{a}|| \sin(\theta) \rangle$ o también $\mathbf{a} = ||\mathbf{a}||\cos(\theta)\hat{\mathbf{i}} + ||\mathbf{a}||\sin(\theta)\hat{\mathbf{j}}$.
+\begin{figure}[hbt!]
+\centering
 
-Ahora bien, lo anterior solo es aplicable a vectores de dos dimensiones, pero en la siguiente sección veremos una forma obtener el ángulo director con aquellos de tres.
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (-2, -0.5) grid (14, 4);
+%\draw[color = gray] (0, -0.5) -- (0, 4);
+%\draw[color = gray] (-2, 0) -- (14, 0);
 
-\section{Operaciones entre Vectores.}
+% Vectores.
+\draw[-stealth, line width = 0.5mm, color = red!85] (1, 0) -- node [above, rotate = 50] {$\vecmat{a} + \vecmat{b}$} (3.17, 2.95);
+\draw[-stealth, line width = 0.5mm] (1, 0) -- node[left] {$\vecmat{a}$} (1.3, 2);
+\draw[-stealth, line width = 0.5mm] (1, 0) -- node[below right] {$\vecmat{b}$} (3, 1.2);
+\draw[style = dashed, line width = 0.3mm] (3, 1.2) -- (3.2, 3) -- (1.3, 2);
+\end{tikzpicture}
 
-\subsection{Adición entre vectores y Multiplicación Escalar.}
+\end{figure}
 
-En la sección anterior realizamos sumas entre vectores y multiplicaciones escalares. Ahora profundizemos en estas operaciones.
-
-En general, si tenemos dos vectores $\mathbf{a} = \langle a_{1}, \ a_{2}, \ a_{3} \rangle$ y $\mathbf{b} = \langle b_{1}, \ b_{2}, \ b_{3} \rangle$, la \textbf{suma} entre ellos corresponde al siguiente vector:
+Sea $k$ un número. El vector que proviene del producto entre este valor y un vector $\vecmat{a}$ se conoce como \textbf{multiplicación escalar}.
 \[
-  \mathbf{a} + \mathbf{b} = \langle a_{1} + b_{1}, \ a_{2} + b_{2}, \ a_{3} + b_{3} \rangle
+  k \cdot \vecmat{a} = \langle k \cdot a_{1}, \ k \cdot a_{2}, \ \ldots, \ k \cdot a_{n} \rangle
 \]
-La suma entre dos vectores se representa geométricamente como el vector que cierra el triángulo que se forma al unir el punto terminal de un vector al inicial del otro (a); o como el vector diagonal del paralelógramo que se forma al juntarlos en sus puntos iniciales (b).
+Como se indica en su nombre, el efecto geométrico de esta operación es escalar al vector $\vecmat{a}$ mediante $k$. Por otra parte, si el signo de $k$ es distinto al de $\vecmat{a}$, entonces $k$ también cambia la dirección de $\vecmat{a}$.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.5]{img/vector-sums.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (-2, -0.5) grid (14,4);
+%\draw[color = gray] (0, -0.5) -- (0, 4);
+%\draw[color = gray] (-2, 0) -- (14, 0);
+
+% Vectores.
+\draw[-stealth, line width = 0.5mm] (0, 1) -- node[left] {$\vecmat{a}$} (1.3, 3);
+\draw[-stealth, line width = 0.5mm] (1.7, 0.4) -- node[left] {$k \ \vecmat{a}$} (3.5, 3.3);
+\draw[-stealth, line width = 0.5mm] (4.1, 1) -- node[left] {$\displaystyle \frac{1}{k} \ \vecmat{a}$} (4.9, 2.3);
+\draw[stealth-, line width = 0.5mm] (6, 1) -- node[left] {$(-k) \ \vecmat{a}$} (7.3, 3);
+\end{tikzpicture}
+
 \end{figure}
 
-En cuanto al producto entre un escalar $c$ y un vector $\mathbf{a} = \langle a_{1}, \ a_{2}, \ a_{3} \rangle$, conocida como \textbf{multiplicación escalar}, es igual al vector:
+La \textbf{sustracción} entre dos vectores $\vecmat{a}$ y $\vecmat{b}$ se puede entender como la suma vectorial con uno de ellos siendo escalado por $(-1)$.
 \[
-  c \cdot \mathbf{a} = \langle ca_{1}, \ ca_{2}, ca_{3} \rangle
+  \vecmat{a} - \vecmat{b} = \vecmat{a} + (-\vecmat{b}) = \langle a_{1} - b_{1}, \ a_{2} - b_{2}, \ \ldots, \ a_{n} - b_{n} \rangle
 \]
-Cuando a un vector lo multiplicamos por un número o constante, lo que geométricamente estamos haciendo es \textbf{escalarlo}.
+
+\newpage
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.45]{img/scalar-mult.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (-2, -0.5) grid (14,4);
+%\draw[color = gray] (0, -0.5) -- (0, 4);
+%\draw[color = gray] (-2, 0) -- (14, 0);
+
+% Vectores.
+\draw[-stealth, line width = 0.5mm, color = red!85] (3, 1.5) -- node[right] {$\vecmat{a} - \vecmat{b}$} (1.8, 3);
+\draw[-stealth, line width = 0.5mm] (1, 1) -- node[below] {$\vecmat{a}$} (3, 1.5);
+\draw[stealth-, line width = 0.5mm] (1, 1) -- node[left] {$-\vecmat{b}$} (1.8, 3);
+\end{tikzpicture}
+
 \end{figure}
 
-Cuando el escalar $c$ es un \textbf{número negativo} (i.e, $c < 0$), a nivel geométrico significa que \textbf{cambia a su sentido contrario}.
-
-\begin{figure}[hbt!]
-\centering
-\includegraphics[scale=0.45]{img/scalar-mult-2.jpg}
-\end{figure}
-
-Esto también se refleja en la resta $\mathbf{a} - \mathbf{b}$, puesto que en realidad es $\mathbf{a} + (-1)\mathbf{b}$. Es decir, cambia la dirección de $\mathbf{b}$ y, como consecuencia, la magnitud de la suma disminuye.
-
-\begin{figure}[hbt!]
-\centering
-\includegraphics[scale=0.45]{img/vector-subs.jpg}
-\end{figure}
-
-Donde:
-\[
-  \mathbf{a} - \mathbf{b} = \langle a_{1} - b_{1}, \ a_{2} - b_{2}, \ a_{3} - b_{3} \rangle
-\]
-A continuación tenemos algunas propiedades para la suma de vectores y la multiplicación escalar, donde $\mathbf{0}$ es el \textbf{vector cero}, cuyos componentes y magnitud son iguales a cero.
+Sean tres vectores $\vecmat{a}, \ \vecmat{b}, \ \vecmat{c} \in \R^{n}$, $k$ y $w$ dos escalares; y $\vecmat{0}$ el \textbf{vector cero}, cuyos componentes y magnitud son iguales a cero. En la siguiente tabla se resumen las principales propiedades de las operaciones entre vectores.
 
 \begin{table}[hbt!]
-
 \centering
 
 \begin{tabular}{c|c}
 Suma de Vectores & Multiplicación Escalar \\
 \hline
-$\mathbf{a} + \mathbf{b} = \mathbf{b} + \mathbf{a}$ & $c(\mathbf{a} + \mathbf{b}) = c\mathbf{a} + c\mathbf{b}$ \\
-$\mathbf{a} + (\mathbf{b} + \mathbf{c}) = (\mathbf{a} + \mathbf{b}) + \mathbf{c}$ & $(c + d)\mathbf{a} = c\mathbf{a} + d\mathbf{a}$ \\
-$\mathbf{a} + \mathbf{0} = \mathbf{a}$ & $(cd) \mathbf{a} = c(d\mathbf{a}) = d(c\mathbf{a})$ \\
-$\mathbf{a} + (-\mathbf{a}) = \mathbf{0}$ & $1\mathbf{a} = \mathbf{a}$ \\
- & $0\mathbf{a} = \mathbf{0}$ \\
- & $c\mathbf{0} = \mathbf{0}$
+$\vecmat{a} + \vecmat{b} = \vecmat{b} + \vecmat{a}$ & $k(\vecmat{a} + \vecmat{b}) = k\vecmat{a} + k\vecmat{b}$ \\
+$\vecmat{a} + (\vecmat{b} + \vecmat{c}) = (\vecmat{a} + \vecmat{b}) + \vecmat{c}$ & $(k + w)\vecmat{a} = k\vecmat{a} + w\vecmat{a}$ \\
+$\vecmat{a} + \vecmat{0} = \vecmat{a}$ & $(kw) \vecmat{a} = k(w\vecmat{a}) = w(k\vecmat{a})$ \\
+$\vecmat{a} + (-\vecmat{a}) = \vecmat{0}$ & $1\vecmat{a} = \vecmat{a}$ \\
+ & $0\vecmat{a} = \vecmat{0}$ \\
+ & $c\vecmat{0} = \vecmat{0}$
 \end{tabular}
+
+\caption{Propiedades básicas de las operaciones entre vectores.}
 
 \end{table}
 
+\subsubsection{Magnitud de un vector.}
 
+Los componentes de un vector también permiten obtener el valor de su magnitud. Veámoslo con $\vecmat{a}$.
 
-\subsection{Producto Punto.}
-
-No solo podemos multiplicar a un vector con un escalar, también es posible hacerlo con vectores de igual dimensión. Esta operación recibe el nombre de \textbf{producto punto}\footnote{También conocido como ``producto interno'' o ``producto escalar''.}.
-
-Sean $\mathbf{a} = \langle a_{1}, \ a_{2}, \ a_{3} \rangle$ y $\mathbf{b} = \langle b_{1}, \ b_{2}, \ b_{3} \rangle$, el producto punto entre ellos se calcula como:
-\[
-  \mathbf{a} \cdot \mathbf{b} = a_{1}b_{1} + a_{2}b_{2} + a_{3}b_{3}
-\]
-En ese sentido, si $\mathbf{a}$ y $\mathbf{b}$ son de $n$ dimensiones, entonces:
-\[
-  \mathbf{a} \cdot \mathbf{b} = a_{1}b_{1} + a_{2}b_{2} + \cdots + a_{n}b_{n} = \sum_{i = 1}^{n} a_{i}b_{i}
-\]
-Algo a tener muy en cuenta, es que \textbf{el producto punto resulta en un valor escalar}. A diferencia de la multiplicacion escalar, que corresponde a un vector.
-
-Con el producto punto también podemos obtener la \textbf{magnitud de un vector}, el cual es igual a la raíz cuadrada del producto punto entre éste y sí mismo. Por ejemplo, sea $\mathbf{a} = \langle a_{1}, \ a_{2} \rangle$, entonces:
-\[
-  \sqrt{\mathbf{a} \cdot \mathbf{a}} = \sqrt{a_{1}a_{1} + a_{2}a_{2}} = \sqrt{a_{1}^{2} + a_{2}^{2}} = ||\mathbf{a}||
-\]
-Por lo tanto, si elevamos al cuadrado la magnitud de $\mathbf{a}$, recuperamos el producto punto:
-\[
-  ||\mathbf{a}||^{2} = \mathbf{a} \cdot \mathbf{a}
-\]
-A continuación tenemos algunas propiedades del producto punto. Sean $\mathbf{a}$, $\mathbf{b}$ y $\mathbf{d}$ tres vectores de igual dimensiones; y $c$ un escalar:
-\begin{align*}
-& 1) \ \mathbf{a} \cdot \mathbf{b} = \mathbf{b} \cdot \mathbf{a} \\
-& 2) \ (c\mathbf{a}) \cdot \mathbf{b} = c(\mathbf{a} \cdot \mathbf{b}) = \mathbf{b} \cdot (c \mathbf{a}) \\
-& 3) \ (\mathbf{a} + \mathbf{b}) \cdot \mathbf{d} = \mathbf{a} \cdot \mathbf{d} + \mathbf{b} \cdot \mathbf{d}
-\end{align*}
-\textbf{Geométricamente}, el producto punto entre dos vectores $\mathbf{a}$ y $\mathbf{b}$, corresponde a la multiplicación entre sus magnitudes y el coseno del ángulo $\theta$ que se forma entre ellos.
-\[
-  \mathbf{a} \cdot \mathbf{b} = ||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \cos(\theta)
-\]
-Esto puede ser demostrado usando la \textbf{Ley del Coseno}.
-
-\textbf{Demostración.} Sean $\mathbf{a}$ y $\mathbf{b}$ dos vectores de igual dimensión los que, al ser unidos en sus puntos iniciales, forman entre ellos un ángulo $\theta$.
+Si unimos las coordenadas de los puntos inicial y terminal de $\vecmat{a}$ con segmentos discontinuos, obtenemos un triángulo rectángulo $ACB$ con catetos de longitud igual a sus componentes.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.6]{img/dot-product-1.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (-2, -1) grid (14, 6); % Celdas.
+%\draw[color = gray] (0, -1) -- (0, 6);          % Línea vertical.
+%\draw[color = gray] (-2, 0) -- (14, 0);         % Línea horizontal.
+
+% Ejes de coordenadas del plano cartesiano.
+\draw[-latex, line width = 0.3mm] (0, -0.3) -- (0, 4.4) node [left] {$y$}; % Eje vertical.
+\draw[-latex, line width = 0.3mm] (-0.3, 0) -- (7, 0) node [below] {$x$};  % Eje horizontal.
+
+% Etiquetas de los ejes de coordenadas.
+\foreach \i \j \l in {1/0/1, 5/1/3.5} {
+  \node at (\i, -0.3) {$x_{\j}$};
+  \node at (-0.3, \l) {$y_{\j}$};
+}
+
+% Vector.
+\draw[-stealth, line width = 0.7mm] (1.1, 1.07) -- (4.9, 3.43);
+
+% Unión de coordenadas.
+\foreach \i in {1, 3.5} {
+  \draw[style = dashed] (0, \i) -- (5, \i);   % Líneas horizontales.
+}
+\node[below] at (3, 1) {$a_{1} = x_{1} - x_{0}$};
+
+\foreach \j in {1, 5} {
+  \draw[style = dashed] (\j, 0) -- (\j, 3.5); % Líneas verticales.
+}
+\node[right] at (5, 2) {$a_{2} = y_{1} - y_{0}$};
+
+\node[below right] at (5, 1) {$C$};
+
+\draw[fill = gray, color = gray] (5, 1) rectangle (4.7, 1.3); % Ángulo recto.
+
+% Puntos terminales.
+\draw[fill = black] (1, 1) circle (0.1) node[below left] {$A$};
+\draw[fill = black] (5, 3.5) circle (0.1) node [right] {$\vecmat{a} = \langle a_{1}, \ a_{2} \rangle$} node [above] {$B$};
+
+\end{tikzpicture}
+
 \end{figure}
 
-Al trazar al vector $\mathbf{a} - \mathbf{b}$, cuya magnitud es igual a la distancia de los puntos terminales de $\mathbf{a}$ y $\mathbf{b}$, podemos crear un triángulo entre estos tres objetos.
+Como el largo del segmento orientado equivale a la \textbf{magnitud} de $\vecmat{a}$, también denotado como $||\vecmat{a}||$, entonces podemos aplicar el teorema de Pitágoras para obtener su valor.
+\[
+  ||\vecmat{a}|| = \sqrt{a_{1}^{2} + a_{2}^{2}}
+\]
+Es posible generalizar el cálculo de $||\vecmat{a}||$ para cualquier $\vecmat{a} \in \R^{n}$ como:
+\[
+  ||\vecmat{a}|| = \sqrt{\sum_{i = 1}^{n} a_{i}^{2}} = \sqrt{a_{1}^{2} + a_{2}^{2} + \ldots + a_{n}^{2}}
+\]
+El valor de $||\vecmat{a}||$ también se conoce como \textbf{norma euclidiana} (o norma\footnote{También es expresada como norma $l^{2}$, $2$-norma o norma cuadrática y es denotada como $|| \cdot ||_{2}$.}) y es una función $|| \cdot ||: \R \to \R_{0}^{+}$.\footnote{El símbolo $\R_{0}^{+}$ representa a los números reales no negativos (i.e, mayores o iguales a cero).} Se cataloga como ``euclidiana'' porque devuelve el valor de la distancia euclidiana del punto terminal de $\vecmat{a}$ con respecto al inicial, que es lo que acabamos de calcular.
+
+También es posible calcular la norma de otros objetos tales como matrices (que estudiaremos más adelante) o tensores (que no estudiaremos). En este curso lo aplicaremos solo a vectores.
+
+\subsection{Mediante vectores unitarios.}
+
+Un vector también puede ser representado como la \textbf{adición vectorial entre vectores unitarios escalados por sus componentes}.
+\[
+  \vecmat{a} = a_{1} \vecmat{\hat{e}}_{1} + a_{2} \vecmat{\hat{e}}_{2} + \ldots + a_{n} \vecmat{\hat{e}}_{n}
+             = \sum_{i = 1}^{n} a_{i} \vecmat{\hat{e}}_{i}
+\]
+donde los $\vecmat{\hat{e}}_{i}$ son vectores unitarios.
+
+Los \textbf{vectores unitarios} son todos aquellos de \textbf{magnitud igual a} $1$. Para representar a otro vector, se suelen usar \textbf{vectores unitarios estándar}, que se caracterizan por ser \textbf{paralelos} a los ejes de un sistema cartesiano y \textbf{ortogonales} (i.e, perpendiculares) entre ellos.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.6]{img/dot-product-2.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (-2, -0.5) grid (14, 5);
+%\draw[color = gray] (0, -0.5) -- (0, 5);
+%\draw[color = gray] (-2, 0) -- (14, 0);
+
+% Ejes de coordenadas.
+\draw[-stealth, line width = 0.3mm] (0, -0.5) -- (0, 4.2) node[left] {$y$};
+\draw[-stealth, line width = 0.3mm] (-0.5, 0) -- (5, 0) node [below] {$x$};
+
+% Vectores.
+%% Vector a.
+\draw[-stealth, line width = 0.7mm] (1, 0.7) -- node[above left] {$\vecmat{a}$} (4, 3.7);
+
+%% Vector unitario y escalado horizontal.
+\draw[-stealth, line width = 0.5mm, color = blue!75] (1, 0.7) -- (4, 0.7) node[below, font = \small] {$a_{1} \vecmat{\hat{e}}_{1}$};
+\draw[-stealth, line width = 0.5mm, color = red!85] (1, 0.7) -- node[below, font = \small] {$\vecmat{\hat{e}}_{1}$}(2, 0.7);
+
+%% Vector unitario y escalado vertical.
+\draw[-stealth, line width = 0.5mm, color = blue!75] (4, 0.7) -- (4, 3.7) node[right, font = \small] {$a_{2} \vecmat{\hat{e}}_{2}$};
+\draw[-stealth, line width = 0.5mm, color = red!85] (4, 0.7) -- node[right, font = \small] {$\vecmat{\hat{e}}_{2}$} (4, 1.7);
+\end{tikzpicture}
+
+\caption{Vector $\vecmat{a}$ representado con vectores unitarios estándar $\vecmat{\hat{e}}_{1}$ y $\vecmat{\hat{e}}_{2}$.}
+
 \end{figure}
 
-Con $||\mathbf{a}||$, $||\mathbf{b}||$ y $\angle \theta$, podemos conocer a $||\mathbf{a} - \mathbf{b}||$ a partir de la \textbf{Ley del Coseno}, cuya fórmula para este caso es:
+También es posible transformar un vector $\vecmat{a}$ en uno unitario. Este proceso se conoce como \textbf{normalización vectorial} y consiste en multiplicarlo por el recíproco de su magnitud.
 \[
-  ||\mathbf{a} - \mathbf{b}||^{2} = ||\mathbf{a}||^{2} + ||\mathbf{b}||^{2} - 2 \cdot ||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \cos(\theta)
-\]
-Anteriormente vimos que el producto punto entre un vector y sí mismo es igual a su magnitud al cuadrado. Por lo tanto:
-\begin{align*}
-(\mathbf{a} - \mathbf{b}) \cdot (\mathbf{a} - \mathbf{b}) &=
-    (\mathbf{a} \cdot \mathbf{a}) + (\mathbf{b} \cdot \mathbf{b}) - 2 \cdot ||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \cos(\theta) \\
-(\mathbf{a} \cdot \mathbf{a}) - (\mathbf{a} \cdot \mathbf{b}) - (\mathbf{b} \cdot \mathbf{a}) + (\mathbf{b} \cdot \mathbf{b}) &=
-    (\mathbf{a} \cdot \mathbf{a}) + (\mathbf{b} \cdot \mathbf{b}) - 2 \cdot ||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \cos(\theta) \\
--2 \cdot (\mathbf{a} \cdot \mathbf{b}) &= - 2 \cdot ||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \cos(\theta) \\
-\mathbf{a} \cdot \mathbf{b} &= ||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \cos(\theta) \quad (\text{Q.E.D})
-\end{align*}
-A partir de esta fórmula, podemos conocer a $\theta$ como el arcocoseno (o la función inversa del coseno) del cociente entre el producto punto de $\mathbf{a}$ y $\mathbf{b}$ y la multiplicación de sus magnitudes.
-\[
-  \theta = \cos^{-1}\left(\frac{\mathbf{a} \cdot \mathbf{b}}{||\mathbf{a}|| \cdot ||\mathbf{b}||}\right)
-\]
-El ángulo $\theta$ nos entrega información relevante sobre el producto punto entre dos vectores y viceversa también. Esto lo vemos en la siguiente tabla:
-
-\begin{table}[hbt!]
-
-\centering
-
-\begin{tabular}{c|c|c}
-$\theta$ en Grados & $\theta$ en Radianes & Prod. Punto \\
-\hline
-$0^{\text{o}} \leq \theta < 90^{\text{o}}$ & $0 \leq \theta < \pi/2$ & $\mathbf{a} \cdot \mathbf{b} > 0$ \\
-$\theta = 90^{\text{o}}$ & $\theta = \pi/2$ & $\mathbf{a} \cdot \mathbf{b} = 0$ \\
-$90^{\text{o}} < \theta \leq 180^{\text{o}}$ & $\pi/2 < \theta \leq \pi$ & $\mathbf{a} \cdot \mathbf{b} < 0$
-\end{tabular}
-
-\end{table}
-
-Un concepto que veremos mucho al trabajar con vectores, es el de \textbf{ortogonalidad}, que es el sinónimo geométrico de \textbf{perpendicularidad}.
-
-\textbf{Vectores Ortogonales}: Sean $\mathbf{a}$ y $\mathbf{b}$ dos vectores de igual dimensionalidad:
-\[
-  \mathbf{a} \perp \mathbf{b} \iff \mathbf{a} \cdot \mathbf{b} = 0
+  \vecmat{\hat{a}} = \frac{1}{||\vecmat{a}||} \cdot \vecmat{a}; \text{ con } ||\vecmat{\hat{a}}|| = 1
 \]
 
-\textbf{Ejercicio.} Demuestre por qué la ecuación $x + 2y + 3z = 0$ es un plano.
+\subsection{Usando su magnitud y dirección.}
 
-\textbf{Solución.} Si nos damos cuenta, el lado izquierdo de la ecuación sigue la forma de haber aplicado el producto punto entre dos vectores. Entonces, sean $\mathbf{a} = \langle x, \ y, \ z \rangle$ y $\mathbf{b} = \langle 1, \ 2, \ 3 \rangle$:
-\[
-  x + 2y + 3z = \mathbf{a} \cdot \mathbf{b} = 0
-\]
-Como vemos, $\mathbf{a}$ y $\mathbf{b}$ son ortogonales, puesto que el producto punto entre ellos es igual a cero.
+Una tercera forma de representar a un vector es a partir de la información que entregan su \textbf{dirección y magnitud}.
 
-El vector $\mathbf{a}$ son las todas las soluciones de la ecuación. Por lo tanto, podemos decir que todas ellas son perpendiculares a $\mathbf{b}$ y la única posibilidad de que así sea, es que la superficie generada sea totalmente plana. Es por ello que concluimos que $x + 2y + 3z = 0$, es un plano.
-
-
-\subsection{Ángulos Directores de un Vector en Tres Dimensiones.}
-
-Para conocer la dirección de un vector en tres dimensiones, podemos usar la fórmula vista anteriormente para obtener el ángulo entre dos vectores.
-
-En particular, la idea es trabajar el vector expresado en términos de vectores unitarios, porque usaremos los ángulos que se forman entre éstos y el primero.
-
-A continuación tenemos graficado al vector $\mathbf{a} = a_{1}\hat{\mathbf{i}} + a_{2}\hat{\mathbf{j}} + a_{3}\hat{\mathbf{k}}$.
+La \textbf{dirección} de un vector es dada por el \textbf{ángulo} $\angle \theta$ que se forma entre éste y una recta horizontal $L$ que pasa por su punto de origen.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.7]{img/dir-angles-3d.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (10, 4);
+
+% Recta.
+\draw (0, 1) -- (6.5, 1) node [above] {$L$};
+\node at (3.3, 1.3) {$\theta$};
+
+%Vector.
+\draw[-stealth, line width = 0.6mm] (2.5, 1) -- node[above left] {$\vecmat{a}$} (5, 3.5);
+\end{tikzpicture}
+
 \end{figure}
 
-Como vemos, entre $\mathbf{a}$ e $\hat{\mathbf{i}}$ está $\angle \alpha$; entre $\mathbf{a}$ y $\hat{\mathbf{j}}$ está $\angle \beta$; y entre $\mathbf{a}$ y $\hat{\mathbf{k}}$ está $\angle \gamma$. Por lo tanto, debido a que en todos ellos podemos aplicar la ley del coseno, estos ángulos los obtenemos como:
+Si trazamos un segmento vertical desde el punto terminal de $\vecmat{a}$ hasta $L$, podemos formar un triángulo rectángulo $ACB$.
+
+\begin{figure}[hbt!]
+\centering
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (10, 4);
+
+% Recta.
+\draw (0, 1) -- (6.5, 1) node [above] {$L$};
+\node at (3.3, 1.3) {$\theta$};
+
+% Segmento vertical.
+\draw[style = dashed, color = gray] (5, 3.5) -- (5, 1) node [below, color = black] {$C$};
+\draw[fill = gray, color = gray] (5, 1) rectangle (4.7, 1.3);
+
+%Vector.
+\draw[-stealth, line width = 0.6mm] (2.5, 1) node[below] {$A$} -- node[above left] {$\vecmat{a}$} (5, 3.5) node [right] {$B$};
+\end{tikzpicture}
+
+\end{figure}
+
+Suponga que $\vecmat{a} \in \R^{2}$. Entonces $\overline{AC} = a_{1}$, $\overline{BC} = a_{2}$ y $\overline{AB} = ||\vecmat{a}||$. Usemos esta información para calcular las funciones seno y coseno de $\theta$.
+\[
+  \sin(\theta) = \frac{a_{2}}{||\vecmat{a}||} \qquad \qquad \cos(\theta) = \frac{a_{1}}{||\vecmat{a}||}
+\]
+Al despejar a $a_{1}$ y $a_{2}$ en las ecuaciones de arriba, se obtienen los componentes de $\vecmat{a}$ en términos de su dirección y magnitud.
+\[
+  a_{1} = ||\vecmat{a}|| \cdot \cos(\theta) \qquad \qquad a_{2} = ||\vecmat{a}|| \cdot \sin(\theta)
+\]
+Por lo tanto,
+\[
+  \vecmat{a} = \langle ||\vecmat{a}|| \cdot \cos(\theta), \ ||\vecmat{a}|| \cdot \sin(\theta) \rangle
+             = [||\vecmat{a}|| \cdot \cos(\theta)] \vecmat{\hat{e}}_{1} + [||\vecmat{a}|| \cdot \sin(\theta)] \vecmat{\hat{e}}_{2}
+\]
+Una consecuencia de esta representación de $\vecmat{a}$ es que:
+\[
+  \theta = \arccos\left(\frac{a_{1}}{||\vecmat{a}||}\right) = \arcsin\left(\frac{a_{2}}{||\vecmat{a}||}\right)
+\]
+
+
+\section{Producto punto.}
+
+Además de las vistas en la sección 2.1.1, otra operación importante entre vectores es el \textbf{producto punto}.
+
+\subsection{Definición algebraica.}
+
+Sean $\vecmat{a}, \ \vecmat{b} \ \in \R^{n}$. El producto punto entre ambos vectores es un \textbf{escalar} definido como:
+\[
+  \vecmat{a} \cdot \vecmat{b} = a_{1} b_{1} + a_{2} b_{2} + \ldots + a_{n} b_{n} = \sum_{i = 1}^{n} a_{i} b_{i}
+\]
+Mediante el producto punto se pueden obtener las siguientes propiedades, con $\vecmat{a}, \ \vecmat{b}, \ \vecmat{c} \in \R^{n}$ y $k \in \R$.
+
+\begin{itemize}
+\item[a)] $\vecmat{a} \cdot \vecmat{b} = \vecmat{b} \cdot \vecmat{a}$
+\item[b)] $(k \vecmat{a}) \cdot \vecmat{b} = \vecmat{a} \cdot (k \vecmat{b}) = k (\vecmat{a} \cdot \vecmat{b})$
+\item[c)] $\vecmat{a} \cdot (\vecmat{b} + \vecmat{c}) = \vecmat{a} \cdot \vecmat{b} + \vecmat{a} \cdot \vecmat{c}$
+\item[d)] $\vecmat{0} \cdot \vecmat{a} = 0$
+\item[e)] $\vecmat{a} \cdot \vecmat{a} = ||\vecmat{a}||^{2}$
+\end{itemize}
+
+De la propiedad e) se puede concluir que:
+\[
+  ||\vecmat{a}|| = \sqrt{\vecmat{a} \cdot \vecmat{a}}
+\]
+
+\subsection{Definición geométrica.}
+
+El producto punto entre dos vectores también entrega información del ángulo que se forma entre ellos al unirlos en sus puntos iniciales.
+
+En particular, la definición geométrica del producto punto entre dos vectores $\vecmat{a}, \ \vecmat{b} \in \R^{n}$ es:
+\[
+  \vecmat{a} \cdot \vecmat{b} = ||\vecmat{a}|| \ ||\vecmat{b}|| \ \cos(\theta)
+\]
+donde $\theta$ es el ángulo que se forma entre ellos al unirlos en sus puntos iniciales.
+
+\textbf{Demostración.} Tracemos a los vectores $\vecmat{a}$, $\vecmat{b}$ y $\vecmat{a} - \vecmat{b}$ para formar un triángulo. También incluyamos al $\angle \theta$ que se forma entre $\vecmat{a}$ y $\vecmat{b}$.
+
+\begin{figure}[hbt!]
+\centering
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (12, 4);
+
+% Vectores.
+\draw[-stealth, line width = 0.6mm] (2, 1) -- node[above left] {$\vecmat{b}$} (3.2, 3.3);
+\draw[-stealth, line width = 0.6mm] (2, 1) -- node[below] {$\vecmat{a}$} (5, 1.2);
+\draw[-stealth, line width = 0.6mm] (3.2, 3.3) -- node[right] {$\vecmat{a} - \vecmat{b}$} (4.97, 1.22);
+\node at (2.4, 1.3) {$\theta$};
+\end{tikzpicture}
+
+\end{figure}
+
+Luego, calculemos el lado $||\vecmat{a} - \vecmat{b}||$ mediante la \textbf{ley del coseno}.
+\[
+  ||\vecmat{a} - \vecmat{b}||^{2} = ||\vecmat{a}||^{2} + ||\vecmat{b}||^{2} - 2 ||\vecmat{a}|| \ ||\vecmat{b}|| \cos(\theta)
+\]
+Al aplicar las propiedades e), c) y a) del producto punto, obtenemos lo siguiente:
 \begin{align*}
-  \alpha &= \cos^{-1}\left(\frac{\mathbf{a} \cdot \hat{\mathbf{i}}}{||\mathbf{a}|| \cdot ||\hat{\mathbf{i}}||}\right)
-          = \cos^{-1}\left(\frac{\mathbf{a} \cdot \hat{\mathbf{i}}}{||\mathbf{a}||}\right) \\
-  \beta &= \cos^{-1}\left(\frac{\mathbf{a} \cdot \hat{\mathbf{j}}}{||\mathbf{a}|| \cdot ||\hat{\mathbf{j}}||}\right)
-          = \cos^{-1}\left(\frac{\mathbf{a} \cdot \hat{\mathbf{j}}}{||\mathbf{a}||}\right) \\
-  \gamma &= \cos^{-1}\left(\frac{\mathbf{a} \cdot \hat{\mathbf{k}}}{||\mathbf{a}|| \cdot ||\hat{\mathbf{k}}||}\right)
-          = \cos^{-1}\left(\frac{\mathbf{a} \cdot \hat{\mathbf{k}}}{||\mathbf{a}||}\right)
+  (\vecmat{a} - \vecmat{b}) \cdot (\vecmat{a} - \vecmat{b}) &= (\vecmat{a} \cdot \vecmat{a}) + (\vecmat{b} \cdot \vecmat{b})
+                                                              - 2 ||\vecmat{a}|| \ ||\vecmat{b}|| \cos(\theta) \\
+  (\vecmat{a} \cdot \vecmat{a}) - (\vecmat{a} \cdot \vecmat{b}) -
+  (\vecmat{b} \cdot \vecmat{a}) + (\vecmat{b} \cdot \vecmat{b}) &= (\vecmat{a} \cdot \vecmat{a}) + (\vecmat{b} \cdot \vecmat{b})
+                                                                    - 2 ||\vecmat{a}|| \ ||\vecmat{b}|| \cos(\theta) \\
+                                -2(\vecmat{a} \cdot \vecmat{b}) &= -2 ||\vecmat{a}|| \ ||\vecmat{b}|| \cos(\theta) \\
+                                    \vecmat{a} \cdot \vecmat{b} &= ||\vecmat{a}|| \ ||\vecmat{b}|| \cos(\theta) \quad \text{(Q. E. D)}
+\end{align*}
+De la definición geométrica del producto punto podemos sacar dos conclusiones. La primera es que:
+\[
+  \cos(\theta) = \frac{\vecmat{a} \cdot \vecmat{b}}{||\vecmat{a}|| \ ||\vecmat{b}||}
+  \qquad \text{y} \qquad
+  \theta = \arccos\left(\frac{\vecmat{a} \cdot \vecmat{b}}{||\vecmat{a}|| \ ||\vecmat{b}||}\right)
+\]
+La segunda conclusión corresponde a que si $\theta = \frac{\pi}{2}$, entonces:
+\[
+  \vecmat{a} \cdot \vecmat{b} = 0; \text{ ya que } \cos\left(\frac{\pi}{2}\right) = 0
+\]
+Es decir, dos vectores son \textbf{ortogonales} si su producto punto es \textbf{igual a cero}.
+
+Observemos también que:
+\[
+  \vecmat{a} \cdot \vecmat{b} > 0 \iff 0 < \theta < \frac{\pi}{2}
+  \qquad \text{y} \qquad
+  \vecmat{a} \cdot \vecmat{b} < 0 \iff \frac{\pi}{2} < \theta < \pi
+\]
+porque
+\[
+  \cos(\theta) > 0 \iff 0 < \theta < \frac{\pi}{2}
+  \qquad \text{y} \qquad
+  \cos(\theta) < 0 \iff \frac{\pi}{2} < \theta < \pi
+\]
+\textbf{Ejemplo 1.} Calcule el $\angle \theta$ del siguiente triángulo $QPR$ ubicado en el espacio cartesiano\footnote{El ``espacio cartesiano'' es el sistema de coordenadas cartesiano en tres dimensiones.}.
+
+\begin{figure}[hbt!]
+\centering
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (-5, -2) grid (5, 3);
+%\draw[color = gray] (0, -2) -- (0, 3);
+%\draw[color = gray] (-5, 0) -- (5, 0);
+
+% Ejes de coordenadas.
+\draw[-latex, line width = 0.3mm, color = black!80] (0, 0) -- (-2.1, -1.2) node[color = black, below] {$x$};
+\draw[-latex, line width = 0.3mm, color = black!80] (0, 0) -- (2.4, 0) node[color = black, below] {$y$};
+\draw[-latex, line width = 0.3mm, color = black!80] (0, 0) -- (0, 2.6) node[color = black, left] {$z$};
+\node at (-0.2, 0.15) {$0$};
+
+% Triángulo.
+\draw[line width = 0.5mm, color = teal] (-1, -0.6) -- (1, 0) -- (0, 2) -- cycle;
+\node at (-0.65, -0.3) {$\theta$};
+
+% Puntos de coordenadas.
+\draw[color = teal, fill = teal] (-1, -0.6) circle (0.1) node[below right, color = black] {$P(1, \ 0, \ 0)$};
+\draw[color = teal, fill = teal] (1, 0) circle (0.1) node[above right, color = black] {$Q(0, \ 1, \ 0)$};
+\draw[color = teal, fill = teal] (0, 2) circle (0.1) node[left, color = black] {$R(0, \ 0, \ 2)$};
+\end{tikzpicture}
+
+\end{figure}
+
+\textbf{Solución.} Definamos a los vectores
+\begin{align*}
+  \overvec{PQ} &= \langle 0 - 1, \ 1 - 0, \ 0 \rangle = \langle -1, \ 1, \ 0 \rangle \\
+  \overvec{PR} &= \langle 0 - 1, \ 0, \ 2 - 0 \rangle = \langle -1, \ 0, \ 2 \rangle
+\end{align*}
+Luego, calculemos las normas de $\overvec{PQ}$ y $\overvec{PR}$.
+\begin{align*}
+  ||\overvec{PQ}|| &= \sqrt{(-1)^{2} + 1^{2} + 0^{2}} = \sqrt{2} \\
+  ||\overvec{PR}|| &= \sqrt{(-1)^{2} + 0^{2} + 2^{2}} = \sqrt{5}
+\end{align*}
+Por lo tanto,
+\begin{align*}
+  \theta = \arccos\left(\frac{\overvec{PQ} \cdot \overvec{PR}}{||\overvec{PQ}|| \ ||\overvec{PR}||}\right)
+         = \arccos\left(\frac{\langle -1, \ 1, \ 0 \rangle \cdot \langle -1, \ 0, \ 2 \rangle}{(\sqrt{2}) (\sqrt{5})}\right)
+         \approx 75.56^{\circ}
+\end{align*}
+\textbf{Ejemplo 2.} Explique por qué la ecuación $x + 2y + 3z = 0$ genera un plano.
+
+\textbf{Solución.} Se puede observar que esta ecuación genera un plano al expresar su lado izquierdo como el producto punto entre dos vectores $\vecmat{a} = \langle 1, \ 2, \ 3 \rangle$ y $\vecmat{x} = \langle x, \ y, \ z \rangle$.
+\[
+  \vecmat{a} \cdot \vecmat{x} = 0
+\]
+Todas las soluciones de $x + 2y + 3z = 0$ contenidas en $\vecmat{x}$ serán ortogonales a sus coeficientes que están en $\vecmat{a}$. En consecuencia, al graficarlas se formará un plano.
+
+\subsection{Dirección y magnitud mediante el producto punto.}
+
+En la sección 2.3, para representar a un vector usando su ángulo de dirección y su magnitud se usó una recta horizontal que cruzaba su punto inicial. El producto punto entrega otro método para expresarlo con la misma información.
+
+Considere un vector de posición $\vecmat{a} \in \R^{2}$, a sus unitarios estándar $\vecmat{\hat{e}}_{1} = \langle 1, \ 0 \rangle$ y $\vecmat{\hat{e}}_{2} = \langle 0, \ 1 \rangle$; y a los ángulos $\alpha_{1}$ y $\alpha_{2}$ que se forman entre $\vecmat{a}$ y los $\vecmat{\hat{e}}_{i}$.
+
+\begin{figure}[hbt!]
+\centering
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (-5, -2) grid (5, 4);
+%\draw[color = gray] (0, -2) -- (0, 4);
+%\draw[color = gray] (-5, 0) -- (5, 0);
+
+% Ejes de coordenadas.
+\draw[-latex, line width = 0.3mm] (0, 0) -- (3.2, 0) node[below] {$x$};
+\draw[-latex, line width = 0.3mm] (0, 0) -- (0, 3.2) node[left] {$y$};
+\node at (-0.2, 0) {$0$};
+
+% Vectores.
+\draw[-stealth, line width = 0.6mm] (0, 0) -- (2.2, 1.4) node[right] {$\vecmat{a} = \langle a_{1}, \ a_{2} \rangle$};
+\draw[-stealth, line width = 0.6mm, color = red!75] (0, 0) -- node[below] {$\vecmat{\hat{e}}_{1}$} (1.5, 0) node[below, color = black] {$1$};
+\draw[-stealth, line width = 0.6mm, color = red!75] (0, 0) -- node[left] {$\vecmat{\hat{e}}_{2}$} (0, 1.4) node[left, color = black] {$1$};
+
+% Ángulos.
+\node[font = \small] at (0.8, 0.23) {$\alpha_{1}$};
+\node[font = \small] at (0.3, 0.6) {$\alpha_{2}$};
+
+%Arcos.
+\draw[-stealth, line width = 0.2mm] (1.1, 0) arc (0:30:1.2);
+\draw[-stealth, line width = 0.2mm] (1, 0.68) arc [start angle = 0, end angle = 130, x radius = 0.6, y radius = 0.5];
+\end{tikzpicture}
+
+\end{figure}
+
+Luego, calculemos los productos punto entre $\vecmat{a}$ y los $\vecmat{\hat{e}}_{i}$.
+\begin{align*}
+\vecmat{a} \cdot \vecmat{\hat{e}}_{1} &= ||\vecmat{a}|| \ ||\vecmat{\hat{e}}_{1}|| \ \cos(\alpha_{1}) &
+\vecmat{a} \cdot \vecmat{\hat{e}}_{2} &= ||\vecmat{a}|| \ ||\vecmat{\hat{e}}_{2}|| \ \cos(\alpha_{2}) \\
+a_{1} + 0 &= ||\vecmat{a}|| \ 1 \ \cos(\alpha_{1}) &
+0 + a_{2} &= ||\vecmat{a}|| \ 1 \ \cos(\alpha_{2}) \\
+a_{1} &= ||\vecmat{a}|| \ \cos(\alpha_{1}) &
+a_{2} &= ||\vecmat{a}|| \ \cos(\alpha_{2})
+\end{align*}
+De esta manera, podemos representar al vector $\vecmat{a}$ como
+\[
+  \vecmat{a} = \langle ||\vecmat{a}|| \ \cos(\alpha_{1}), \ ||\vecmat{a}|| \ \cos(\alpha_{2}) \rangle
+\]
+Si $\vecmat{a} \in \R^{n}$, entonces:
+\[
+  \vecmat{a} = \langle ||\vecmat{a}|| \ \cos(\alpha_{1}), \ ||\vecmat{a}|| \ \cos(\alpha_{2}),
+                       \ \ldots, \ ||\vecmat{a}|| \ \cos(\alpha_{n}) \rangle
+\]
+De las igualdades de $a_{1}, \ \ldots, \ a_{n}$ también se puede obtener que:
+\[
+  \cos(\alpha_{1}) = \frac{a_{1}}{||\vecmat{a}||}, \quad \cos(\alpha_{2}) = \frac{a_{2}}{||\vecmat{a}||},
+                     \quad \ldots, \quad \cos(\alpha_{n}) = \frac{a_{n}}{||\vecmat{a}||}
+\]
+Mediante estos cosenos surge la siguiente identidad:
+\[
+  \sum_{i = 1}^{n} \cos^{2}(\alpha_{i}) = 1
+\]
+Se puede demostrar al reemplazar los cosenos en la suma.
+\begin{align*}
+  \sum_{i = 1}^{n} \cos^{2}(\alpha_{i}) = \sum_{i = 1}^{n} \left(\frac{a_{i}}{||\vecmat{a}||}\right)^{2}
+                                        = \frac{1}{||\vecmat{a}||^{2}} \ \sum_{i = 1}^{n} a_{i}^{2}
+                                        = \frac{\vecmat{a} \cdot \vecmat{a}}{\vecmat{a} \cdot \vecmat{a}}
+                                        = 1
 \end{align*}
 
+\subsection{Proyecciones vectoriales ortogonales.}
 
+En ocasiones se necesita buscar un vector que sea similar a otro en términos de su magnitud o dirección (o ambos). Una opción es \textbf{proyectarlo ortogonalmente} sobre otro objeto. Cuando éste es un vector, podemos usar el producto punto para realizar esta tarea.
+
+Suponga que queremos proyectar un vector $\vecmat{a}$ sobre otro $\vecmat{b}$. Para ello, los unimos en sus puntos iniciales y trazamos un segmento ortogonal a $\vecmat{b}$, $\overline{DE}$, desde el punto terminal de $\vecmat{a}$.
+
+\begin{figure}[hbt!]
+\centering
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (10, 4);
+
+% Segmento perpendicular.
+\draw[style = dashed] (4, 3.7) node[right, color = black] {$D$} -- (4.17, 1.3) node[below, color = black] {$E$};
+\draw[color = gray, fill = gray] (4.15, 1.58) -- (3.85, 1.545) -- (3.87, 1.25) -- (4.17, 1.27) -- cycle;
+
+% Vectores.
+\draw[-stealth, line width = 0.5mm] (1, 1) -- (4, 3.7) node[above left] {$\vecmat{a}$};
+\draw[-stealth, line width = 0.5mm] (1, 1) node[left] {$C$} -- (5, 1.3) node[below] {$\vecmat{b}$};
+\node at (1.8, 1.35) {$\theta$};
+\end{tikzpicture}
+
+\end{figure}
+
+En ese sentido, la proyección de $\vecmat{a}$ sobre $\vecmat{b}$ será el vector $\overvec{CE}$, que denotaremos como $\proy{a}{b}$.
+
+\begin{figure}[hbt!]
+\centering
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (10, 4);
+
+% Segmento perpendicular.
+\draw[style = dashed] (4, 3.7) node[right, color = black] {$D$} -- (4.17, 1.3) node[below, color = black] {$E$};
+\draw[color = gray, fill = gray] (4.15, 1.58) -- (3.85, 1.545) -- (3.87, 1.25) -- (4.17, 1.27) -- cycle;
+
+% Vectores.
+\draw[-stealth, line width = 0.5mm] (1, 1) node[below] {$C$} -- (4, 3.7) node[above left] {$\vecmat{a}$};
+\draw[-stealth, line width = 0.5mm] (1, 1) -- (5, 1.3) node[below] {$\vecmat{b}$};
+\node at (1.8, 1.35) {$\theta$};
+\draw[-stealth, line width = 0.5mm, color = red!85] (1, 1) -- node[below] {$\proy{a}{b}$} (4.17, 1.24); % Proyección de a sobre b.
+\end{tikzpicture}
+
+\end{figure}
+
+Al igual que con cualquier otro vector, necesitamos conocer la magnitud y dirección de $\proy{a}{b}$. El primer valor se puede obtener mediante el $\cos(\theta)$ del triángulo rectángulo ECD que vemos en la gráfica de arriba.
+\begin{align*}
+                   \cos(\theta) &= \frac{||\proy{a}{b}||}{||\vecmat{a}||} \\
+   \therefore \ ||\proy{a}{b}|| &= ||\vecmat{a}|| \ \cos(\theta)
+\end{align*}
+El escalar $||\proy{a}{b}||$ también se conoce como ``componente de $\vecmat{a}$ sobre $\vecmat{b}$'' o ``proyección escalar''.
+
+Luego, necesitamos que $\proy{a}{b}$ esté en dirección de $\vecmat{b}$. Como está sobre este último y ambos comienzan en el mismo lugar, podemos usar el vector normalizado de $\vecmat{b}$ para que sea escalado por $||\proy{a}{b}||$.
+\[
+  (||\proy{a}{b}||) \ \frac{\vecmat{b}}{||\vecmat{b}||} = (||\vecmat{a}|| \ \cos(\theta)) \ \frac{\vecmat{b}}{||\vecmat{b}||}
+\]
+Por lo tanto, la proyección de $\vecmat{a}$ sobre $\vecmat{b}$ se define como:
+\[
+  \proy{a}{b} = \left(\frac{||\vecmat{a}|| \ \cos(\theta)}{||\vecmat{b}||}\right) \ \vecmat{b}  
+\]
+Esta fórmula es útil solo si conocemos a $\theta$. A partir del \textbf{producto punto} entre $\vecmat{a}$ y $\vecmat{b}$ podemos obtener otra que no depende de este valor.
+\[
+  \vecmat{a} \cdot \vecmat{b} = ||\vecmat{a}|| \ ||\vecmat{b}|| \ \cos(\theta)
+\]
+Anteriormente vimos que $||\proy{a}{b}|| = ||\vecmat{a}|| \ \cos(\theta)$. Por lo tanto,
+\[
+  \vecmat{a} \cdot \vecmat{b} = ||\proy{a}{b}|| \ ||\vecmat{b}||
+\]
+Al multiplicar por el recíproco de $||\vecmat{b}||$ en la igualdad de arriba, obtenemos la proyección escalar de $\vecmat{a}$ sobre $\vecmat{b}$ sin tener que considerar a $\theta$.
+\[
+  ||\proy{a}{b}|| = \frac{\vecmat{a} \cdot \vecmat{b}}{||\vecmat{b}||}
+\]
+Finalmente, al multiplicar por el vector normalizado de $\vecmat{b}$ se concluye que:
+\[
+  \proy{a}{b} = \left(\frac{\vecmat{a} \cdot \vecmat{b}}{||\vecmat{b}||}\right) \ \frac{\vecmat{b}}{||\vecmat{b}||}
+              = \left(\frac{\vecmat{a} \cdot \vecmat{b}}{||\vecmat{b}||^{2}}\right) \ \vecmat{b}
+\]
+Es posible que $||\proy{a}{b}|| < 0$. El motivo se da por el valor que tome $\theta$. Como vimos en la sección 3.2, si $\frac{\pi}{2} < \theta < \pi$, entonces $\cos(\theta) < 0$. La interpretación geométrica de aquello es que la $\proy{a}{b}$ está sentido contrario a $\vecmat{b}$.
+
+\begin{figure}[hbt!]
+\centering
+
+\begin{tikzpicture}
+%Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (10, 4);
+
+% Segmento ortogonal.
+\draw[style = dashed, color = gray, line width = 0.3mm] (2.5, 3) -- (2.5, 1);
+\draw[fill = gray, color = gray] (2.5, 1) rectangle (2.8, 1.3);
+
+%Vectores.
+\draw[-stealth, line width = 0.5mm] (5, 1) node[above] {$\theta$} -- (2.5, 3) node[above]{$\vecmat{a}$};
+\draw[-stealth, line width = 0.5mm] (5, 1) -- (8, 1) node[above] {$\vecmat{b}$};
+\draw[-stealth, line width = 0.5mm, color = red!80] (5, 1) -- (2.5, 1) node[below] {$\proy{a}{b}$};
+\end{tikzpicture}
+
+\caption{Vector $\proy{a}{b}$ con $\frac{\pi}{2} < \theta < \pi$.}
+
+\end{figure}
 
 \end{document}
