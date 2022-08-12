@@ -29,59 +29,6 @@
 \end{abstract}
 
 
-\section{Continuación Determinantes y Producto Cruz.}
-
-Para terminar nuestro estudio sobre los determinantes y el producto cruz visto la clase anterior, revisemos el siguiente ejemplo.
-
-\textbf{Ejemplo.} Considere un plano en un espacio constituido por los puntos $P_{1}$, $P_{2}$ y $P_{3}$. ¿Cuál es la condición para que un cuarto punto $P = (x, \ y, \ z)$ pertenezca al mismo plano?
-
-\begin{figure}[hbt!]
-\centering
-\includegraphics[scale=0.6]{img/ex-determ-cross-prod-1.jpg}
-\end{figure}
-
-\textbf{Solución.} Para comenzar, podemos trabajar este problema trazando vectores entre los puntos como vemos a continuación.
-
-\newpage
-
-\begin{figure}[hbt!]
-\centering
-\includegraphics[scale=0.6]{img/ex-determ-cross-prod-2.jpg}
-\end{figure}
-
-Como recordaremos de la clase pasada, el valor absoluto del determinante entre tres vectores en el espacio es igual al volumen de un paralelepipedo. Si aplicamos lo señalado a este ejemplo, para que $P$ esté en el plano, el sólido que se forma entre los tres debería ser plano o, en otras palabras, no tener volumen. Por lo tanto, debería cumplirse que:
-\[
-  \det(\overrightarrow{P_{1}P}, \ \overrightarrow{P_{1}P_{2}}, \ \overrightarrow{P_{1}P_{3}}) = 0
-\]
-para que $P$ esté en el plano.
-
-Otra manera de resolver este ejemplo, es trazar un vector normal $\mathbf{n}$ (i.e, perpendicular al plano) tal que $\overrightarrow{P_{1}P} \perp \mathbf{n}$.
-
-\begin{figure}[hbt!]
-\centering
-\includegraphics[scale=0.6]{img/ex-determ-cross-prod-3.jpg}
-\end{figure}
-
-Lo primero que debemos hacer, es buscar al vector $\mathbf{n}$, el cual podemos obtener a partir del producto cruz entre $\overrightarrow{P_{1}P_{2}}$ y $\overrightarrow{P_{1}P_{3}}$.
-\[
-  \overrightarrow{P_{1}P_{2}} \times \overrightarrow{P_{1}P_{3}} = \mathbf{n}
-\]
-Por lo tanto, para que $P$ esté en el plano, debe cumplirse que el producto punto entre $\mathbf{n}$ y $\overrightarrow{P_{1}P}$ sea igual a cero.
-\[
-  \mathbf{n} \cdot \overrightarrow{P_{1}P} = 0
-\]
-Veamos, además, que la operación de arriba también corresponde a un triple producto:
-\[
-  \overrightarrow{P_{1}P} \cdot (\overrightarrow{P_{1}P_{2}} \times \overrightarrow{P_{1}P_{3}}) = 0
-\]
-Y en la Clase 2 estudiamos que esta multiplicación de vectores es igual al volumen de un paralelepipedo en el espacio. En consecuencia, es válido señalar que:
-\[
-  \overrightarrow{P_{1}P} \cdot (\overrightarrow{P_{1}P_{2}} \times \overrightarrow{P_{1}P_{3}}) =
-    \det(\overrightarrow{P_{1}P}, \ \overrightarrow{P_{1}P_{2}}, \ \overrightarrow{P_{1}P_{3}}) = 0
-\]
-mostrándonos que ambas soluciones son correctas.
-
-
 \section{Matrices.}
 
 Sea el punto $P = (x_{1}, \ x_{2}, \ x_{3})$, el cual se encuentra en el siguiente espacio de coordenadas.

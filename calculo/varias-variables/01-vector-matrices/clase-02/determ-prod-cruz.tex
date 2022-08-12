@@ -1,389 +1,559 @@
 \documentclass[12pt]{article}
-\usepackage[utf8]{inputenc}
 \usepackage[margin=1in]{geometry}
-\usepackage[spanish]{babel}\decimalpoint
-\usepackage{setspace}\onehalfspacing
-\usepackage{parskip} % Espacio entre parrafos.
-\usepackage{graphicx} % Para usar comando \includegraphics[]{}
-\usepackage{amssymb} % Para usar el simbolo del conj. de los Reales.
-\usepackage{amsmath} % Para usar columnas vectoriales.
-\usepackage{multirow} % Para unir multiples filas en una tabla.
-\usepackage{hyperref} % Siempre debe ser el ultimo paquete.
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage{amsmath, amssymb}
+\usepackage{tikz}
+\usepackage{hyperref} % Siempre debe ir al final.
 
+% Opciones de Paquetes.
+\decimalpoint          % {babel}
+\onehalfspacing        % {setspace}
+\usetikzlibrary{babel} % {tikz}: Para que tikz no conflictue con {babel} con figuras como "->".
+\graphicspath{{./img/}} % {graphics}: Indica ruta de donde se importan las imágenes.
 
-\setcounter{tocdepth}{2} % Que no incluya subsubsections en la tabla de contenidos (toc).
-
-%================================
-
-\title{Clase 2. Los Determinantes y el Producto Cruz.}
+\title{Clase 2. Determinantes y el Producto Cruz.}
 \author{MIT 18.02: Multivariable Calculus.}
 \date{}
 
 
 \begin{document}
 
+% Comandos personalizados.
+\newcommand{\vecmat}[1]{\mathbf{#1}}                          % Vectores o matrices en negrita en math mode.
+\newcommand{\unitvec}[1]{\vecmat{\hat{#1}}}                   % Vectores unitarios.
+\newcommand{\overvec}[1]{\overrightarrow{#1}}                 % Vector como segmento orientado.
+\newcommand{\proy}[2]{\text{proy}_{\vecmat{#2}}{\vecmat{#1}}} % Proyección vectorial.
+\newcommand{\R}[0]{\mathbb{R}}                                % Símbolo conjunto de los números reales.
+\newcommand{\N}[0]{\mathbb{N}}                                % Símbolo conjunto de los números naturales.
+
 \maketitle
 
 \begin{abstract}
-\noindent Para comenzar, haremos una revisión breve de otra aplicación del producto punto al calcular el componente de un vector a lo largo (o en dirección) de otro. Posteriormente, nos concentraremos en estudiar los determinantes y el producto cruz.
+\noindent En esta clase se estudiará preliminarmente al escalar llamado \textbf{determinante}. El enfoque estará en su interpretación geométrica. Luego se verá otra operación relevante entre vectores que recibe el nombre de \textbf{producto cruz}.
 \end{abstract}
 
 
 \section{Determinantes.}
 
-En esta ocasión no profundizaremos en la definición de los \textbf{Determinantes}, pero sí es bueno resaltar en que es un \textbf{número} (o un escalar) muy utilizado en áreas de la matemática (álgebra lineal, por ejemplo) o la física. Por ahora nos centraremos en su interpretación geométrica y su fórmula la usaremos simbólicamente en la siguiente sección.
+El \textbf{determinante} es un \textbf{escalar} calculado mayormente en matrices, ya que entrega información relevante de éstas\footnote{Lo veremos en la siguiente clase.}. A nivel geométrico, equivale a los valores absolutos del área de un paralelogramo y del volumen de un paralelepipedo. Ambos pueden obtenerse usando vectores.
 
-\subsection{Determinantes en el Plano.}
+En general, solo es posible calcular el determinante de una \textbf{cantidad de vectores que es igual a su dimensión}. Acá nos concentraremos solo en aquellos de dos y tres dimensiones.
 
-Si tenemos dos vectores no nulos en dos dimensiones $\mathbf{a} = \langle a_{1}, \ a_{2} \rangle$ y $\mathbf{b} = \langle b_{1}, \ b_{2} \rangle$, es posible calcular un número con sus componentes llamado \textbf{determinante}:
+Sean dos vectores $\vecmat{a}, \ \vecmat{b} \in \R^{2}$. El determinante de ambos se calcula como:
 \[
-\det(\mathbf{a}, \ \mathbf{b}) =
-  \begin{vmatrix}
-  a_{1} & a_{2} \\
-  b_{1} & b_{2}
-  \end{vmatrix} =
-  a_{1}b_{2} - a_{2}b_{1}
+\det(\vecmat{a}, \ \vecmat{b}) =
+\begin{vmatrix}
+a_{1} & a_{2} \\
+b_{1} & b_{2}
+\end{vmatrix} =
+a_{1}b_{2} - a_{2}b_{1}
 \]
-A nivel geométrico, el determinante de $\mathbf{a}$ y $\mathbf{b}$ de dos dimensiones coincide con ser el valor absoluto del \textbf{área del paralelógramo} que es posible formar entre los dos vectores.
+Por otra parte, si $\vecmat{a}, \ \vecmat{b}, \ \vecmat{c} \in \R^{3}$, el determinante entre todos ellos se puede obtener como:
+\begin{align*}
+\det(\vecmat{a}, \ \vecmat{b}, \ \vecmat{c}) &=
+\begin{vmatrix}
+a_{1} & a_{2} & a_{3} \\
+b_{1} & b_{2} & b_{3} \\
+c_{1} & c_{2} & c_{3}
+\end{vmatrix}
+= a_{1} \ 
+\begin{vmatrix}
+b_{2} & b_{3} \\
+c_{2} & c_{3}
+\end{vmatrix}
+- a_{2} \ 
+\begin{vmatrix}
+b_{1} & b_{3} \\
+c_{1} & c_{3}
+\end{vmatrix}
++ a_{3} \ 
+\begin{vmatrix}
+b_{1} & b_{2} \\
+c_{1} & c_{2}
+\end{vmatrix} \\
+&= (b_{2}c_{3} - b_{3}c_{2}) a_{1} - (b_{1}c_{3} - b_{3}c_{1}) a_{2} + (b_{1}c_{2} - b_{2}c_{1}) a_{3}
+\end{align*}
+El método usado para calcular $\det(\vecmat{a}, \ \vecmat{b}, \ \vecmat{c})$ se conoce como ``expansión por la primera fila'' del determinante.
+
+Veamos cómo el determinante de dos vectores se iguala al área de un paralelogramo.
+
+\subsection{Área de un paralelogramo.}
+
+Considere dos vectores de posición $\vecmat{a}, \ \vecmat{b} \in \R^{2}$. Al unirlos en sus puntos iniciales, es posible formar un paralelogramo de altura $h$ como se observa en la siguiente figura.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.6]{img/det-area-parallelog-1.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (13, 5);
+
+% Ejes de coordenadas.
+\draw[-latex, line width = 0.3mm, color = black!80] (5, 0.6) -- (5, 4.5) node[left, color = black] {$y$};
+\draw[-latex, line width = 0.3mm, color = black!80] (4.6, 1) -- (9, 1) node[below, color = black] {$x$};
+\node at (4.8, 0.75) {$0$};
+
+% Área del paralelogramo.
+\draw[fill = gray!50, color = gray!20] (5, 1) -- (9, 2.3) -- (10.2, 4.8) -- (7, 4) -- (5, 1);
+
+%Lados del paralelogramo.
+\draw[style = dashed, line width = 0.3mm, color = gray] (9, 2.3) -- (10.2, 4.8) -- (7, 4) -- node[right, color = black] {$h$} (7.65, 1.77);
+\draw[color = gray, fill = gray] (7.65, 1.85) -- (7.57, 2.1) -- (7.34, 2.03) -- (7.42, 1.77) -- cycle;
+\node at (9, 3.7) {$A_{p}$};
+
+% Vectores.
+\draw[-stealth, line width = 0.5mm] (5, 1) -- node[below right] {$\vecmat{a}$} (9, 2.3); % a
+\draw[-stealth, line width = 0.5mm] (5, 1) -- node[above left] {$\vecmat{b}$} (7, 4);    % b
+\node at (5.7, 1.5) {$\theta$};
+\end{tikzpicture}
+
 \end{figure}
 
-Formalmente, el área de un paralelógramo, que denotaremos como $A_{P}$, se calcula como:
+Con la información que está en la figura busquemos el área del paralelogramo, $A_{p}$.
+
+Formalmente, $A_{p}$ se calcula como:
 \[
-  A_{P} = \text{base} \cdot \text{altura}
+  A_{p} = \text{base} \cdot \text{altura} = ||\vecmat{a}|| \cdot h
 \]
-En este caso, la base es $||\mathbf{a}||$ y la altura podemos obtenerla a partir del $\sin(\theta)$:
+Mediante la figura del paralelogramo, se puede calcular su altura como:
 \begin{align*}
-  \sin(\theta) &= \frac{h}{||\mathbf{b}||} \\
-  ||\mathbf{b}|| \cdot \sin(\theta) &= h
+  \sin(\theta) &= \frac{h}{||\vecmat{b}||} \\
+  \therefore h &= ||\vecmat{b}|| \cdot \sin(\theta)
 \end{align*}
-Por lo tanto:
+Al reemplazar a $h$ en $A_{p}$:
 \[
-  A_{P} = ||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \sin(\theta)
+  A_{p} = ||\vecmat{a}|| \cdot ||\vecmat{b}|| \cdot \sin(\theta)
 \]
-La fórmula de arriba es útil si conocemos al $\angle \theta$, pero nuestra idea es conocer el $A_{P}$ a partir de las componentes de $\mathbf{a}$ y $\mathbf{b}$. Podríamos trabajar con el producto punto entre ambos, pero necesitamos al $\cos(\cdot)$ y no al $\sin(\cdot)$. Una estrategia que podemos tomar, es rotar al vector $\mathbf{a}$ en $\pi/2$ radianes (i.e, $90^{\circ}$), obteniendo a $\mathbf{a}' = \langle -a_{2}, \ a_{1} \rangle$.
+La fórmula de $A_{p}$ es similar a la de $\vecmat{a} \cdot \vecmat{b}$. La llevaremos a esta operación porque permitirá depender solo de los componentes de estos vectores, sin necesidad de conocer a $\theta$.
+
+Sea $\vecmat{a}'$ el vector $\vecmat{a}$ rotado en $\frac{\pi}{2}$ radianes. Esto implica que $||\vecmat{a}|| = ||\vecmat{a}'||$, pero $\vecmat{a}' = \langle -a_{2}, \ a_{1} \rangle$.
 
 \newpage
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.6]{img/det-area-parallelog-2.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (13, 5);
+
+% Ejes de coordenadas.
+\draw[-latex, line width = 0.3mm, color = black!80] (5, 0.6) -- (5, 4.5) node[left, color = black] {$y$};
+\draw[-latex, line width = 0.3mm, color = black!80] (4.6, 1) -- (9, 1) node[below, color = black] {$x$};
+\node at (4.8, 0.75) {$0$};
+
+% Área del paralelogramo.
+\draw[fill = gray!50, color = gray!20] (5, 1) -- (9, 2.3) -- (10.2, 4.8) -- (7, 4) -- (5, 1);
+
+%Lados del paralelogramo.
+\draw[style = dashed, line width = 0.3mm, color = gray] (9, 2.3) -- (10.2, 4.8) -- (7, 4) -- node[right, color = black] {$h$} (7.65, 1.77);
+\draw[color = gray, fill = gray] (7.65, 1.85) -- (7.57, 2.1) -- (7.34, 2.03) -- (7.42, 1.77) -- cycle;
+\node at (9, 3.7) {$A_{p}$};
+
+% Vectores.
+\draw[color = gray, fill = gray] (5.36, 1.09) -- (5.208, 1.45) -- (4.9, 1.32) -- (5, 1) -- cycle;
+\draw[-stealth, line width = 0.5mm] (5, 1) -- node[below right] {$\vecmat{a}$} (9, 2.3); % a
+\draw[-stealth, line width = 0.5mm] (5, 1) -- node[above left] {$\vecmat{b}$} (7, 4);    % b
+\draw[-stealth, line width = 0.5mm] (5, 1) -- node[left] {$\vecmat{a}'$} (3.7, 4.5); % a'
+\node at (5.7, 1.5) {$\theta$};
+\node at (5.1, 1.7) {$\theta'$};
+\end{tikzpicture}
+
 \end{figure}
 
-Veamos que $\theta '$ es complementario a $\theta$, donde $\theta + \theta ' = \pi/2$, implicando que:
+En la figura de arriba se puede observar que $\theta + \theta' = \frac{\pi}{2}$. Por lo tanto,
 \[
-  \theta ' = \frac{\pi}{2} - \theta
+  \theta' = \frac{\pi}{2} - \theta
 \]
-Debido a que $\theta$ y $\theta '$ son complementarios, podemos asumir que $\sin(\theta) = \cos(\theta ')$. Para demostrarlo, usamos la fórmula de sustracción del coseno\footnote{Stewart, et al (2017). \textit{Precálculo. Matemáticas para el Cálculo}. Pp. 500 y 502.}:
-\begin{align*}
-\sin(\theta) &= \cos(\theta ') \\
-\sin(\theta) &= \cos\left(\frac{\pi}{2} - \theta\right) \\
-\sin(\theta) &= \cos\left(\frac{\pi}{2}\right) \cdot \cos(\theta) + \sin\left(\frac{\pi}{2}\right) \cdot \sin(\theta) \\
-\sin(\theta) &= \sin(\theta) \ \text{(Q.E.D)}
-\end{align*}
-Observemos, también, que $||\mathbf{a}'|| = ||\mathbf{a}||$. Por lo tanto, podemos sostener sin alterar nada que:
+Calculemos el coseno en ambos lados de la igualdad de arriba.
 \[
-  A_{P} = ||\mathbf{a}'|| \cdot ||\mathbf{b}|| \cdot \cos(\theta ')
-        = \mathbf{a}' \cdot \mathbf{b}
+\cos(\theta') = \cos\left(\frac{\pi}{2} - \theta\right)
+\]
+Al aplicar la fórmula de sustracción del coseno\footnote{$\cos(u - v) = \cos(u) \cos(v) + \sin(u) \sin(v)$.} en el lado derecho, se obtiene lo siguiente:
+\[
+  \cos(\theta') = \cos\left(\frac{\pi}{2}\right) \cos(\theta) + \sin\left(\frac{\pi}{2}\right) \sin(\theta)
+                = \sin(\theta)
+\]
+Como $\sin(\theta) = \cos(\theta')$ y $||\vecmat{a}|| = ||\vecmat{a}'||$, entonces:
+\[
+  A_{p} = ||\vecmat{a}|| \cdot ||\vecmat{b}|| \cdot \sin(\theta)
+        = ||\vecmat{a}'|| \cdot ||\vecmat{b}|| \cdot \cos(\theta')
+        = \vecmat{a}' \cdot \vecmat{b}
         = -a_{2}b_{1} + a_{1}b_{2}
         = a_{1}b_{2} - a_{2}b_{1}
-        = \begin{vmatrix}
-          a_{1} &  a_{2} \\
-          b_{1} &  b_{2}
-          \end{vmatrix}
-        = \det(\mathbf{a}, \ \mathbf{b})
 \]
-Ahora bien, \textbf{el determinante puede ser positivo o negativo}.
+La última parte de esta igualdad corresponde al $\det(\vecmat{a}, \ \vecmat{b})$. Debido a que es posible que $\det(\vecmat{a}, \ \vecmat{b}) < 0$, podemos definir al \textbf{área de un paralelogramo}, $A_{p}$, como:
 \[
-\det(\mathbf{a}, \ \mathbf{b}) =
-\pm
-\begin{vmatrix}
-a_{1} &  a_{2} \\
-b_{1} &  b_{2}
-\end{vmatrix}
+  A_{p} = |\det(\vecmat{a}, \ \vecmat{b})|
 \]
-Por lo tanto, el área del paralelógramo $A_{p}$ es igual al \textbf{valor absoluto} del $\det(\mathbf{a}, \ \mathbf{b})$.
-\[
-  A_{P} = |\det(\mathbf{a}, \ \mathbf{b})|
-\]
-
-De modo similar, podemos decir que:
-\[
-  \det(\mathbf{a}, \ \mathbf{b}) = \pm A_{P}
-\]
-
-\subsection{Determinantes en el Espacio.}
-
-Si tenemos tres vectores en tres dimensiones $\mathbf{a} = \langle a_{1}, \ a_{2}, \ a_{3} \rangle$, $\mathbf{b} = \langle b_{1}, \ b_{2}, \ b_{3} \rangle$ y $\mathbf{c} = \langle c_{1}, \ c_{2}, \ c_{3} \rangle$, su determinante $\det(\mathbf{a}, \ \mathbf{b}, \ \mathbf{c})$ se calcula como:
-\[
-\det(\mathbf{a}, \ \mathbf{b}, \ \mathbf{c}) =
-\begin{vmatrix}
-a_{1} & a_{2} & a_{3} \\
-b_{1} & b_{2} & b_{3} \\
-c_{1} & c_{2} & c_{3} 
-\end{vmatrix} =
-a_{1}
-\cdot
-\begin{vmatrix}
-b_{2} & b_{3} \\
-c_{2} & c_{3}
-\end{vmatrix}
--
-a_{2}
-\cdot
-\begin{vmatrix}
-b_{1} & b_{3} \\
-c_{1} & c_{3}
-\end{vmatrix}
-+
-a_{3}
-\cdot
-\begin{vmatrix}
-b_{1} & b_{2} \\
-c_{1} & c_{2}
-\end{vmatrix}
-\]
-El proceso aplicado a esta determinante se conoce como \textbf{expansión por la primera fila}. Es un concepto que se entiende mejor al trabajar con matrices, por lo tanto no profundizaremos en ello.
-
-Lo principal a destacar, es que el determinante de tres vectores en el espacio coincide con ser igual al \textbf{volumen de un paralelepipedo} (i.e, el sólido del paralelógramo) que se puede formar con ellos.
+Si consideramos una diagonal del paralelogramo, se obtienen dos triángulos congruentes.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.4]{img/det-vol-parallelel-1.jpg}
+
+% Fuente: https://tex.stackexchange.com/questions/4338/
+% `resizebox` es un comando de {graphics} (no lo sabía :O).
+\resizebox{13.3em}{!}{
+  \begin{tikzpicture}
+  % Líneas de ayuda.
+  %\draw[color = lightgray] (0, 0) grid (13, 5);
+  
+  % Ejes de coordenadas.
+  \draw[-latex, line width = 0.3mm, color = black!80] (5, 0.6) -- (5, 4.5) node[left, color = black] {$y$};
+  \draw[-latex, line width = 0.3mm, color = black!80] (4.6, 1) -- (9, 1) node[below, color = black] {$x$};
+  \node at (4.8, 0.75) {$0$};
+  
+  % Área del paralelogramo.
+  \draw[fill = gray!50, color = gray!20] (5, 1) -- (9, 2.3) -- (10.2, 4.8) -- (7, 4) -- (5, 1);
+  
+  %Lados del paralelogramo.
+  \draw[style = dashed, line width = 0.3mm, color = gray] (9, 2.3) -- (10.2, 4.8) -- (7, 4) -- (9, 2.3);
+  
+  % Vectores.
+  \draw[-stealth, line width = 0.5mm] (5, 1) -- node[below right] {$\vecmat{a}$} (9, 2.3); % a
+  \draw[-stealth, line width = 0.5mm] (5, 1) -- node[above left] {$\vecmat{b}$} (7, 4);    % b
+  \node at (5.7, 1.5) {$\theta$};
+  \end{tikzpicture}
+}
+
 \end{figure}
 
-En particular, denotando al volumen de este paralelepipedo como $V_{P}$, podemos decir que:
+Al ser congruentes, los dos triángulos tienen la misma área. Por lo tanto,
 \[
-  \det(\mathbf{a}, \ \mathbf{b}, \ \mathbf{c}) = \pm V_{P}
+  A_{T} = \frac{1}{2} \ A_{p}
+        = \frac{1}{2} \ |\det(\vecmat{a}, \ \vecmat{b})|
+        = \frac{1}{2} \ ||\vecmat{a}|| \cdot ||\vecmat{b}|| \cdot \sin(\theta)
 \]
+donde $A_{T}$ es el área de uno de los triángulos.
 
 
 \section{Producto Cruz.}
 
-Si tenemos dos vectores no nulos y tampoco paralelos \textbf{en el espacio} $\mathbf{a} = \langle a_{1}, \ a_{2}, \ a_{3} \rangle$ y $\mathbf{b} = \langle b_{1}, \ b_{2}, \ b_{3} \rangle$, más un tercero unitario $\mathbf{n}$ tal que $\mathbf{n} \perp \mathbf{a}$ y $\mathbf{n} \perp \mathbf{b}$, el \textbf{Producto Cruz} $\mathbf{a} \times \mathbf{b}$ se define como:
+Sean $\vecmat{a}, \ \vecmat{b}, \ \vecmat{n} \in \R^{3}$, con $||\vecmat{n}|| = 1$, $\vecmat{n} \perp \vecmat{a}$ y $\vecmat{n} \perp \vecmat{b}$. La operación \textbf{producto cruz} entre $\vecmat{a}$ y $\vecmat{b}$, $\vecmat{a} \times \vecmat{b}$, se define como:
 \[
-  \mathbf{a} \times \mathbf{b} = (||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \sin(\theta)) \cdot \mathbf{n}
+  \vecmat{a} \times \vecmat{b} = (||\vecmat{a}|| \cdot ||\vecmat{b}|| \cdot \sin(\theta)) \cdot \vecmat{n}
 \]
-donde $\theta$ es el ángulo que se forma entre $\mathbf{a}$ y $\mathbf{b}$ al unirlos en sus puntos iniciales.
+donde $\theta$ es el ángulo que se forma entre $\vecmat{a}$ y $\vecmat{b}$ al unirlos en sus puntos iniciales.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.5]{img/cross-product-1.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (12, 5);
+
+% Ejes de coordenadas.
+\draw[-latex, line width = 0.3mm, color = black!80] (5, 1.8) -- (2.7, 0.8) node[left, color = black] {$x$};
+\draw[-latex, line width = 0.3mm, color = black!80] (5, 1.8) -- (7.5, 1) node[right, color = black] {$y$};
+\draw[-latex, line width = 0.3mm, color = black!80] (5, 1.8) -- (5, 5) node[left, color = black] {$z$};
+
+%Ángulos rectos.
+\draw[line width = 0.17mm] (4.7, 1.55) -- (4.7, 1.9) -- (5, 2.08) -- (5.3, 1.9) -- (5.3, 1.55);
+
+% Vectores.
+\draw[-stealth, line width = 0.5mm] (5, 1.8) -- (3.8, 0.8) node[below] {$\vecmat{a}$};
+\draw[-stealth, line width = 0.5mm] (5, 1.8) -- (6.2, 0.8) node[below] {$\vecmat{b}$};
+\draw[-stealth, line width = 0.5mm, color = red!70] (5, 1.8) -- (5, 4) node[right] {$\vecmat{a} \times \vecmat{b}$};
+\draw[-stealth, line width = 0.5mm] (5, 1.8) -- node[right] {$\vecmat{n}$} (5, 2.6) node[left, font = \small] {$1$};
+\node at (5, 1.4) {$\theta$};
+\end{tikzpicture}
+
 \end{figure}
 
-Una primera caracteristica del producto cruz $\mathbf{a} \times \mathbf{b}$, es que corresponde a \textbf{un vector}. Más específicamente, es $\mathbf{n}$ escalado por el factor $(||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \sin(\theta))$, lo que implica que:
+Como se observa tanto en la fórmula como en la figura de arriba, $\vecmat{a} \times \vecmat{b}$ es un \textbf{vector}. Debido a que se forma a partir de $\vecmat{n}$, entonces:
 \[
-  (\mathbf{a} \times \mathbf{b}) \perp \mathbf{a} \qquad \text{y} \qquad (\mathbf{a} \times \mathbf{b}) \perp \mathbf{b}
+  (\vecmat{a} \times \vecmat{b}) \perp \vecmat{a} \quad \text{y} \quad (\vecmat{a} \times \vecmat{b}) \perp \vecmat{b}
 \]
-Otra particularidad de $\mathbf{a} \times \mathbf{b}$, es que \textbf{solo se aplica en el espacio}. Es decir, podemos calcular el producto cruz entre dos vectores siempre que \textbf{ambos estén en tres dimensiones}.
+El producto cruz $\vecmat{a} \times \vecmat{b}$ está definida solo para vectores en \textbf{tres dimensiones}.
 
-Una tercera característica del producto cruz, es que será igual al vector $\mathbf{0}$ si $\mathbf{a}$ y $\mathbf{b}$ son \textbf{paralelos}. Geométricamente, significa que $\theta = 0$ o $\theta = \pi$. Por lo tanto:
-\begin{align*}
-\mathbf{a} \times \mathbf{b} &= (||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \sin(0)) \cdot \mathbf{n} = \mathbf{0} &
-\mathbf{a} \times \mathbf{b} &= (||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \sin(\pi)) \cdot \mathbf{n} = \mathbf{0}
-\end{align*}
-También $\mathbf{a}$ y $\mathbf{b}$ serán paralelos si \textbf{son iguales}.
+Si $\theta \in \{0, \ \pi\}$, entonces $\sin(\theta) = 0$. Por lo tanto,
 \[
-  \mathbf{a} \times \mathbf{b} = \mathbf{0} \iff \mathbf{a} = \mathbf{b}
+  \vecmat{a} \times \vecmat{b} = \vecmat{0}
 \]
+Es decir, si $\vecmat{a} \times \vecmat{b}$ resulta ser $\vecmat{0}$, quiere decir que ambos vectores son \textbf{paralelos}.
 
-\subsection{Magnitud y Dirección del Producto Cruz.}
+\subsection{Magnitud y dirección del producto cruz.}
 
-La \textbf{magnitud} de $\mathbf{a} \times \mathbf{b}$ coincide con ser el \textbf{área de un paralelógramo en el espacio}. Recordemos que es el producto escalar $(||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \sin(\theta)) \cdot \mathbf{n}$, por lo tanto:
+Como $\vecmat{a} \times \vecmat{b}$ es $\vecmat{n}$ escalado por el valor $||\vecmat{a}|| \cdot ||\vecmat{b}|| \cdot \sin(\theta)$, entonces su \textbf{magnitud} es:
 \[
-  ||\mathbf{a} \times \mathbf{b}|| = (||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \sin(\theta)) \cdot ||\mathbf{n}||
+  ||\vecmat{a} \times \vecmat{b}|| = ||\vecmat{a}|| \cdot ||\vecmat{b}|| \cdot \sin(\theta)
 \]
-Como $\mathbf{n}$ es un vector unitario (i.e, $||\mathbf{n}|| = 1$), entonces:
+Efectivamente, $||\vecmat{a} \times \vecmat{b}||$ es el área de un paralelogramo, pero formado por vectores en tres dimensiones. En consecuencia, \textbf{no es igual} al $\det(\vecmat{a}, \ \vecmat{b})$ visto en la sección 1.1, ya que en esa ocasion $\vecmat{a}, \ \vecmat{b} \in \R^{2}$.
 
-\[
-  ||\mathbf{a} \times \mathbf{b}|| = ||\mathbf{a}|| \cdot ||\mathbf{b}|| \cdot \sin(\theta)
-\]
-En la sección anterior (pág. 4), vimos que el lado derecho de la expresión de arriba corresponde al área de un paralelógramo generado por dos vectores no nulos $\mathbf{a}$ y $\mathbf{b}$. Es decir:
-\[
-  ||\mathbf{a} \times \mathbf{b}|| = A_{P}
-\]
+La \textbf{dirección} del producto cruz se puede conocer mediante la \textbf{regla de la mano derecha}. Esta señala que si tenemos la palma abierta ortogonal a los dos vectores y luego la cerramos sin bajar el pulgar, será este dedo el que indicará hacia dónde está apuntando $\vecmat{a} \times \vecmat{b}$.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.6]{img/cross-product-2.jpg}
-\end{figure}
-
-Para conocer la \textbf{dirección del producto cruz}, usamos la \textbf{regla de la mano derecha}, que consiste en mantenerla abierta de forma opuesta al arco del ángulo, para después cerrarla. La dirección de este vector será el \textbf{lugar a donde apunte nuestro dedo pulgar}.
-
-\begin{figure}[hbt!]
-\centering
-\includegraphics[scale=0.75]{img/right-hand-rule.jpg}
+\includegraphics[scale=0.73]{regla-mano-derecha.jpg}
 \caption{Thomas (2010). \textit{Cálculo. Varias Variables}. Pp. 682-683.}
 \end{figure}
 
-\subsection{Propiedades del Producto Cruz.}
+\subsection{Propiedades del producto cruz.}
 
-Sean $\mathbf{a}$, $\mathbf{b}$ y $\mathbf{w}$ tres vectores cualquiera y $c$ y $d$ escalares, el producto cruz cumple con las siguiente propiedades:
+Sean $\vecmat{a}, \ \vecmat{b}, \ \vecmat{w} \in \R^{3}$ y $c, \ d \in \R$. El producto cruz cumple las siguientes propiedades:
 \begin{align*}
-&1) \ (c\mathbf{a}) \times (d\mathbf{b}) = (cd) (\mathbf{a} \times \mathbf{b}) &
-&2) \ \mathbf{a} \times (\mathbf{b} + \mathbf{w}) = \mathbf{a} \times \mathbf{b} + \mathbf{a} \times \mathbf{w} \\
-&3) \ \mathbf{a} \times \mathbf{b} = -(\mathbf{b} \times \mathbf{a}) &
-&4) \ (\mathbf{a} + \mathbf{b}) \times \mathbf{w} = \mathbf{a} \times \mathbf{w} + \mathbf{b} \times \mathbf{w} \\
-&5) \ \mathbf{0} \times \mathbf{a} = \mathbf{0} &
-&6) \ \mathbf{a} \times (\mathbf{b} \times \mathbf{w}) = (\mathbf{a} \cdot \mathbf{w})\mathbf{b} - (\mathbf{a} \cdot \mathbf{b}) \mathbf{w}
+&1) \ (c\vecmat{a}) \times (d\vecmat{b}) = (cd) (\vecmat{a} \times \vecmat{b}) &
+&2) \ \vecmat{a} \times (\vecmat{b} + \vecmat{w}) = \vecmat{a} \times \vecmat{b} + \vecmat{a} \times \vecmat{w} \\
+&3) \ \vecmat{a} \times \vecmat{b} = -(\vecmat{b} \times \vecmat{a}) &
+&4) \ (\vecmat{a} + \vecmat{b}) \times \vecmat{w} = \vecmat{a} \times \vecmat{w} + \vecmat{b} \times \vecmat{w} \\
+&5) \ \vecmat{0} \times \vecmat{a} = \vecmat{0} &
+&6) \ \vecmat{a} \times (\vecmat{b} \times \vecmat{w}) = (\vecmat{a} \cdot \vecmat{w})\vecmat{b} - (\vecmat{a} \cdot \vecmat{b}) \vecmat{w}
 \end{align*}
 
-Ahora, sean los vectores unitarios estándar $\hat{\mathbf{i}} = \langle 1, \ 0, \ 0 \rangle$, $\hat{\mathbf{j}} = \langle 0, \ 1, \ 0 \rangle$ y $\hat{\mathbf{k}} = \langle 0, \ 0, \ 1 \rangle$. Aplicando la propiedad 3) vista anteriormente, podemos obtener las siguientes igualdades:
-\begin{align*}
-  \hat{\mathbf{i}} \times \hat{\mathbf{j}} &= -(\hat{\mathbf{j}} \times \hat{\mathbf{i}}) = \hat{\mathbf{k}} \\
-  \hat{\mathbf{j}} \times \hat{\mathbf{k}} &= -(\hat{\mathbf{k}} \times \hat{\mathbf{j}}) = \hat{\mathbf{i}} \\
-  \hat{\mathbf{k}} \times \hat{\mathbf{i}} &= -(\hat{\mathbf{i}} \times \hat{\mathbf{k}}) = \hat{\mathbf{j}}
-\end{align*}
-También podemos asegurar que:
-\[
-  \hat{\mathbf{i}} \times \hat{\mathbf{i}} = \hat{\mathbf{j}} \times \hat{\mathbf{j}} = \hat{\mathbf{k}} \times \hat{\mathbf{k}} = \mathbf{0}
-\]
-Estas igualdades con los tres vectores unitarios podemos observarlas a continuación:
+Considere los vectores unitarios estándar $\unitvec{e}_{1} = \langle 1, \ 0, \ 0 \rangle$, $\unitvec{e}_{2} = \langle 0, \ 1, \ 0 \rangle$ y $\unitvec{e}_{3} = \langle 0, \ 0, \ 1 \rangle$.
+
+\newpage
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.6]{img/cross-product-3.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (11, 5);
+
+% Ejes de coordenadas.
+\draw[-latex, line width = 0.3mm] (5, 2) -- (2.56, 0.56) node[above left] {$x$};
+\draw[-latex, line width = 0.3mm] (5, 2) -- (7.3, 0.7) node[above right] {$y$};
+\draw[-latex, line width = 0.3mm] (5, 2) node[below] {$0$} -- (5, 4.5) node[left] {$z$};
+
+% Vectores.
+\draw[-stealth, line width = 0.6mm, color = red!75] (5, 2) -- node[above left] {$\unitvec{e}_{1}$} (4, 1.4) node[below, color = black] {$1$};
+\draw[-stealth, line width = 0.6mm, color = red!75] (5, 2) -- node[above right] {$\unitvec{e}_{2}$} (5.98, 1.46) node[below, color = black] {$1$};
+\draw[-stealth, line width = 0.6mm, color = red!75] (5, 2) -- (5, 3) node[right] {$\unitvec{e}_{3}$} node[left, color = black] {$1$};
+\end{tikzpicture}
+
 \end{figure}
 
-\subsection{Producto Cruz a partir de los componentes.}
-
-Hasta ahora sabemos calcular el producto cruz entre dos vectores considerando el ángulo que se forma entre ellos. A partir de las propiedades estudiadas en la subsección anterior, podemos obtener a este vector solo con los componentes de ambos.
-
-Suponga que $\mathbf{a} = a_{1} \hat{\mathbf{i}} + a_{2} \hat{\mathbf{j}} + a_{3} \hat{\mathbf{k}}$ y $\mathbf{b} = b_{1} \hat{\mathbf{i}} + b_{2} \hat{\mathbf{j}} + b_{3} \hat{\mathbf{k}}$. Entonces:
+Mediante la propiedad 3) obtenemos las siguientes igualdades:
 \begin{align*}
-\mathbf{a} \times \mathbf{b} = &(a_{1} \hat{\mathbf{i}} + a_{2} \hat{\mathbf{j}} + a_{3} \hat{\mathbf{k}}) \times
-                                (b_{1} \hat{\mathbf{i}} + b_{2} \hat{\mathbf{j}} + b_{3} \hat{\mathbf{k}}) \\
-                             = &(a_{1} \hat{\mathbf{i}} + a_{2} \hat{\mathbf{j}} + a_{3} \hat{\mathbf{k}}) \times b_{1} \hat{\mathbf{i}} + 
-                                (a_{1} \hat{\mathbf{i}} + a_{2} \hat{\mathbf{j}} + a_{3} \hat{\mathbf{k}}) \times b_{2} \hat{\mathbf{j}} + 
-                               (a_{1} \hat{\mathbf{i}} + a_{2} \hat{\mathbf{j}} + a_{3} \hat{\mathbf{k}}) \times b_{3} \hat{\mathbf{k}} \\
-\mathbf{a} \times \mathbf{b} = &a_{1}b_{1}(\hat{\mathbf{i}} \times \hat{\mathbf{i}}) + a_{2}b_{1}(\hat{\mathbf{j}} \times \hat{\mathbf{i}}) +
-                               a_{3}b_{1}(\hat{\mathbf{k}} \times \hat{\mathbf{i}}) + a_{1}b_{2}(\hat{\mathbf{i}} \times \hat{\mathbf{j}}) +
-                               a_{2}b_{2}(\hat{\mathbf{j}} \times \hat{\mathbf{j}}) + a_{3}b_{2}(\hat{\mathbf{k}} \times \hat{\mathbf{j}}) + \\
-                               &a_{1}b_{3}(\hat{\mathbf{i}} \times \hat{\mathbf{k}}) + a_{2}b_{3}(\hat{\mathbf{j}} \times \hat{\mathbf{k}}) +
-                                a_{3}b_{3}(\hat{\mathbf{k}} \times \hat{\mathbf{k}})
+  \unitvec{e}_{1} \times \unitvec{e}_{2} = -(\unitvec{e}_{2} \times \unitvec{e}_{1}) = \unitvec{e}_{3}, \qquad
+  \unitvec{e}_{2} \times \unitvec{e}_{3} = -(\unitvec{e}_{3} \times \unitvec{e}_{2}) = \unitvec{e}_{1}, \qquad
+  \unitvec{e}_{3} \times \unitvec{e}_{1} = -(\unitvec{e}_{1} \times \unitvec{e}_{3}) = \unitvec{e}_{2}
 \end{align*}
-Apliquemos las igualdades de los vectores unitarios vistas en las propiedades del producto cruz en la ecuación de arriba y reordenémosla.
-\begin{align*}
-\mathbf{a} \times \mathbf{b} = &(a_{1}b_{1}) \mathbf{0} + (a_{2}b_{2}) \mathbf{0} + (a_{3}b_{3}) \mathbf{0} + \\
-                               &(a_{2}b_{3})\hat{\mathbf{i}} - (a_{3}b_{2}) \hat{\mathbf{i}} - (a_{1}b_{3}) \hat{\mathbf{j}} +
-                                (a_{3}b_{1}) \hat{\mathbf{j}} + (a_{1}b_{2}) \hat{\mathbf{k}} - (a_{2}b_{1}) \hat{\mathbf{k}} \\
-\mathbf{a} \times \mathbf{b} = &(a_{2}b_{3} - a_{3}b_{2}) \hat{\mathbf{i}} - (a_{1}b_{3} - a_{3}b_{1}) \hat{\mathbf{j}} +
-                                (a_{1}b_{2} - a_{2}b_{1}) \hat{\mathbf{k}}
-\end{align*}
-Por lo tanto, el producto cruz entre $\mathbf{a}$ y $\mathbf{b}$ calculado a partir de sus componentes se obtiene como:
+Además:
 \[
-\mathbf{a} \times \mathbf{b} = (a_{2}b_{3} - a_{3}b_{2}) \hat{\mathbf{i}} - (a_{1}b_{3} - a_{3}b_{1}) \hat{\mathbf{j}} + 
-                               (a_{1}b_{2} - a_{2}b_{1}) \hat{\mathbf{k}}
+  \unitvec{e}_{1} \times \unitvec{e}_{1} = \unitvec{e}_{2} \times \unitvec{e}_{2}
+                                         = \unitvec{e}_{3} \times \unitvec{e}_{3}
+                                         = \vecmat{0}
 \]
-Veamos una forma más sencilla de recordar esta fórmula. Si observamos bien, la ecuación del producto cruz es similar en su forma a la del \textbf{determinante en el espacio}, salvo que tenemos vectores en ella. Por lo tanto, es posible escribirla \textbf{simbólicamente} como:
+Si dos vectores \textbf{son iguales}, quiere decir que son \textbf{paralelos}. Por lo tanto, su producto cruz debe ser el vector $\vecmat{0}$.
+
+\subsection{Producto cruz a partir de los componentes.}
+
+Las propiedades del producto cruz permiten obtener una fórmula de ella que depende solo de los componentes de los vectores que la originan.
+
+Sean $\vecmat{a} = a_{1} \unitvec{e}_{1} + a_{2} \unitvec{e}_{2} + a_{3} \unitvec{e}_{3}$ y $\vecmat{b} = b_{1} \unitvec{e}_{1} + b_{2} \unitvec{e}_{2} + b_{3} \unitvec{e}_{3}$. Mediante esta representación, se puede expresar el producto cruz entre ambos vectores como:
 \[
-\mathbf{a} \times \mathbf{b} =
+  \vecmat{a} \times \vecmat{b} = \vecmat{a} \times
+                                 (b_{1} \unitvec{e}_{1} + b_{2} \unitvec{e}_{2} + b_{3} \unitvec{e}_{3})
+\]
+Por la propiedad 2, esta igualdad es lo mismo que:
+\[
+  \vecmat{a} \times \vecmat{b} = (\vecmat{a} \times b_{1} \unitvec{e}_{1}) + (\vecmat{a} \times b_{2} \unitvec{e}_{2})
+                                 + (\vecmat{a} \times b_{3} \unitvec{e}_{3})
+\]
+En cada producto cruz del lado derecho se puede aplicar la propiedad 4.
+\begin{align*}
+  \vecmat{a} \times \vecmat{b} = &(a_{1} \unitvec{e}_{1} \times b_{1} \unitvec{e}_{1}) + (a_{2} \unitvec{e}_{2} \times b_{1} \unitvec{e}_{1}) +
+                                 (a_{3} \unitvec{e}_{3} \times b_{1} \unitvec{e}_{1}) + (a_{1} \unitvec{e}_{1} \times b_{2} \unitvec{e}_{2}) +
+                                 (a_{2} \unitvec{e}_{2} \times b_{2} \unitvec{e}_{2}) + \\
+                                 &(a_{3} \unitvec{e}_{3} \times b_{2} \unitvec{e}_{2}) + (a_{1} \unitvec{e}_{1} \times b_{3} \unitvec{e}_{3}) +
+                                 (a_{2} \unitvec{e}_{2} \times b_{3} \unitvec{e}_{3}) + (a_{3} \unitvec{e}_{3} \times b_{3} \unitvec{e}_{3})
+\end{align*}
+Luego, se puede usar la propiedad 1 en los paréntesis del lado derecho.
+\begin{align*}
+  \vecmat{a} \times \vecmat{b} = &(a_{1}b_{1}) (\unitvec{e}_{1} \times \unitvec{e}_{1}) + (a_{2}b_{1}) (\unitvec{e}_{2} \times \unitvec{e}_{1}) +
+                                 (a_{3}b_{1}) (\unitvec{e}_{3} \times \unitvec{e}_{1}) + (a_{1}b_{2}) (\unitvec{e}_{1} \times \unitvec{e}_{2}) + \\
+                                 &(a_{2}b_{2}) (\unitvec{e}_{2} \times \unitvec{e}_{2}) + (a_{3}b_{2}) (\unitvec{e}_{3} \times \unitvec{e}_{2}) +
+                                 (a_{1}b_{3}) (\unitvec{e}_{1} \times \unitvec{e}_{3}) + (a_{2}b_{3}) (\unitvec{e}_{2} \times \unitvec{e}_{3}) + \\
+                                 &(a_{3}b_{3}) (\unitvec{e}_{3} \times \unitvec{e}_{3})
+\end{align*}
+Es posible realizar cancelaciones con los $\unitvec{e}_{i} \times \unitvec{e}_{i} = \vecmat{0}$.
+\begin{align*}
+  \vecmat{a} \times \vecmat{b} = &(a_{2}b_{1}) (\unitvec{e}_{2} \times \unitvec{e}_{1}) + (a_{3}b_{1}) (\unitvec{e}_{3} \times \unitvec{e}_{1}) +
+                                 (a_{1}b_{2}) (\unitvec{e}_{1} \times \unitvec{e}_{2}) + (a_{3}b_{2}) (\unitvec{e}_{3} \times \unitvec{e}_{2}) +\\
+                                 &(a_{1}b_{3}) (\unitvec{e}_{1} \times \unitvec{e}_{3}) + (a_{2}b_{3}) (\unitvec{e}_{2} \times \unitvec{e}_{3})
+\end{align*}
+El lado derecho también se puede expresar como:
+\begin{align*}
+  \vecmat{a} \times \vecmat{b} = &-[(a_{2}b_{1}) \cdot -(\unitvec{e}_{2} \times \unitvec{e}_{1})]
+                                 + (a_{3}b_{1}) (\unitvec{e}_{3} \times \unitvec{e}_{1})
+                                 + (a_{1}b_{2}) (\unitvec{e}_{1} \times \unitvec{e}_{2}) + \\
+                                 &-[(a_{3}b_{2}) \cdot -(\unitvec{e}_{3} \times \unitvec{e}_{2})] +
+                                 -[(a_{1}b_{3}) \cdot -(\unitvec{e}_{1} \times \unitvec{e}_{3})]
+                                 + (a_{2}b_{3}) (\unitvec{e}_{2} \times \unitvec{e}_{3})
+\end{align*}
+En la sección 2.2 vimos identidades tales como $\unitvec{e}_{1} \times \unitvec{e}_{2} = -(\unitvec{e}_{2} \times \unitvec{e}_{1}) = \unitvec{e}_{3}$. Al aplicarlas en la ecuación de arriba se obtiene lo siguiente:
+\begin{align*}
+  \vecmat{a} \times \vecmat{b} = &- (a_{2}b_{1}) \unitvec{e}_{3} + (a_{3}b_{1}) \unitvec{e}_{2} + (a_{1}b_{2}) \unitvec{e}_{3}
+                                 - (a_{3}b_{2}) \unitvec{e}_{1} - (a_{1}b_{3}) \unitvec{e}_{2} + (a_{2}b_{3}) \unitvec{e}_{1}
+\end{align*}
+Finalmente, usando la propiedad 2 podemos factorizar términos comunes del lado derecho.
+\[
+  \vecmat{a} \times \vecmat{b} = (a_{2}b_{3} - a_{3}b_{2}) \unitvec{e}_{1} - (a_{1}b_{3} - a_{3}b_{1}) \unitvec{e}_{2}
+                                 + (a_{1}b_{2} - a_{2}b_{1}) \unitvec{e}_{3}
+\]
+Esta es la fórmula del producto cruz entre $\vecmat{a}$ y $\vecmat{b}$ usando vectores unitarios estándar. Debido a que su lado derecho se asemeja a la expresión del determinante de tres vectores, también se suele escribir como:
+\[
+\vecmat{a} \times \vecmat{b} =
 \begin{vmatrix}
-\hat{\mathbf{i}} & \hat{\mathbf{j}} & \hat{\mathbf{k}} \\
+\unitvec{e}_{1} & \unitvec{e}_{2} & \unitvec{e}_{3} \\
 a_{1} & a_{2} & a_{3} \\
 b_{1} & b_{2} & b_{3}
 \end{vmatrix} =
-\hat{\mathbf{i}} \cdot
+\unitvec{e}_{1} \cdot
 \begin{vmatrix}
 a_{2} & a_{3} \\
 b_{2} & b_{3}
 \end{vmatrix}
-- \hat{\mathbf{j}} \cdot
+- \unitvec{e}_{2} \cdot
 \begin{vmatrix}
 a_{1} & a_{3} \\
 b_{1} & b_{3}
 \end{vmatrix}
-+ \hat{\mathbf{k}} \cdot
++ \unitvec{e}_{3} \cdot
 \begin{vmatrix}
 a_{1} & a_{2} \\
 b_{1} & b_{2}
 \end{vmatrix}
 \]
-Ojo que solo escribimos el producto cruz como un determinante de forma simbólica, ya que éste último, en realidad, nos entrega un valor escalar y no vectorial, pero es útil para recordar más fácilmente su fórmula.
+La expresión de arriba es solo \textbf{simbólica}, ya que el determinante es un escalar y no un vector, como sí lo es el producto cruz.
 
-\subsection{El Triple Producto Escalar.}
+Por otra parte, se puede expresar al producto cruz en forma componente como:
+\[
+  \vecmat{a} \times \vecmat{b} = \langle
+                                   a_{2}b_{3} - a_{3}b_{2}, \ - (a_{1}b_{3} - a_{3}b_{1}), \ a_{1}b_{2} - a_{2}b_{1}
+                                 \rangle
+\]
 
-Antes de terminar, volvamos a estudiar el volumen de un paralelepipedo $V_{P}$ generado por $\mathbf{a}$, $\mathbf{b}$ y $\mathbf{c}$.
+\subsection{Triple producto escalar.}
 
-\newpage
+El producto punto entre un vector y el producto cruz de dos vectores recibe el nombre de \textbf{triple producto escalar}.
+\[
+  \vecmat{c} \cdot (\vecmat{a} \times \vecmat{b}) = ||\vecmat{c}|| \cdot ||\vecmat{a} \times \vecmat{b}|| \cdot \cos(\theta)
+\]
+Al expandir el lado izquierdo mediante la definicion algebraica del producto punto, se obtiene lo siguiente:
+\[
+  \vecmat{c} \cdot (\vecmat{a} \times \vecmat{b}) = (a_{2}b_{3} - a_{3}b_{2})c_{1} - (a_{1}b_{3} - a_{3}b_{1})c_{2} 
+                                                    + (a_{1}b_{2} - a_{2}b_{1})c_{3}
+\]
+El lado derecho corresponde al determinante de $\vecmat{a}, \ \vecmat{b}$ y $\vecmat{c}$ expandido por su tercera fila.
+\[
+\vecmat{c} \cdot (\vecmat{a} \times \vecmat{b}) =
+\begin{vmatrix}
+a_{1} & a_{2} & a_{3} \\
+b_{1} & b_{2} & b_{3} \\
+c_{1} & c_{2} & c_{3}
+\end{vmatrix} =
+\det(\vecmat{a}, \ \vecmat{b}, \ \vecmat{c})
+\]
+A continuación veremos que el valor absoluto del triple producto escalar y, por consiguiente, del determinante de sus tres vectores es igual al \textbf{volumen de un paralelelpipedo}.
+
+\subsubsection{Volumen de un paralelepipedo.}
+
+Considere el siguiente paralelepipedo formado por $\vecmat{a}, \ \vecmat{b}, \ \vecmat{c} \in \R^{3}$.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.4]{img/det-vol-parallelel-1.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (12, 5);
+
+% Área y altura del paralelepipedo.
+\draw[color = gray!50, fill = gray!50]  (5, 1) -- (6.5, 1.7) -- (3.5, 1.7) -- (2, 1);
+\draw[style = dashed, line width = 0.2mm] (3, 3.2) -- node[right, font = \small] {$h$} (3, 1.2);
+\draw (3, 1.45) -- (3.3, 1.45) -- (3.3, 1.2);
+\node at (4.5, 1.4) {$A_{\text{base}}$};
+
+
+% Lados del paralelepipedo.
+\draw[line width = 0.3mm] (6, 3.2) -- (7.5, 3.9) -- (4.7, 3.9) -- (3, 3.2) -- (6, 3.2) -- (5, 1) -- (6.5, 1.7) -- (7.5, 3.9);
+\draw[style = dashed, line width = 0.3mm] (4.7, 3.9) -- (3.5, 1.7) -- (6.5, 1.7);
+
+% Vectores.
+\draw[-stealth, line width = 0.6mm] (2, 1) -- node[below] {$\vecmat{a}$} (5, 1);
+\draw[-stealth, line width = 0.6mm] (2, 1) -- node[above] {$\vecmat{b}$} (3.5, 1.7);
+\draw[-stealth, line width = 0.6mm] (2, 1) -- (3, 3.2) node[below right] {$\vecmat{c}$};
+\end{tikzpicture}
+
 \end{figure}
 
-Demostremos que:
+El volumen del paralelepipedo es el producto entre el área de su base y su altura.
 \[
-  V_{P} = |\det(\mathbf{a}, \ \mathbf{b}, \ \mathbf{c})|
+  V_{p} = A_{\text{base}} \cdot h
 \]
-\textbf{Demostración}. En términos generales, el volumen de un sólido como el paralelepipedo se calcula de la siguiente manera:
+La base del paralelepipedo es un paralelogramo\footnote{Así como también lo son el resto de sus caras.} que, en este caso, está formado por $\vecmat{a}$ y $\vecmat{b}$. A partir de lo estudiado en la sección 2.1, podemos decir que el área de esta superficie es:
 \[
-V_{P} = A(\text{base}) \cdot h
+  A_{\text{base}} = ||\vecmat{a} \times \vecmat{b}||
 \]
-donde $A(\text{base})$ es el área de su base y $h$ su altura.
-
-La base de este paralelepipedo es un paralelógramo, el cual coincide con estar formado por los vectores $\mathbf{a}$ y $\mathbf{b}$. Por lo tanto, su área podemos calcularla como la magnitud del producto cruz entre ambos.
-\[
-  A(\text{base}) = ||\mathbf{a} \times \mathbf{b}||
-\]
-En cuanto a la altura del paralelepipedo, como es perpendicular a su base, podemos obtenerla como el componente $c_{3}$ de $\mathbf{c}$ en dirección de un vector $\mathbf{n}$ unitario y ortogonal a dicho plano.
+En cuanto a la altura $h$ del paralelepipedo, como es perpendicular a su base, podemos usar la magnitud de un vector unitario normal\footnote{Es lo mismo que ``perpendicular'' u ``ortogonal''.} al plano $\vecmat{n}$ escalado por el componente $c_{3}$ de $\vecmat{c}$.
 
 \begin{figure}[hbt!]
 \centering
-\includegraphics[scale=0.4]{img/triple-product-1.jpg}
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (12, 5);
+
+% Área y altura del paralelepipedo.
+\draw[color = gray!50, fill = gray!50]  (5, 1) -- (6.5, 1.7) -- (3.5, 1.7) -- (2, 1);
+\draw[style = dashed, line width = 0.2mm] (3, 3.2) -- node[right, font = \small] {$h$} (3, 1.2);
+\draw[style = dashed] (3, 3.2) -- (2, 3.2);
+\draw (3, 1.45) -- (3.3, 1.45) -- (3.3, 1.2);
+\node at (4.5, 1.4) {$A_{\text{base}}$};
+\draw (2, 2.9) -- (2.3, 2.9) -- (2.3, 3.2);
+\node at (2.2, 2) {$\theta$};
+
+
+% Lados del paralelepipedo.
+\draw[line width = 0.3mm] (6, 3.2) -- (7.5, 3.9) -- (4.7, 3.9) -- (3, 3.2) -- (6, 3.2) -- (5, 1) -- (6.5, 1.7) -- (7.5, 3.9);
+\draw[style = dashed, line width = 0.3mm] (4.7, 3.9) -- (3.5, 1.7) -- (6.5, 1.7);
+
+% Vectores.
+\draw[-stealth, line width = 0.6mm] (2, 1) -- node[below] {$\vecmat{a}$} (5, 1);
+\draw[-stealth, line width = 0.6mm] (2, 1) -- node[above] {$\vecmat{b}$} (3.5, 1.7);
+\draw[-stealth, line width = 0.6mm] (2, 1) -- (3, 3.2) node[below right] {$\vecmat{c}$};
+\draw[-stealth, line width = 0.6mm, color = red!80] (2, 1) -- (2, 3.2) node[left] {$c_{3} \vecmat{n}$};
+\end{tikzpicture}
+
 \end{figure}
 
-Es decir:
+En la imagen de arriba se puede ver que $h = ||c_{3}\vecmat{n}||$. Por lo tanto,
 \[
-  h = \mathbf{c} \cdot \mathbf{n}
+  \cos(\theta) = \frac{||c_{3}\vecmat{n}||}{||\vecmat{c}||}
+               \Longrightarrow ||c_{3}\vecmat{n}|| = ||\vecmat{c}|| \cdot \cos(\theta)
 \]
-Como el vector unitario $\mathbf{n}$ es perpendicular a la base del paralelepipedo, entonces es equivalente al $\mathbf{a} \times \mathbf{b}$ normalizado, porque al ser ortogonal a $\mathbf{a}$ y a $\mathbf{b}$, también lo es a aquella superficie.
+Así, el volumen del paralelepipedo se puede calcular como:
 \[
-  h = \mathbf{c} \cdot \frac{\mathbf{a} \times \mathbf{b}}{||\mathbf{a} \times \mathbf{b}||}, \quad \text{donde }
-  \mathbf{n} = \left(\frac{\mathbf{a} \times \mathbf{b}}{||\mathbf{a} \times \mathbf{b}||}\right)
+  V_{p} = | \ ||\vecmat{a} \times \vecmat{b}|| \cdot ||\vecmat{c}|| \cdot \cos(\theta) \ |
+        = |\vecmat{c} \cdot (\vecmat{a} \times \vecmat{b})|
+        = |\det(\vecmat{a}, \ \vecmat{b}, \ \vecmat{c})|
 \]
-Por lo tanto:
-\[
-  V_{P} = ||\mathbf{a} \times \mathbf{b}|| \cdot
-          \left(\mathbf{c} \cdot \frac{\mathbf{a} \times \mathbf{b}}{||\mathbf{a} \times \mathbf{b}||}\right)
-        = \mathbf{c} \cdot (\mathbf{a} \times \mathbf{b})
-\]
-La operación $\mathbf{c} \cdot (\mathbf{a} \times \mathbf{b})$ se conoce como \textbf{Triple Producto Escalar}, puesto que es el producto punto entre el vector de la izquierda y el producto cruz de la derecha.
+Se usa el valor absoluto para calcular $V_{p}$ porque el $\cos(\theta) < 0$ para $\frac{\pi}{2} < \theta < \frac{3\pi}{2}$.
 
-Para calcular un triple producto escalar, siempre comenzamos con el producto cruz y después con el producto punto.
+\textbf{Ejercicio 1.} Sean $P_{1}, \ P_{2}$ y $P_{3}$ tres puntos de un plano en $\R^{3}$. Evalúe cuál debe ser la condición para que otro punto $P_{4}$ pueda ser miembro de aquella superficie.
 
-Entonces, sean $\mathbf{c} = \langle c_{1}, \ c_{2}, \ c_{3} \rangle$ y $\mathbf{a} \times \mathbf{b} = \langle (a_{2}b_{3} - a_{3}b_{2}), \ (a_{3}b_{1} - a_{1}b_{3}), \ (a_{1}b_{2} - a_{2}b_{1}) \rangle$, el volumen del paralelepipedo $V_{P}$ corresponde a:
+\textbf{Solución.} Comencemos definiendo los siguientes dos vectores usando los tres primeros puntos.
+\[
+  \overvec{P_{1}P_{2}} \qquad \text{y} \qquad \overvec{P_{1}P_{3}}
+\]
+Luego, busquemos otro vector $\vecmat{v}$ ortogonal al plano mediante el producto cruz entre los dos definidos arriba.
+\[
+  \vecmat{v} = \overvec{P_{1}P_{2}} \times \overvec{P_{1}P_{3}}
+\]
+Si $P_{4}$ está en el plano, entonces al formar el vector $\overvec{P_{1}P_{4}}$ debe cumplirse que:
+\[
+  \overvec{P_{1}P_{4}} \cdot \vecmat{v} = 0
+\]
+Al reemplazar a $\vecmat{v}$ por $\overvec{P_{1}P_{2}} \times \overvec{P_{1}P_{3}}$ se puede observar lo siguiente:
 \begin{align*}
-V_{P} &= \mathbf{c} \cdot (\mathbf{a} \times \mathbf{b}) \\
-      &= c_{1}(a_{2}b_{3} - a_{3}b_{2}) + c_{2}(a_{3}b_{1} - a_{1}b_{3}) + c_{3}(a_{1}b_{2} - a_{2}b_{1}) \\
-      &= a_{2}b_{3}c_{1} - a_{3}b_{2}c_{1} + a_{3}b_{1}c_{2} - a_{1}b_{3}c_{2} + a_{1}b_{2}c_{3} - a_{2}b_{1}c_{3} \\
-      &= a_{1}(b_{2}c_{3}- b_{3}c_{2}) - a_{2}(b_{1}c_{3} - b_{3}c_{1}) + a_{3}(b_{1}c_{2} - b_{2}c_{1}) \\
-      &= a_{1} \cdot
-         \begin{vmatrix}
-         b_{2} & b_{3} \\
-         c_{2} & c_{3}
-         \end{vmatrix}
-         - a_{2} \cdot
-         \begin{vmatrix}
-         b_{1} & b_{3} \\
-         c_{1} & c_{3}
-         \end{vmatrix}
-         + a_{3} \cdot
-         \begin{vmatrix}
-         b_{1} & b_{2} \\
-         c_{1} & c_{2}
-         \end{vmatrix} \\
-      &= \begin{vmatrix}
-         a_{1} & a_{2} & a_{3} \\
-         b_{1} & b_{2} & b_{3} \\
-         c_{1} & c_{2} & c_{3}
-         \end{vmatrix} \\
-V_{P} &= |\det(\mathbf{a}, \ \mathbf{b}, \ \mathbf{c})| \quad (\text{Q. E. D})
+  \overvec{P_{1}P_{4}} \cdot \left(\overvec{P_{1}P_{2}} \times \overvec{P_{1}P_{3}}\right) &= 0 \\
+     \det\left(\overvec{P_{1}P_{2}}, \ \overvec{P_{1}P_{3}}, \ \overvec{P_{1}P_{4}}\right) &= 0
 \end{align*}
-El volumen del paralelepipedo podemos interpretarlo como el determinante entre $\mathbf{a}$, $\mathbf{b}$ y $\mathbf{c}$ en el espacio, el cual es igual al triple producto entre $\mathbf{c}$ y el producto cruz $\mathbf{a} \times \mathbf{b}$.
-
+Este resultado indica que, para que $P_{4}$ esté en el plano, su vector creado a partir de $P_{1}$ debe formar un paralelepipedo \textbf{sin volumen}. Así, $\overvec{P_{1}P_{4}}$ será \textbf{coplanar} al igual que $\overvec{P_{1}P_{2}}$ y $\overvec{P_{1}P_{3}}$, lo que puede verificarse cuando el determinante de los tres vectores es igual a cero.
 
 \end{document}
