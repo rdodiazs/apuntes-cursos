@@ -1,19 +1,17 @@
 \documentclass[12pt]{article}
-\usepackage[utf8]{inputenc}
 \usepackage[margin=1in]{geometry}
-\usepackage[spanish]{babel}\decimalpoint
-\usepackage{setspace}\onehalfspacing
-\usepackage{parskip} % Espacio entre parrafos.
-\usepackage{graphicx} % Para usar comando \includegraphics[]{}
-\usepackage{amssymb} % Para usar el simbolo del conj. de los Reales.
-\usepackage{amsmath} % Para usar columnas vectoriales.
-\usepackage{multirow} % Para unir multiples filas en una tabla.
-\usepackage{hyperref} % Siempre debe ser el ultimo paquete.
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage{amsmath, amssymb}
+\usepackage{tikz}
+\usepackage{hyperref} % Siempre debe ir al final.
 
-
-\setcounter{tocdepth}{2} % Que no incluya subsubsections en la tabla de contenidos (toc).
-
-%================================
+% Opciones de Paquetes.
+\decimalpoint          % {babel}
+\onehalfspacing        % {setspace}
+\usetikzlibrary{babel} % {tikz}: Para que tikz no conflictue con {babel} con figuras como "->".
 
 \title{Clase 3. Matrices y la Matriz Inversa.}
 \author{MIT 18.02: Multivariable Calculus.}
@@ -22,83 +20,150 @@
 
 \begin{document}
 
+% Comandos personalizados.
+\newcommand{\vecmat}[1]{\mathbf{#1}}                          % Vectores o matrices en negrita en math mode.
+\newcommand{\unitvec}[1]{\vecmat{\hat{#1}}}                   % Vectores unitarios.
+\newcommand{\overvec}[1]{\overrightarrow{#1}}                 % Vector como segmento orientado.
+\newcommand{\invmat}[1]{\vecmat{#1}^{-1}}                     % Inversa de una matriz.
+\newcommand{\transmat}[1]{\vecmat{#1}^{T}}                    % Transpuesta de una matriz.
+\newcommand{\Adj}[0]{\text{Adj}}                              % Matriz adjunta.
+\newcommand{\R}[0]{\mathbb{R}}                                % Símbolo conjunto de los números reales.
+\newcommand{\N}[0]{\mathbb{N}}                                % Símbolo conjunto de los números naturales.
+
 \maketitle
 
 \begin{abstract}
-\noindent Iniciamos esta clase viendo un último ejemplo donde ocupamos tanto los determinantes como el producto cruz y, en el resto de ella, nos centraremos en estudiar de forma introductoria a las matrices y, en particular, a la matriz inversa.
+\noindent En esta clase estudiaremos un nuevo objeto matemático conocido como \textbf{matriz}. Veremos sus propiedades, operaciones básicas y nos concentraremos en un tipo de ellas llamada \textbf{matriz inversa}.
 \end{abstract}
 
 
 \section{Matrices.}
 
-Sea el punto $P = (x_{1}, \ x_{2}, \ x_{3})$, el cual se encuentra en el siguiente espacio de coordenadas.
-
-\begin{figure}[hbt!]
-\centering
-\includegraphics[scale=0.6]{img/matrices-1.jpg}
-\end{figure}
-
-Suponga que, por necesidad, cambiamos las coordenadas del espacio y el punto $P$ queda ubicado en $(u_{1}, \ u_{2}, \ u_{3})$.
-
-\newpage
-
-\begin{figure}[hbt!]
-\centering
-\includegraphics[scale=0.6]{img/matrices-2.jpg}
-\end{figure}
-
-Las coordenadas $u_{1}$, $u_{2}$ y $u_{3}$ podemos expresarlas en función de $x_{1}$, $x_{2}$ y $x_{3}$ como el de a continuación:
+Considere un punto $P$ con coordenadas $(x_{1}, \ x_{2}, \ x_{3})$ en un espacio cartesiano. Luego, suponga que definimos los ejes de este sistema para una nueva variable $u$, implicando que $P$ queda ubicado en $(u_{1}, \ u_{2}, \ u_{3})$ donde:
+\[
+  u_{1} = 2x_{1} + 3x_{2} + 3x_{3}, \qquad
+  u_{2} = 2x_{1} + 4x_{2} + 5x_{3}, \qquad
+  u_{3} =  x_{1} + x_{2} + 2x_{3}
+\]
+Asumamos que conocemos a $(u_{1}, \ u_{2}, \ u_{3})$, pero no a $(x_{1}, \ x_{2}, \ x_{3})$. Esta última coordenada se puede obtener resolviendo las igualdades de arriba como un sistema de ecuaciones lineales.
 \[
 \left\{
 \begin{aligned}
 2x_{1} + 3x_{2} + 3x_{3} &= u_{1} \\
 2x_{1} + 4x_{2} + 5x_{3} &= u_{2} \\
-x_{1} + x_{2} + 2x_{3} &= u_{3}
+  x_{1} + x_{2} + 2x_{3} &= u_{3}
 \end{aligned}
 \right.
 \]
-El sistema de ecuaciones de arriba podemos escribirlo como el siguiente \textbf{producto matricial}:
+Es posible compactar este sistema mediante la siguiente \textbf{ecuación matricial}:
 \[
-  \mathbf{A}\mathbf{x} = \mathbf{u}
+  \vecmat{A} \vecmat{x} = \vecmat{u},
 \]
-donde:
-\begin{align*}
-\mathbf{A} &=
+donde $\vecmat{A}$ es la \textbf{matriz de coeficientes}, puesto que contiene a las constantes (coeficientes) del sistema; mientras que $\vecmat{x}$ y $\vecmat{u}$ reciben el nombre de \textbf{vectores columna}.
+
+\newpage
+
+\begin{figure}[hbt!]
+\centering
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (14, 4);
+
+% Matrices y vectores.
+\node at (2.5, 3.2) {Matriz de coeficientes};
+\node at (2, 2) {
+$
+\displaystyle
+\vecmat{A} =
 \begin{bmatrix}
 2 & 3 & 3 \\
 2 & 4 & 5 \\
 1 & 1 & 2
-\end{bmatrix} &
-\mathbf{x} &=
+\end{bmatrix}
+$
+};
+
+\node at (8.85, 3.2) {Vectores columna};
+\node at (7, 2) {
+$
+\displaystyle
+\vecmat{x} =
 \begin{bmatrix}
-x_{1} \\ x_{2} \\ x_{3}
-\end{bmatrix} &
-\mathbf{u} &=
+x_{1} \\x_{2} \\ x_{3}
+\end{bmatrix}
+$
+};
+\node at (10, 2) {
+$
+\displaystyle
+\vecmat{u} =
 \begin{bmatrix}
-u_{1} \\ u_{2} \\ u_{3}
-\end{bmatrix} &
-\end{align*}
-La matriz $\mathbf{A}$ se conoce como \textbf{matriz de coeficientes}, ya que contiene las constantes o coeficientes del sistema de ecuaciones, mientras que los vectores $\mathbf{x}$ y $\mathbf{u}$ reciben el nombre de \textbf{vectores columna}.
+u_{1} \\u_{2} \\ u_{3}
+\end{bmatrix}
+$
+};
+\end{tikzpicture}
+\end{figure}
 
-En general y como acabamos de ver, una \textbf{matriz} es simplemente un arreglo rectangular de números, símbolos o expresiones ordenados en filas y columnas.
+En este curso entenderemos a las \textbf{matrices} como arreglos rectangulares de números, símbolos o expresiones ordenados en filas y columnas.
 
-Cuando trabajamos con matrices, es habitual señalar su dimensión en la forma $n \times m$, donde $n$ indica la cantidad de filas y $m$ la de columnas. Para el caso de $\mathbf{A}$, podemos ver que es de $3 \times 3$ dimensiones y, al ser $n = m$, recibe el nombre de \textbf{Matriz Cuadrada}. Si $n \neq m$, entonces se la categoriza como \textbf{Matriz Rectangular}.
-
-Las \textbf{filas} y \textbf{columnas} de una matriz también se suelen interpretar como vectores. Los primeros reciben el nombre de \textbf{vectores fila} y son de $1 \times m$ dimensiones, mientras que los segundos se conocen como \textbf{vectores columna} y son de $n \times 1$ dimensiones. Como vimos, los vectores $\mathbf{x}$ y $\mathbf{u}$ corresponde a estos últimos, ya que son de $3 \times 1$.
-
-Al trabajar de forma algebraica con una matriz $\mathbf{B}$ cualquiera, sus entradas se denotan en la forma $b_{i, j}$, donde $i$ es el número de fila en el que se encuentra $b$ y $j$ el número de columna. El conteo se hace de arriba hacia abajo para $i$ y de izquierda a derecha para $j$. Por ejemplo, la entrada $a_{2, 3} = 5$ en $\mathbf{A}$ porque dicho valor está en su segunda fila y tercera columna.
-
-Un conjunto de \textbf{matrices} son \textbf{iguales} si sus \textbf{dimensiones y entradas} también lo son.
-
-\subsection{Operaciones aritméticas con y entre matrices.}
-
-\subsubsection{Adición y sustracción entre matrices.}
-
-Es posible \textbf{sumar y restar matrices} solo si son de \textbf{dimensiones iguales}. Cuando se cumple dicho requisito, aplicamos dichas operaciones entre las entradas de ellas y resulta en una nueva matriz.
-
-Formalmente, sean dos matrices $\mathbf{V} = [v_{i, j}]$ y $\mathbf{W} = [w_{i, j}]$ de iguales dimensiones. Entonces:
+Es común denotar a las matrices con letras mayúsculas en negrita. Anteriormente lo hicimos con $\vecmat{A}$. Por otra parte, cuando sus entradas son expresadas algebraicamente, se escriben en minúscula y con dos subíndices que indican su posición en ella.
 \[
-  \mathbf{V} \pm \mathbf{W} = [v_{i, j} \pm w_{i, j}]
+  a_{3,5} \Longrightarrow \text{Entrada de } \vecmat{A} \text{ ubicada en su tercera fila y quinta columna.}
+\]
+Al igual que con los vectores, las matrices también pueden ser expresadas indicando su \textbf{dimensión}, la que señala la cantidad de filas y columnas como un producto.
+\[
+\vecmat{A} =
+\begin{bmatrix}
+2 & 1 & 3 \\
+1 & 0 & 4
+\end{bmatrix}
+\Longrightarrow
+\text{Dimensión de } \vecmat{A}: \ 2 \times 3
+\Longrightarrow
+2 \text{ filas y } 3 \text{ columnas.}
+\]
+Otra forma de expresar la dimensión de una matriz es añadiendo el conjunto numérico del cual provienen sus entradas. En el ejemplo de arriba, $\vecmat{A} \in \R^{2 \times 3}$.
+
+Para toda matriz $\vecmat{A}$ de $n \times m$, cuando $n = m$ se dice que es \textbf{cuadrada} y si $n \neq m$ se etiqueta como \textbf{rectangular}.
+
+Es posible interpretar a los vectores como matrices. Por ejemplo,
+\[
+\vecmat{x} =
+\begin{bmatrix}
+x_{1} \\x_{2} \\ x_{3}
+\end{bmatrix} \qquad
+\vecmat{u} =
+\begin{bmatrix}
+u_{1} \\u_{2} \\ u_{3}
+\end{bmatrix}
+\]
+pueden ser expresados como matrices de $3 \times 1$.
+
+Por otra parte, las columnas y filas de una matriz pueden ser entendidas como vectores. Las primeras se nombran como \textbf{vectores columna} y las segundas como \textbf{vectores fila}. Estas últimas suelen ser de la forma:
+\[
+\vecmat{c} =
+\begin{bmatrix}
+c_{1} & c_{2} & c_{3}
+\end{bmatrix}
+\]
+
+Dos o más \textbf{matrices} son \textbf{iguales} si sus \textbf{dimensiones y entradas} también lo son.
+
+\subsection{Operaciones básicas con matrices.}
+
+La adición matricial y la multiplicación escalar se calculan de forma similar a cómo se realizan dichas operaciones con vectores.
+
+Si dos matrices $\vecmat{V}$ y $\vecmat{W}$ tienen la misma dimensión, entonces la \textbf{suma} entre ambas se define como:
+\[
+\vecmat{V} \pm \vecmat{W} =
+\begin{bmatrix}
+v_{1, 1} \pm w_{1, 1} & v_{1, 2} \pm w_{1, 2} & \cdots & v_{1, m} \pm w_{1, m} \\
+v_{2, 1} \pm w_{2, 1} & v_{2, 2} \pm w_{2, 2} & \cdots & v_{2, m} \pm w_{2, m} \\
+\vdots & \vdots & \ddots & \vdots \\
+v_{n, 1} \pm w_{n, 1} & v_{n, 2} \pm w_{n, 2} & \cdots & v_{n, m} \pm w_{n, m}
+\end{bmatrix}
 \]
 Por ejemplo:
 \[
@@ -119,249 +184,458 @@ Por ejemplo:
 12 & 11
 \end{bmatrix}
 \]
-
-\subsubsection{Multiplicación escalar de una matriz.}
-
-Al igual que al trabajar con vectores, la \textbf{multiplicación entre un escalar a una matriz} corresponde al producto entre dicho número y cada entrada de esta última.
+Sea $k$ un número. La \textbf{multiplicación escalar} entre este valor y una matriz $\vecmat{V}$ es:
 \[
-  c \cdot \mathbf{W} = [c \cdot w_{i, j}] \qquad (c = \text{constante})
+k \cdot \vecmat{V} =
+\begin{bmatrix}
+k \cdot v_{1,1} & k \cdot v_{1, 2} & \cdots & k \cdot v_{1, m} \\
+k \cdot v_{2,1} & k \cdot v_{2, 2} & \cdots & k \cdot v_{2, m} \\
+\vdots & \vdots & \ddots & \vdots \\
+k \cdot v_{n, 1} & k \cdot v_{n, 2} & \cdots & k \cdot v_{n, m}
+\end{bmatrix}
 \]
 
-\subsubsection{Producto matricial.}
+\subsection{Producto matricial.}
 
-El \textbf{producto matricial} o producto entre matrices es más restrictivo. Se puede realizar siempre que \textbf{la cantidad de columnas de la matriz de la izquierda sea igual a la cantidad de filas de la ubicada a la derecha}, puesto que es equivalente al \textbf{producto punto} entre los vectores fila de la primera y los vectores columna de la segunda.
+Otra operación relevante entre matrices es el \textbf{producto matricial}. Comúnmente se realiza entre dos de ellas y, para aplicarla, debe cumplirse la siguiente condición:
 
-Por ejemplo, sean dos matrices:
+\begin{quote}
+\centering
+\textit{La cantidad de columnas de la matriz de la izquierda debe ser igual a la cantidad de filas de la matriz de la derecha}.
+\end{quote}
+
+Cuando se cumple esta condición, es posible calcular el producto matricial entre dos matrices como el \textbf{producto punto} entre los vectores fila de la que está a la izquierda y los vectores columna de la que se encuentra en la derecha, la que resulta en una nueva matriz.
+
+A modo de ejemplo, considere las siguientes matrices:
 \[
-\mathbf{W} =
+\vecmat{A} =
 \begin{bmatrix}
-w_{1, 1} & w_{1, 2} \\
-w_{2, 1} & w_{2, 2}
+1 & 3 & 2 \\
+0 & -1 & 5
 \end{bmatrix}
 \qquad
-\mathbf{V} =
+\vecmat{B} =
 \begin{bmatrix}
-v_{1, 1} & v_{1, 2} \\
-v_{2, 1} & v_{2, 2}
+0 & 3 \\
+2 & 1 \\
+4 & -5
 \end{bmatrix}
 \]
-entonces:
-\[
-\mathbf{W} \cdot \mathbf{V} =
-\begin{bmatrix}
-(w_{1, 1} \cdot v_{1, 1}) + (w_{1, 2} \cdot v_{2, 1}) & (w_{1, 1} \cdot v_{1, 2}) + (w_{1, 2} \cdot v_{2, 2}) \\
-(w_{2, 1} \cdot v_{1, 1}) + (w_{2, 2} \cdot v_{2, 1}) & (w_{2, 1} \cdot v_{1, 2}) + (w_{2, 2} \cdot v_{2, 2})
-\end{bmatrix}
-\]
-En general, se cumple que si $\mathbf{W}$ es de $k \times m$ y $\mathbf{V}$ es de $m \times p$, entonces $\mathbf{W} \cdot \mathbf{V}$ será una matriz de $k \times p$ dimensiones.
-
-Por otra parte, el producto matricial representa la \textbf{transformación lineal} de la matriz ubicada en la derecha a partir de la que está en la izquierda. Por ejemplo, en $\mathbf{V}\mathbf{W}$ se refiere a que pasamos a $\mathbf{W} \to \mathbf{V}\mathbf{W}$ por medio de $\mathbf{V}$.
-
-Otro ejemplo de una transformación lineal, es el producto matricial que vimos al inicio de esta sección:
-\[
-  \mathbf{A} \cdot \mathbf{x} = \mathbf{u}
-\]
-Como vemos, podemos interpretar la operación de arriba como haber transformado a $\mathbf{x} \to \mathbf{u}$ a partir de la matriz $\mathbf{A}$. Además, la ecuación se cumple porque $\mathbf{A}$ es de $3 \times 3$ y $\mathbf{x}$ es de $3 \times 1$, lo que implica que $\mathbf{u}$ debe ser de $3 \times 1$, lo cual vimos que es verdadero.
-
-Ahora, suponga que es posible calcular el producto entre las matrices $\mathbf{V}$, $\mathbf{W}$ y $\mathbf{Z}$. De ellas es posible obtener las siguientes \textbf{propiedades} de esta operación:
+Debido a que $\vecmat{A} \in \R^{2 \times 3}$ y $\vecmat{B} \in \R^{3 \times 2}$, es posible calcular el producto entre ambas como:
 \begin{align*}
-&\text{Asociativa} \rightarrow \mathbf{V}(\mathbf{W}\mathbf{Z}) = (\mathbf{V}\mathbf{W}) \mathbf{Z} \\
-&\text{Distributiva (1)} \rightarrow \mathbf{V} (\mathbf{W} + \mathbf{Z}) = \mathbf{V}\mathbf{W} + \mathbf{V}\mathbf{Z} \\
-&\text{Distributiva (2)} \rightarrow (\mathbf{W} + \mathbf{Z}) \mathbf{V} = \mathbf{W}\mathbf{V} + \mathbf{Z}\mathbf{V}
-\end{align*}
-Separamos la propiedad distributiva en dos partes, porque el \textbf{orden de los factores importa} en la multiplicación entre matrices. Esto se debe, principalmente, a la condición de las dimensiones de una y otra. Es por ello que \textbf{no necesariamente existe la propiedad conmutativa} en esta operación. Es decir:
-\[
-  \mathbf{V}\mathbf{W} \neq \mathbf{W}\mathbf{V}
-\]
-La propiedad conmutativa se da solo en un caso, el cual revisaremos más adelante.
-
-
-\subsection{Matriz Identidad.}
-
-Es posible encontrar distintos tipos de matrices y una de ellas es la \textbf{Matriz Identidad} $\mathbf{I}$, la cual se caracteriza por ser \textbf{cuadrada} y porque su diagonal principal\footnote{Es decir, las entradas que van en diagonal desde la esquina superior izquierda hasta la esquina inferior derecha.} consiste solo de unos y el resto son ceros. Por ejemplo, a continuación tenemos una de $3 \times 3$.
-\[
-\mathbf{I} =
+\vecmat{A} \cdot \vecmat{B} &=
 \begin{bmatrix}
-1 & 0 & 0 \\
-0 & 1 & 0 \\
-0 & 0 & 1
-\end{bmatrix}
-\]
-La matriz identidad suele ser muy buscada al trabajar con matrices, porque corresponde a un \textbf{neutro multiplicativo}. Es decir, sean dos matrices $\mathbf{V}$ de $k \times n$ y $\mathbf{I}$ de $n \times n$, entonces:
-\[
-  \mathbf{V} \cdot \mathbf{I} = \mathbf{V}
-\]
-Un ejemplo donde podemos encontrarnos una matriz identidad, es en la siguiente matriz de rotación $\mathbf{R}$.
-\[
-\mathbf{R} =
-\begin{bmatrix}
-0 & -1 \\
-1 & 0
-\end{bmatrix}
-\]
-La matriz $\mathbf{R}$ permite hacer rotar objetos (sean matrices o vectores) de dos filas en $90^{\circ}$ en dirección contra las manillas del reloj. Por ejemplo:
-\[
-\begin{bmatrix}
-0 & -1 \\
-1 & 0
+1 & 3 & 2 \\
+0 & -1 & 5
 \end{bmatrix}
 \cdot
-\begin{bmatrix} x \\ y \end{bmatrix} =
-\begin{bmatrix} -y \\ x \end{bmatrix}
-\]
-Lo interesante es que si multiplicamos a $\mathbf{R}$ por sí misma, obtenemos a $-\mathbf{I}$,
-\[
-\mathbf{R} \cdot \mathbf{R} =
 \begin{bmatrix}
-0 & -1 \\
-1 & 0
+0 & 3 \\
+2 & 1 \\
+4 & -5
+\end{bmatrix} \\
+&=
+\begin{bmatrix}
+(1 \cdot 0) + (3 \cdot 2) + (2 \cdot 4) & (1 \cdot 3) + (3 \cdot 1) + (2 \cdot -5) \\
+(0 \cdot 0) + (-1 \cdot 2) + (5 \cdot 4) & (3 \cdot 0) + (-1 \cdot 1) + (5 \cdot -5)
+\end{bmatrix} \\
+&=
+\begin{bmatrix}
+14 & -4 \\
+18 & -26
+\end{bmatrix}
+\end{align*}
+Como se observa arriba, $\vecmat{A} \cdot \vecmat{B} \in \R^{2 \times 2}$. En general, si $\vecmat{A}$ es de $n \times k$ dimensiones y $\vecmat{B}$ es de $k \times m$, entonces $\vecmat{A} \cdot \vecmat{B}$ será de $n \times m$.
+
+La multiplicación entre una matriz y un vector también es un producto matricial. Cuando es de la forma
+\[
+\vecmat{A}\vecmat{x} =
+\begin{bmatrix}
+a_{1, 1} & a_{1, 2} & \ldots & a_{1, m} \\
+a_{2, 1} & a_{2, 2} & \ldots & a_{2, m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n, 1} & a_{n, 2} & \ldots & a_{n, m}
+\end{bmatrix}
+\begin{bmatrix}
+x_{1} \\ x_{2} \\ \vdots \\ x_{m}
+\end{bmatrix} =
+\begin{bmatrix}
+a_{1, 1}x_{1} + a_{1, 2}x_{2} + \ldots + a_{1, m}x_{m} \\
+a_{2, 1}x_{1} + a_{2, 2}x_{2} + \ldots + a_{2, m}x_{m} \\
+\vdots \\
+a_{n, 1}x_{1} + a_{n, 2}x_{2} + \ldots + a_{n, m}x_{m}
+\end{bmatrix}
+\]
+recibe el nombre de \textbf{producto matriz-vector} y, como se observa arriba, resulta en un \textbf{vector}.
+
+\subsubsection{Otras formas de interpretar el producto matricial.}
+
+Consideremos el producto entre dos matrices $\vecmat{A}, \ \vecmat{B} \in \R^{2 \times 2}$.
+\[
+\vecmat{A} \cdot \vecmat{B} =
+\begin{bmatrix}
+a_{1, 1} & a_{1, 2} \\
+a_{2, 1} & a_{2, 2}
 \end{bmatrix} \cdot
 \begin{bmatrix}
-0 & -1 \\
-1 & 0
+b_{1, 1} & b_{1, 2} \\
+b_{2, 1} & b_{2, 2}
 \end{bmatrix} =
 \begin{bmatrix}
--1 & 0 \\
-0 & -1
-\end{bmatrix} =
-- \mathbf{I}
+a_{1, 1}b_{1, 1} + a_{1, 2}b_{2, 1} & a_{1, 1}b_{1, 2} + a_{1, 2}b_{2, 2} \\
+a_{2, 1}b_{1, 1} + a_{2, 2}b_{2, 1} & a_{2, 1}b_{1, 2} + a_{2, 2}b_{2, 2}
+\end{bmatrix}
 \]
-donde $-\mathbf{I}$ corresponde a una matriz de rotación que hace girar a objetos con respecto a su eje en $180^{\circ}$ en dirección contra las manillas del reloj.
+Se puede apreciar arriba que cada columna de $\vecmat{A} \cdot \vecmat{B}$ corresponde al producto matriz-vector entre $\vecmat{A}$ y los vectores columna de $\vecmat{B}$, $\vecmat{b}_{i}$.
+\[
+\vecmat{A} \cdot \vecmat{B} =
+\begin{bmatrix}
+ & \\
+\vecmat{A} \cdot \vecmat{b}_{1} & \vecmat{A} \cdot \vecmat{b}_{2} \\
+ & 
+\end{bmatrix}; \text{ donde }
+\vecmat{b}_{1} =
+\begin{bmatrix}
+b_{1, 1} \\ b_{2, 1}
+\end{bmatrix} \text{ y }
+\vecmat{b}_{2} =
+\begin{bmatrix}
+b_{1, 2} \\ b_{2, 2}
+\end{bmatrix}
+\]
+Por lo tanto, si $\vecmat{C} = \vecmat{A} \cdot \vecmat{B}$, para $\vecmat{A} \in \R^{n \times k}$ y $\vecmat{B} \in \R^{k \times m}$, podemos interpretar las columnas $\vecmat{c}_{i}$, con $i = 1, \ 2 , \ \ldots, \ m$, de $\vecmat{C} \in \R^{n \times m}$ como:
+\[
+  \vecmat{c}_{1} = \vecmat{A} \vecmat{b}_{1}, \quad
+  \vecmat{c}_{2} = \vecmat{A} \vecmat{b}_{2}, \quad \ldots,
+  \vecmat{c}_{m} = \vecmat{A} \vecmat{b}_{m}
+\]
+Ahora volvamos a considerar a
+\[
+\vecmat{A}\vecmat{x} =
+\begin{bmatrix}
+a_{1, 1}x_{1} + a_{1, 2}x_{2} + \ldots + a_{1, m}x_{m} \\
+a_{2, 1}x_{1} + a_{2, 2}x_{2} + \ldots + a_{2, m}x_{m} \\
+\vdots \\
+a_{n, 1}x_{1} + a_{n, 2}x_{2} + \ldots + a_{n, m}x_{m}
+\end{bmatrix}
+\]
+El vector del lado derecho de este producto matriz-vector se puede expresar como una adición vectorial.
+\[
+\vecmat{A} \cdot \vecmat{x} =
+\begin{bmatrix}
+a_{1, 1} x_{1} \\ a_{2, 1}x_{1} \\ \vdots \\ a_{n, 1}x_{1}
+\end{bmatrix} +
+\begin{bmatrix}
+a_{1, 2} x_{2} \\ a_{2, 2}x_{2} \\ \vdots \\ a_{n, 2}x_{2}
+\end{bmatrix} +
+\ldots +
+\begin{bmatrix}
+a_{1, m} x_{m} \\ a_{2, m}x_{m} \\ \vdots \\ a_{n, m}x_{m}
+\end{bmatrix}
+\]
+Por otra parte, cada vector de la adición del lado derecho es una multiplicación escalar con cada componente de $\vecmat{x}$.
+\[
+\vecmat{A} \cdot \vecmat{x} =
+x_{1} \cdot
+\begin{bmatrix}
+a_{1, 1} \\ a_{2, 1} \\ \vdots \\ a_{n, 1}
+\end{bmatrix} +
+x_{2} \cdot
+\begin{bmatrix}
+a_{1, 1} \\ a_{2, 2} \\ \vdots \\ a_{n, 2}
+\end{bmatrix} +
+\ldots +
+x_{m}
+\begin{bmatrix}
+a_{n, 1} \\ a_{n, 2} \\ \vdots \\ a_{n, m}
+\end{bmatrix}
+\]
+Digamos que $\vecmat{a}_{i}$ son los vectores columna de $\vecmat{A}$, entonces el lado derecho de esta igualdad se puede escribir como:
+\[
+  \vecmat{A} \cdot \vecmat{x} = x_{1}\vecmat{a}_{1} + x_{2}\vecmat{a}_{2} + \ldots + x_{m}\vecmat{a}_{m}
+                              = \sum_{i = 1}^{m} x_{i}\vecmat{a}_{i}
+\]
+Esta suma que resulta del producto matriz-vector se conoce como \textbf{combinación lineal}.
 
+De este modo, también podemos generalizar para cada columna del producto $\vecmat{C} = \vecmat{A} \cdot \vecmat{B}$ que:
+\[
+  \vecmat{c}_{j} = \sum_{i = 1}^{n} (b_{j, i}) \vecmat{a}_{i} \ ; \quad \text{ con } 1 \leq j \leq m
+\]
+
+\subsection{Propiedades de las operaciones con matrices.}
+
+Suponga que es posible calcular el producto entre las matrices $\vecmat{V}, \ \vecmat{W}$ y $\vecmat{Z}$. A partir de ellas se obtienen las siguientes propiedades algebraicas.
+\begin{itemize}
+\item Asociativa: $\vecmat{V} \ (\vecmat{W} \vecmat{Z}) = (\vecmat{V} \vecmat{W}) \ \vecmat{Z}$
+\item Distributiva: $\vecmat{V} \ (\vecmat{W} + \vecmat{Z}) = \vecmat{V}\vecmat{W} + \vecmat{V}\vecmat{Z}$ \hspace{1.5pt} y \hspace{1.5pt} $(\vecmat{W} + \vecmat{Z}) \ \vecmat{V} = \vecmat{W}\vecmat{V} + \vecmat{Z}\vecmat{V}$
+\end{itemize}
+La propiedad distributiva entrega el siguiente aviso: La \textbf{conmutatividad no está asegurada entre matrices}. Incluso aunque pueda calcularse el producto entre $\vecmat{V}$ y $\vecmat{W}$, suele cumplirse que
+\[
+  \vecmat{V} \vecmat{W} \neq \vecmat{W} \vecmat{V}
+\]
+
+\subsection{Matrices entendidas como funciones.}
+
+Como sabemos, una función $f:X \to Y$ es una regla que asigna a cada $x \in X$ un único $y \in Y$ que es denotado como $f(x)$ (es decir, $y = f(x)$). Por ejemplo, $g:\R \to \R$ puede ser $2a + 1$ y el valor para todo $a \in \R$ es $g(a)$.
+
+Las matrices también operan como una regla o función. Esto se puede observar en la operación producto matriz-vector.
+
+Considere los vectores $\vecmat{v} \in V$ y $\vecmat{w} \in W$ donde $V \subseteq \R^{m}$ y $W \subseteq \R^{n}$. Podemos definir que $T:V \to W$ es $\vecmat{A} \vecmat{v}$, donde su valor de salida es $T(\vecmat{v}) = \vecmat{w}$. Es decir,
+\[
+  T(\vecmat{v}) = \vecmat{w} = \vecmat{A} \vecmat{v}; \quad \forall \vecmat{v} \in V
+\]
+Lo que indica la igualdad de arriba es que $T$ asigna a cada $\vecmat{v} \in V$ un único $\vecmat{w} \in W$. La regla (o la fórmula) que permite aquello es $\vecmat{A}$. Este tipo particular de funciones recibe el nombre de \textbf{transformación lineal}.\footnote{En matemática, la palabra ``transformación'' es un sinónimo de ``función''.}
+
+Al trabajar con vectores, una transformación se cataloga como ``lineal'' si cumple las siguientes condiciones:
+
+\begin{enumerate}
+\item \textbf{Aditividad}: $T(\vecmat{v} + \vecmat{w}) = T(\vecmat{v}) + T(\vecmat{w})$; $\forall \vecmat{v}, \ \vecmat{w} \in V$.
+\item \textbf{Homogeneidad}: $T(k \vecmat{v}) = k T(\vecmat{v})$; $\forall \vecmat{v} \in V$ y con $k =$ constante.
+\end{enumerate}
+
+La operación producto matriz-vector es una transformación lineal porque cumple con ambas condiciones.
+
+Una composición de funciones $g \ o \ f$ es una función $h:X \to Z$ donde $f:X \to Y$ y $g:Y \to Z$, cuyo valor es $z = h(y) = g(f(x))$, para $x \in X$, $y \in Y$ y $z \in Z$. Por lo tanto, también podemos definirla como:
+\[
+  (g \ o \ f)(x) = g(f(x)) = z
+\]
+Una \textbf{composición de transformaciones lineales} sigue la misma idea vista arriba. Sean $P:U \to W$, $T:U \to V$ y $S:V \to W$, donde
+\[
+  T(\vecmat{u}) = \vecmat{B} \vecmat{u} \quad
+  S(\vecmat{v}) = \vecmat{A} \vecmat{v}
+\]
+para todo $\vecmat{u} \in U$ y para todo $\vecmat{v} \in V$. Entonces:
+\[
+  P(\vecmat{u}) = (S \ o \ T)(\vecmat{u}) = S(T(\vecmat{u}))
+\]
+es una composición de transformaciones lineales.
+
+Ahora, reemplacemos a $T(\vecmat{u}) = \vecmat{B} \vecmat{u}$ en la igualdad de arriba.
+\[
+  (S \ o \ T)(\vecmat{u}) = S(\vecmat{B} \vecmat{u})
+\]
+Como $S(\vecmat{v}) = \vecmat{A} \vecmat{v}$, entonces:
+\[
+  (S \ o \ T)(\vecmat{u}) = \vecmat{A}(\vecmat{B} \vecmat{u}) = (\vecmat{A} \vecmat{B}) \vecmat{u}
+\]
+Lo que muestra esta igualdad es que el \textbf{producto matricial} es una \textbf{composición de transformaciones lineales}.
+
+Lo visto de manera breve en esta sección\footnote{Omití dar alguna demostración, aunque es posible encontrarlas en cualquier libro de álgebra lineal que vea transformaciones lineales.} es muy útil para entender la intuición de lo que estudiaremos en la siguiente.
+
+
+\section{Matriz identidad y la inversa de una matriz.}
+
+Dos tipos de matrices que son relevantes por sus cualidades son la matriz identidad y la inversa de una matriz. A continuación revisaremos dichas características.
+
+\subsection{Matriz identidad.}
+
+La \textbf{matriz identidad}, denotada como $\vecmat{I}$, es una matriz cuadrada que consiste de unos en su diagonal principal y ceros en el resto de sus entradas.
+\[
+\vecmat{I} =
+\begin{bmatrix}
+1 & 0 & \cdots & 0 \\
+0 & 1 & \cdots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & 1
+\end{bmatrix}
+\]
+Esta matriz se llama ``identidad'' porque se define como $T:V \to V$ dada por $\vecmat{I}\vecmat{v}$ la cual resulta en $\vecmat{v}$.
+\[
+  T(\vecmat{v}) = \vecmat{I}\vecmat{v} = \vecmat{v}
+\]
+En otras palabras, la regla de $\vecmat{I}$ es tomar vectores de un conjunto y devolverlos intactos. Lo mismo ocurre al multiplicar matrices
+\[
+  \vecmat{V} \cdot \vecmat{I} = \vecmat{V}
+\]
+Por este motivo, la matriz $\vecmat{I}$ se interpreta como el ``neutro multiplicativo'' del producto matricial y va en concordancia con la versión escalar de esta transformación, que corresponde a la función afín $f(x) = x$ y que es lo mismo a $f(x) = 1x$.
 
 \subsection{Matriz Inversa.}
 
-Hemos señalado que la ecuación $\mathbf{A}\mathbf{x} = \mathbf{u}$ representa la transformación lineal de $\mathbf{x}$ a $\mathbf{u}$ a partir de $\mathbf{A}$. En ciertas ocasiones es posible hacer el trabajo inverso, pasando a $\mathbf{u} \to \mathbf{x}$ por medio de una matriz denotada como $\mathbf{A}^{-1}$ y que recibe el nombre de \textbf{Matriz Inversa} de $\mathbf{A}$.
+Una función $f:X \to Y$ es biyectiva si, para todo $x \in X$, devuelve todos los $y \in Y$ (sobreyectiva)\footnote{Lo que implica que el rango de $f$ es igual a su codominio $Y$.} los cuales son distintos entre sí (inyectiva)\footnote{La única posibilidad de que $f(x_{1}) = f(x_{2})$ es que $x_{1} = x_{2}$.}.
 
-Las matrices inversas solo existen en \textbf{matrices cuadradas}. Es decir, $\mathbf{A}$ debe ser de $n \times n$ para que exista $\mathbf{A}^{-1}$.
-
-Ahora bien, si $\mathbf{A}$ es de $n \times n$, la \textbf{principal condición} para que exista $\mathbf{A}^{-1}$ es que:
+Cuando una función es biyectiva, puede encontrarse otra $f^{-1}:Y \to X$ cuyo valor es $f^{-1}(y) = x$ para todo $y \in Y$. Es decir, $f^{-1}$ \textbf{revierte} la regla de $f$. Ésta se conoce como la ``inversa de $f$'' y tiene la siguiente propiedad:
 \[
-  \mathbf{A}^{-1}\mathbf{A} = \mathbf{A}\mathbf{A}^{-1} = \mathbf{I}
+  f^{-1}(f(x)) = x \qquad \qquad f(f^{-1}(y)) = y
 \]
-Lo que nos muestra la igualdad de arriba es que, cuando existe $\mathbf{A}^{-1}$, podemos revertir o anular la transformación realizada por medio de $\mathbf{A}$ al ser multiplicada por su inversa, ya que termina siendo igual a $\mathbf{I}$ y lo mismo ocurre en sentido contrario, revirtiendo la transformación realizada por $\mathbf{A}^{-1}$ al ser multiplicada por $\mathbf{A}$.
+Por lo tanto, si $I$ es la función identidad (o afín), donde $I(x) = x$ y $I(y) = y$, entonces:
+\[
+  f^{-1} \ o \ f = f \ o \ f^{-1} = I
+\]
+Las transformaciones lineales también pueden ser biyectivas. Supongamos que $T:V \to W$ lo es donde $T(\vecmat{v}) = \vecmat{A}\vecmat{v}$, entonces existe otra $T^{-1}:W \to V$ definida como $T^{-1}(\vecmat{w}) = A^{-1}\vecmat{w}$ en la que también se cumple que:
+\[
+  T^{-1} \ o \ T = T \ o \ T^{-1} = I
+\]
+En la sección 1.4 vimos que la composición de transformaciones lineales son el producto de las matrices que las definen. Por lo tanto, podemos reescribir la igualdad de arriba como:
+\[
+  \invmat{A} \vecmat{A} = \vecmat{A} \invmat{A} = \vecmat{I}
+\]
+donde $\invmat{A}$ recibe el nombre de \textbf{matriz inversa} de $\vecmat{A}$ y la igualdad de productos de arriba se conoce como \textbf{criterio de invertibilidad}.
 
-La matriz inversa es muy buscada, porque nos permite \textbf{encontrar las soluciones de un sistema de ecuaciones lineales}. En particular, si multiplicamos al sistema $\mathbf{A}\mathbf{x} = \mathbf{u}$ por $\mathbf{A}^{-1}$, entonces:
+La inversa de una matriz suele ser una de las más buscadas al trabajar con este tipo de objetos matemáticos por las facilidades algebraicas que entrega. Por ejemplo, suponga que buscamos las soluciones de un sistema de ecuaciones lineales que hemos definido como:
+\[
+  \vecmat{A} \vecmat{x} = \vecmat{y}
+\]
+Si $\vecmat{A}$ tiene una inversa $\vecmat{A}^{-1}$ y la usamos para multiplicar a la ecuación de arriba, por el criterio de invertibilidad sucede lo siguiente:
 \begin{align*}
-\mathbf{A}^{-1}(\mathbf{A}\mathbf{x}) &= \mathbf{A}^{-1}\mathbf{u} \\
-(\mathbf{A}^{-1}\mathbf{A})\mathbf{x} &= \mathbf{A}^{-1}\mathbf{u} \\
-\mathbf{I}\mathbf{x} &= \mathbf{A}^{-1}\mathbf{u} \\
-\mathbf{x} &= \mathbf{A}^{-1}\mathbf{u}
+  \invmat{A} \vecmat{A} \vecmat{x} &= \invmat{A} \vecmat{y} \\
+  \vecmat{I} \vecmat{x} &= \invmat{A} \vecmat{y} \\
+  \vecmat{x} &= \invmat{A} \vecmat{y}
 \end{align*}
-Por lo tanto, si existe $\mathbf{A}^{-1}$ y conocemos los valores de $\mathbf{u}$, podemos encontrar las soluciones contenidas en $\mathbf{x}$ transformando (o revirtiendo) de $\mathbf{u} \to \mathbf{x}$ a partir de $\mathbf{A}^{-1}$.
+Es decir, si $\invmat{A}$ existe, la solución del sistema serán los componentes del vector $\invmat{A}\vecmat{y}$.
 
-\subsubsection{Calculando una Matriz Inversa para matrices pequeñas.}
+La gran limitante de trabajar con $\invmat{A}$ es que \textbf{solo existe en matrices cuadradas}.
 
-Existen distintas formas para encontrar la inversa de una matriz cuadrada (cuando existe). Acá veremos una que es eficiente cuando es de menor tamaño\footnote{Para aquellas de mayor tamaño, es más eficiente obtenerlas por medio del Método (o algoritmo) de Eliminación de Gauss, que estudiamos con mayor detalle en Álgebra Lineal.}.
+Por ahora asumamos que $\vecmat{A}$ es una matriz cuadrada. Existen distintos métodos para encontrar a $\invmat{A}$. A continuación veremos uno que depende de su \textbf{determinante}, $\det(\vecmat{A})$, pero que es eficiente solo para aquellas de menor tamaño.
 
-Como recordaremos, las columnas de una matriz podemos interpretarlas como vectores fila. Es decir, podemos conformar una matriz a partir de ellos. Por lo tanto, también podemos calcular el determinante de igual manera a como lo estudiamos en la clase anterior.
+\subsection{Determinante de una matriz y el cálculo de su inversa.}
 
-\newpage
+En la clase anterior estudiamos brevemente las fórmulas para calcular el determinante con vectores. Ahora lo haremos con matrices y veremos que su valor nos permite determinar si ésta tiene (o no) una inversa.
 
-En general, en \textbf{toda matriz cuadrada} es posible calcular su determinante. Para el caso de las de $2 \times 2$, lo calculamos como:
+\subsubsection{Determinante de una matriz: Método del cofactor.}
+
+Solo es posible conocer el determinante de matrices cuadradas. Para obtenerlo, usaremos el método del cofactor que se desarrolla a partir de matrices más chicas formadas con sus entradas. Antes de aplicarlo, debemos definir el determinante de una matriz de $2 \times 2$.
+
+Sea $\vecmat{A} \in \R^{2 \times 2}$. Su determinante se calcula como:
 \[
-\det(\mathbf{A}) =
+\det(\vecmat{A}) =
 \begin{vmatrix}
-a_{1,1} & a_{1,2} \\
-a_{2,1} & a_{2,2}
+a_{1, 1} & a_{1, 2} \\
+a_{2, 1} & a_{2, 2}
 \end{vmatrix} =
-a_{1,1}a_{2,2} - a_{1,2}a_{2,1};
-\qquad
-\text{donde }
-\mathbf{A} =
+a_{1, 1}a_{2, 2} - a_{1, 2}a_{2, 1}
+\]
+Para calcular el determinante de matrices de $n \times n$ con $n > 2$, primero formamos bloques de matrices de $n = 2$ con sus entradas mediante lo que se conoce como \textbf{expansión de filas}. Considere la matriz $\vecmat{A} \in \R^{3 \times 3}$:
+\[
+\vecmat{A} =
 \begin{bmatrix}
-a_{1,1} & a_{1,2} \\
-a_{2,1} & a_{2,2}
+a_{1, 1} & a_{1, 2} & a_{1, 3} \\
+a_{2, 1} & a_{2, 2} & a_{2, 3} \\
+a_{3, 1} & a_{3, 2} & a_{3, 3}
 \end{bmatrix}
 \]
-Para una matriz de $n \times n$, con $n > 2$, obtenemos su determinante a partir de un proceso conocido como \textbf{expansión} por una columna o fila de ella. Consiste en la suma de las productos entre cada entrada de la fila o columna que decidimos expandir y un valor conocido como \textbf{Cofactor}, que se denota como $C_{i, j}$.
+Luego, expandamos por la tercera\footnote{Puede ser por cualquiera de las tres.} fila de $\vecmat{A}$. Al considerar la primera columna, obtenemos la siguiente matriz $\vecmat{A}_{3, 1} \in \R^{2 \times 2}$, donde ``$3, 1$'' indica que es formada mediante la entrada $a_{3, 1}$.
 
-Por ejemplo, a continuación tenemos el determinante de una $\mathbf{A}$ de $3 \times 3$ expandida por su segunda columna.
-\[
-\det(\mathbf{A}) =
-\begin{vmatrix}
-a_{1,1} & a_{1,2} & a_{1,3} \\
-a_{2,1} & a_{2,2} & a_{2,3} \\
-a_{3,1} & a_{3,2} & a_{3,3}
-\end{vmatrix} =
-a_{1,2} \cdot C_{1,2} + a_{2,2} \cdot C_{2,2} + a_{3,2} \cdot C_{3,2}
-\]
-donde:
-\[
-\mathbf{A} =
+\begin{figure}[hbt!]
+\centering
+
+\begin{tikzpicture}
+% Líneas de ayuda.
+%\draw[color = lightgray] (0, 0) grid (13, 4);
+
+% Matrices.
+\node at (3, 2) {
+$
+\vecmat{A} =
 \begin{bmatrix}
-a_{1,1} & a_{1,2} & a_{1,3} \\
-a_{2,1} & a_{2,2} & a_{2,3} \\
-a_{3,1} & a_{3,2} & a_{3,3}
+a_{1, 1} & a_{1, 2} & a_{1, 3} \\
+a_{2, 1} & a_{2, 2} & a_{2, 3} \\
+a_{3, 1} & a_{3, 2} & a_{3, 3}
+\end{bmatrix}
+$
+};
+\draw[line width = 0.5mm, color = red!70] (2.5, 2.7) -- (2.5, 1.4) -- (4.7, 1.4);
+\node at (5.5, 2) {$\Longrightarrow$};
+
+\node at (7.7, 2) {
+$
+\vecmat{A}_{3, 1} =
+\begin{bmatrix}
+a_{1, 2} & a_{1, 3} \\
+a_{2, 2} & a_{2, 3}
+\end{bmatrix}
+$
+};
+\end{tikzpicture}
+
+\end{figure}
+
+Haciendo lo mismo de arriba para $a_{3, 2}$ y $a_{3, 3}$, se obtiene lo siguiente:
+\[
+\vecmat{A}_{3, 2} =
+\begin{bmatrix}
+a_{1, 1} & a_{1, 3} \\
+a_{2, 1} & a_{2, 3}
+\end{bmatrix}
+\quad \quad
+\vecmat{A}_{3, 3} =
+\begin{bmatrix}
+a_{1, 1} & a_{1, 2} \\
+a_{2, 1} & a_{2, 2}
 \end{bmatrix}
 \]
-Cuando expandimos por la segunda columna, para cada entrada de ella es posible formar determinantes de $2 \times 2$, los cuales se conocen como \textbf{Menores} (\textit{Minors}, en inglés) y que se denota como $M_{i, j}$. Por ejemplo, al expandir a $\mathbf{A}$ por su segunda columna, el menor $M_{3, 2}$ corresponde a:
+Así, los determinantes de $\vecmat{A}_{3, 1}, \ \vecmat{A}_{3, 2}$ y $\vecmat{A}_{3, 3}$, conocidos también como \textbf{menores} $M_{i, j}$, son:
 \[
-M_{3, 2} =
+M_{3, 1} = 
 \begin{vmatrix}
-a_{1,1} & a_{1,3} \\
-a_{2,1} & a_{2,3}
+a_{1, 2} & a_{1, 3} \\
+a_{2, 2} & a_{2, 3}
+\end{vmatrix}
+\quad \quad
+M_{3, 2} = 
+\begin{vmatrix}
+a_{1, 1} & a_{1, 3} \\
+a_{2, 1} & a_{2, 3}
+\end{vmatrix}
+\quad \quad
+M_{3, 3} = 
+\begin{vmatrix}
+a_{1, 1} & a_{1, 2} \\
+a_{2, 1} & a_{2, 2}
 \end{vmatrix}
 \]
-puesto está conformado por las entradas de $\mathbf{A}$ que no están en negrita, que son las que sobran de la expansión.
-\[
-\mathbf{A} =
-\begin{bmatrix}
-a_{1,1} & \mathbf{a_{1,2}} & a_{1,3} \\
-a_{2,1} & \mathbf{a_{2,2}} & a_{2,3} \\
-\mathbf{a_{3,1}} & \mathbf{a_{3,2}} & \mathbf{a_{3,3}}
-\end{bmatrix}
-\]
-En ese sentido, el \textbf{cofactor} $C_{i,j}$ es el producto entre $(-1)^{i + j}$ y el valor de su menor $M_{i, j}$ correspondiente.
-\[
-  C_{i, j} = (-1)^{i + j} \cdot M_{i, j}
-\]
-Por lo tanto, podemos reescribir la fórmula del determinante de $\mathbf{A}$ expandido por su segunda fila como:
-\[
-\det(\mathbf{A}) =
-\begin{vmatrix}
-a_{1,1} & a_{1,2} & a_{1,3} \\
-a_{2,1} & a_{2,2} & a_{2,3} \\
-a_{3,1} & a_{3,2} & a_{3,3}
-\end{vmatrix} =
-a_{1,2} \cdot (-1)^{1 + 2}M_{1 + 2} + a_{2,2} \cdot (-1)^{2 + 2}M_{2 + 2} + a_{3,2} \cdot (-1)^{3 + 2}M_{3 + 2}
-\]
-Con los cofactores $C_{i, j}$ es posible conformar una matriz conocida como \textbf{Matriz de Cofactores} denotada como $\mathbf{C}$.
-
-Ahora que sabemos calcular el determinante de una matriz de $n \times n$ y que conocemos a la matriz de cofactores $\mathbf{C}$, podemos ver cómo se calcula la inversa de una matriz.
-
-Si $\mathbf{A}$ es una matriz cuadrada e invertible, su inversa $\mathbf{A}^{-1}$ podemos conocerla como el producto entre el recíproco de su determinante y la \textbf{Matriz Adjunta} de $\mathbf{A}$, que se denota como Adj($\mathbf{A}$).
-\[
-  \mathbf{A}^{-1} = \frac{1}{\det(\mathbf{A})} \cdot \text{Adj}(\mathbf{A})
-\]
-La \textbf{Transposición} es la operación de pasar las filas a columnas o viceversa de una matriz o vector y se suele denotar como $\mathbf{A}^{T}$ o $\mathbf{A'}$. A continuación tenemos dos ejemplos que la ilustran.
+Mediante los $M_{i, j}$ calculamos a los \textbf{cofactores} de $\vecmat{A}$ como $C_{i, j} = (-1)^{i + j} M_{i, j}$.
 \begin{align*}
-\mathbf{A} &=
+  C_{3, 1} &= (-1)^{3 + 1} M_{3, 1} & C_{3, 2} &= (-1)^{3 + 2} M_{3, 2} & C_{3, 3} &= (-1)^{3 + 3} M_{3, 3} \\
+           &= M_{3, 1}              &          &= -(M_{3, 2})          &          &= M_{3, 3}
+\end{align*}
+De este modo, el determinante de $\vecmat{A}$ se calcula como la suma de los productos entre las entradas de su tercera fila y los cofactores correspondientes:
+\[
+  \det(\vecmat{A}) = a_{3, 1} C_{3, 1} + a_{3, 2} C_{3, 2} + a_{3, 3} C_{3, 3}
+\]
+Podemos generalizar esta fórmula para una matriz de $n \times n$ expandida por su $i$-ésima fila.
+\[
+  \det(\vecmat{A}) = \sum_{j = 1}^{n} a_{i, j} C_{i, j}; \quad \text{para } 1 \leq i \leq n
+\]
+También es posible obtener a $\det(\vecmat{A})$ expandiendo por las \textbf{columnas} de la matriz. En ese caso lo calculamos como:
+\[
+  \det(\vecmat{A}) = \sum_{i = 1}^{n} a_{i, j} C_{i, j}; \quad \text{para } 1 \leq j \leq n
+\]
+
+\subsubsection{Transpuesta de una matriz.}
+
+La transposición de una matriz es una operación en la que se giran sus entradas con respecto a su diagonal. En otras palabras, las columnas pasan a ser sus filas y sus filas se trasladan a ser sus columnas. Por ejemplo,
+\begin{align*}
+\vecmat{A} &=
 \begin{bmatrix}
 4 & 1 & 3 \\
 5 & 7 & 2
 \end{bmatrix}
 \Rightarrow
-\mathbf{A}^{T} =
+\transmat{A} =
 \begin{bmatrix}
 4 & 5 \\
 1 & 7 \\
 3 & 2
-\end{bmatrix} &
-\mathbf{b} &=
-\begin{bmatrix}
-2 & 5 & 1
-\end{bmatrix}
-\Rightarrow
-\mathbf{b}^{T} =
-\begin{bmatrix}
-2 \\ 5 \\ 1
 \end{bmatrix}
 \end{align*}
-Hemos señalado la transposición porque la \textbf{Matriz Adjunta} de $\mathbf{A}$, Adj$(\mathbf{A})$, corresponde a \textbf{matriz de cofactores transpuesta} denotada como $\mathbf{C}^{T}$. Por lo tanto, la fórmula de la matriz inversa de $\mathbf{A}^{-1}$ podemos reescribirla como:
+donde $\transmat{A}$ es la \textbf{matriz transpuesta} de $\vecmat{A}$.
+
+\subsubsection{Fórmula de la inversa de una matriz.}
+
+Sea $\vecmat{C}$ la \textbf{matriz de cofactores} de $\vecmat{A} \in \R^{n \times n}$. Al transponerla obtenemos lo siguiente:
 \[
-  \mathbf{A}^{-1} = \frac{1}{\det(\mathbf{A})} \cdot \mathbf{C}^{T}
+  \Adj(\vecmat{A}) = \transmat{C}
 \]
-Esta fórmula implica, además, que si el $\det(\mathbf{A}) = 0$, entonces $\mathbf{A}^{-1}$ \textbf{NO existe}.
+donde $\Adj(\vecmat{A})$ se conoce como la \textbf{matriz adjunta} de $\vecmat{A}$.
+
+Cuando obtenemos a $\det(\vecmat{A})$ con el método de cofactores, es posible usar la fórmula de a continuación para calcular $\invmat{A}$.
+\[
+  \invmat{A} = \frac{1}{\det(\vecmat{A})} \cdot \Adj(\vecmat{A}) \ ; \text{ para } \det(\vecmat{A}) \neq 0
+\]
+Por lo tanto, $\invmat{A}$ existe sí y solo sí $\det(\vecmat{A}) \neq 0$.
+
+Esta fórmula de $\invmat{A}$ no es recomendada para matrices de gran tamaño, ya que toma mucho tiempo obtenerla y en computadores es propensa a errores de redondeo. No obstante, la condición $\det(\vecmat{A}) \neq 0$ es la más usada para evaluar si esta matriz existe o no.
+
+Por otra parte, la ventaja de esta fórmula de $\invmat{A}$ es su utilidad para resolver problemas algebraicos que la involucren. Los otros métodos más usados para obtenerla (como el de eliminación de Gauss) son técnicas numéricas que no permiten aquello.
 
 \end{document}
