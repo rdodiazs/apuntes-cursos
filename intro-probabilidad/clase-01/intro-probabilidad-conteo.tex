@@ -176,6 +176,8 @@ Entonces la probabilidad de $A$, $P(A)$, corresponde al cociente:
 \[
   P(A) = \frac{\text{N$^{\circ}$ de resultados favorables a } A}{\text{N$^{\circ}$ de resultados posibles}} = \frac{|A|}{|S|}
 \]
+Esto significa que $P(A) = 1$ si la cantidad de resultados favorables a $A$ es la misma que la del experimento. En cambio, $P(A) = 0$ cuando nunca ocurre este evento.
+
 Se cataloga como ``ingenua'' esta definición de probabilidad porque, en la práctica, sus supuestos no son tan sencillos de alcanzar, pero debe ser entendida en su contexto de origen. Ha sido adjudicada al polimata italiano Gerolamo Cardano en el siglo XVI, quien la usó para ganar en el juego de apuestas\footnote{Larsen y Marx (2018). \textit{An Introduction to Mathematical Statistics and Its Applications}. Pp 9 y 16.}. Ahí es más posible que ambas condiciones se reunan.
 
 La definición ingenua de probabilidad sigue siendo usada en la actualidad y las otras que veremos a lo largo del curso se construyen a partir de ella. Su uso \textbf{correcto} dependerá de cómo lo justifiquemos a partir de los suspuestos de cada una.
@@ -349,41 +351,35 @@ En este curso (a menos que se indique lo contrario) asumiremos la convención de
 
 También es posible generar permutaciones de tamaño menor al del conjunto inicial.
 
-Por ejemplo, digamos que tenemos una caja llena de pelotas rojas, azules, verdes, naranjas y blancas y nos interesa saber cuántos pares de \textbf{distinto} color podemos formar.
+Por ejemplo, suponga que debemos registrar una contraseña de tres dígitos distintos que pueden ir desde el $0$ hasta el $9$. Calculemos cuántas podemos formar.
 
-Hay cinco colores para la primera pelota y, al elegir una de ellas, quedaremos con cuatro restantes para la segunda, ya que deben ser distintas. Por lo tanto, si $X$ es el conjunto que agrupa a estas permutaciones, su tamaño será igual a:
+Estamos calculando el tamaño de un conjunto de permutaciones, que denotaremos como $|X|$, porque el orden en que aparecen los dígitos importa al escribir una contraseña. En este caso, solo contaremos triples y no $10$-tuplas. Por lo tanto, es posible formar:
 \[
-  |X| = 5 \cdot 4 = 20
+  |X| = 10 \cdot 9 \cdot 8 = 720
 \]
-Es decir, podemos formar $20$ pares de pelotas de distinto color.
+contraseñas con tres de los diez dígitos que van desde $0$ hasta $9$.
 
-Es posible generalizar el proceso de conteo del ejemplo anterior. Sean $n$ la cantidad de elementos de un conjunto $A$, $r$ el número de sus objetos que permutaremos, con $1 \leq r \leq n$, y $B$ el conjunto de estos últimos. Veremos que:
+Generalicemos el conteo del ejemplo anterior. Sean $n$ la cantidad de elementos de un conjunto $A$, $r$ el número de sus objetos que permutaremos, con $1 \leq r \leq n$, y $B$ el conjunto de estos últimos. Podemos calcular $|B|$ como:
 \[
   |B| = n \cdot (n - 1) \cdot (n - 2) \cdot \ldots \cdot (n - (r - 1))
 \]
-ya que para la primera entrada de las permutaciones tenemos $n$ opciones, para cada una de ellas tenemos $n - 1$ restantes y si seguimos hasta la $r$-ésima, quedaremos con $(n - (r - 1))$ alternativas. Como $(n - (r - 1)) = (n - r + 1)$, la igualdad de arriba podemos escribirla como:
+Como $(n - (r - 1)) = (n - r + 1)$, la igualdad de arriba podemos escribirla como:
 \[
   |B| = n \cdot (n - 1) \cdot (n - 2) \cdot \ldots \cdot (n - r + 1)
 \]
 Lo que acabamos de calcular se conoce como la \textbf{\textit{r}-permutación} de un conjunto de $n$ elementos y se denota como $P(n, \ r)$.\footnote{También es posible encontrarlo como ${}_{n}P_{r}$, $P_{n, r}$ y ${}^{n}P_{r}$.}
 
-La cantidad de pares de pelotas de distintos colores que vimos en el ejemplo anterior es igual a la $2$-permutación de un conjunto de 5 objetos:
+Así, en el ejemplo anterior calculamos la $3$-permutación de un conjunto de $10$ elementos.
 \[
-  |X| = P(5, \ 2) = 5 \cdot (5 - 2 + 1) = 20
+  |X| = P(10, \ 3) = 10 \cdot 9 \cdot (10 - 3 + 1) = 720
 \]
-La $r$-permutación de un conjunto también suele obtenerse usando factoriales. Usemos el ejemplo anterior para ilustrarlo mejor.
+Comúnmente se calcula la $r$-permutación usando factoriales. En el ejemplo anterior vimos que $|X| = 10 \cdot 9 \cdot 8$. Si multiplicamos esta igualdad por $7!/7!$, obtenemos lo siguiente:
 \[
-  |X| = 5 \cdot 4
+  |X| = (10 \cdot 9 \cdot 8) \cdot \frac{7!}{7!}
+      = \frac{10!}{7!}
+      = \frac{10!}{(10 - 3)!}
 \]
-Si multiplicamos por $3!/3!$ esta igualdad obtendremos que:
-\[
-  |X| = (5 \cdot 4) \cdot \frac{3!}{3!}
-      = \frac{5 \cdot 4 \cdot 3 \cdot 2 \cdot 1}{3 \cdot 2 \cdot 1}
-      = \frac{5!}{3!}
-      = \frac{5!}{(5 - 2)!}
-      = 20
-\]
-Por lo tanto, la $r$-permutación de un conjunto de tamaño igual a $n$ corresponde a
+De este modo, se puede generalizar que la $r$-permutación de un conjunto de $n$ elementos es:
 \[
   P(n, \ r) = \frac{n!}{(n - r)!}
 \]
@@ -401,9 +397,7 @@ Por otra parte, observemos que si $r = n$, entonces:
 \[
   P(n, \ n) = \frac{n!}{(n - n)!} = \frac{n!}{0!} = \frac{n!}{1} = n!
 \]
-Es decir, se cumple que la cantidad de permutaciones de todos los elementos de un conjunto es igual a $n!$.
-
-Como es más fácil de recordar, de ahora en adelante trabajaremos con la fórmula de $P(n, \ r)$ que es definida usando factoriales.
+Es decir, la cantidad de permutaciones de todos los elementos de un conjunto es $n!$.
 
 \subsubsection{Permutaciones de \textit{r} elementos con reemplazo.}
 
@@ -431,9 +425,7 @@ En probabilidades se suele usar la frase ``\textbf{con reemplazo}'' para expresa
 
 \subsection{Combinaciones.}
 
-En ocasiones, más que calcular la cantidad de veces que podemos ordenar los elementos de un conjunto, nos interesa saber \textbf{cuántos grupos} podemos formar con ellos. Estos últimos se conocen como \textbf{Combinaciones}.
-
-En estricto rigor, las combinaciones son \textbf{subconjuntos} de otro conjunto, por lo tanto se diferencian de las permutaciones en que son \textbf{objetos no ordenados}.
+Otro tipo de problemas de conteo tiene que ver con calcular de cuántas maneras podemos agrupar los elementos de un conjunto, donde el \textbf{orden} en que aparecen \textbf{no es relevante}. Estos subconjuntos se conocen como \textbf{Combinaciones}.
 
 \subsubsection{Combinaciones de \textit{r} elementos.}
 
