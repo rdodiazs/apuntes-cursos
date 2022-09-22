@@ -9,8 +9,9 @@
 \usepackage{hyperref} % Siempre debe ir al final.
 
 % Opciones de Paquetes.
-\decimalpoint   % {babel}
-\onehalfspacing % {setspace}
+\decimalpoint           % {babel}
+\onehalfspacing         % {setspace}
+\graphicspath{{./img/}} % {graphics}
 
 % Encabezado.
 \title{Clase 1: Introducción a la Probabilidad y Métodos de Conteo.}
@@ -603,5 +604,69 @@ Combinación & No importa & $\displaystyle \frac{n!}{r!(n - r)!}$ & $\displaysty
 \end{tabular}
 
 \end{table}
+
+\subsection{El problema (o paradoja) del cumpleaños.}
+
+Usemos lo aprendido sobre los métodos de conteo para resolver el siguiente ejemplo.
+
+\textbf{Ejemplo 3.} Suponga que en un salón hay $r$ personas. Calcule la probabilidad de que al menos dos de ellas estén de cumpleaños el mismo día, asumiendo que todas pueden estarlo en los $365$ días de un año no bisiesto, con $r < 365$, y que dichos sucesos son independientes.\footnote{Informalmente, la ``independencia'' se refiere a que conocer un resultado no nos dice nada sobre los otros. Con esto evitamos que hayan mellizos o gemelos, por ejemplo.}
+
+\textbf{Solución.} El experimento consiste en asignarle una fecha de cumpleaños a las $r$ personas. Todas tienen la opción de estarlo en uno de los $365$ días del año y la fecha que le toca a una no determina a las otras, lo que implica que el orden en el que coinciden es relevante\footnote{Es decir, si dos personas $a$ y $b$ coinciden en sus fechas de cumpleaños, entonces $(a, \ b) \neq (b, \ a)$ ya que saber cuándo cumple años $a$ no da información sobre cuándo lo estará $b$ y viceversa.}. Por lo tanto, se puede calcular el tamaño del espacio muestral, $|S|$, como:
+\[
+  |S| = P(365, r) = 365^{r}
+\]
+$|S|$ es una permutación con repetición porque al asignar las fechas a las $r$ personas en el experimento, es posible que dos o más de ellas reciban los mismos días.
+
+Como las $r$ personas tienen la misma posibilidad de cumplir años en los 365 días y $|S|$ es finito, podemos aplicar la definición ingenua de las probabilidades para resolver este ejemplo.
+
+Sea $A \subseteq S$ el evento
+\[
+  A = \text{Al menos dos personas están de cumpleaños en un mismo día.}
+\]
+Calcular la probabilidad de $A$, $P(A)$, de inmediato puede ser complicado por todos los escenarios que pueden surgir de ese enunciado. Una mejor estrategia es considerar su complemento.
+\[
+  A^{c} = \text{No hay dos o más personas de cumpleaños en un mismo día.}
+\]
+Todos los elementos de $A^{c}$ también son miembros de $S$, pero que a la vez no lo son de $A$. Esto implica que
+\[
+  A \cup A^{c} = S
+\]
+$P(A)$ nos da la proporción de $|A|$ con respecto a $|S|$. Con la igualdad de arriba podemos señalar que $P(A^{c})$ es la parte restante del tamaño de $S$. En la siguiente clase profundizaremos más, pero lo anterior nos lleva a que
+\[
+  P(S) = P(A) + P(A^{c})
+\]
+Como $P(S) = |S| / |S| = 1$, entonces $1 = P(A) + P(A^{c})$, que es lo mismo a:
+\[
+  P(A) = 1 - P(A^{c})
+\]
+Por lo tanto, calcularemos primero a $P(A^{c})$ para obtener a $P(A)$.
+
+Es posible calcular a $|A^{c}|$ como una permutación sin reemplazo porque de las fechas de cumpleaños asignadas en el experimento, nos interesan las de aquellas personas que no coinciden con otras y el supuesto de independencia de ese proceso se mantiene.
+\[
+  |A^{c}| = \frac{365!}{(365 - r)!}
+\]
+Esto implica que:
+\[
+  P(A^{c}) = \frac{|A^{c}|}{|S|}
+           = \frac{365!}{(365 - r)!} \cdot \frac{1}{365^{r}}
+           = \frac{365!}{365^{r} (365 - r)!}
+\]
+Así, $P(A)$ se puede calcular como:
+\[
+  P(A) = 1 - \frac{365!}{365^{r} (365 - r)!}
+\]
+Este ejemplo que resolvimos se conoce como \textbf{problema (o paradoja) del cumpleaños}, pero lo es más en un sentido intuitivo que matemático ya que se suele creer que $P(A)$ aumenta si consideramos un $r$ muy grande. Sin embargo, con $r = 23$ ésta ya es superior al $50\%$.
+\[
+  P(A) = 1 - \frac{365!}{365^{23} (365 - 23)!}
+       \approx 0.5073 \ (50.73\%)
+\]
+Esto se debe a que con solo $2$ de $23$ personas ya es posible formar $\binom{23}{2} = 253$ grupos. Por lo tanto, es razonable que $P(A)$ sea más del $50\%$ con esa cantidad de conjuntos.
+
+En el siguiente gráfico se puede observar cómo $P(A)$ se acerca rápidamente a $1$ sin necesidad de que $r$ alcance a ser igual a $100$ o a un número aún mayor.
+
+\begin{figure}[hbt!]
+\centering
+\includegraphics[scale = 0.7]{problema-cumple.jpg}
+\end{figure}
 
 \end{document}
