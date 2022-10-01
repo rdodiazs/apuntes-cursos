@@ -28,7 +28,7 @@
 \end{abstract}
 
 
-\section{Definición de probabilidad.}
+\section{Introducción a la probabilidad.}
 
 Muchas veces nos gustaría conocer de antemano el resultado de una acción que queremos realizar. Como no podemos saberlo de forma exacta, definimos ciertos escenarios y establecemos qué tan posible es que cada uno ocurra. El área de la matemática que describe numéricamente esa (in)certidumbre se conoce como \textbf{Probabilidad}.
 
@@ -36,7 +36,7 @@ Las primeras descripciones matemáticas de las probabilidades tienen su origen e
 
 No obstante, lo que se conoce como la ``definición ingenua (o clásica) de la probabilidad'' es adjudicada a Gerolamo Cardano un siglo antes de Fermat y Pascal. Para entenderla, debemos tener un conocimiento básico sobre teoría de conjuntos que veremos a continuación.
 
-\subsection{Breve revisión sobre teoría de conjuntos.}
+\subsection{Conceptos básicos de la teoría de conjuntos.}
 
 \subsubsection{Conjuntos.}
 
@@ -174,25 +174,29 @@ Bertsekas y Tsitsiklis detallan en \textit{Introduction to Probability} que al c
 
 Un \textbf{evento} (o suceso) se define como un subconjunto bien definido del espacio muestral.
 
+\subsection{Definición ``ingenua'' de probabilidad.}
+
+Sean $S$ el espacio muestral de un experimento, $A \subseteq S$ un evento de éste y $P$ una función real. La \textbf{definición ingenua} de las probabilidades indica que si se cumple que:
+
 \begin{enumerate}
 \item El espacio muestral ($S$) es \textbf{finito}.
-\item Cada resultado tiene la \textbf{misma posibilidad de ocurrir}.
+\item Cada resultado es \textbf{igualmente probable}\footnote{Es decir, todos tienen la misma posibilidad de ocurrir.}.
 \end{enumerate}
 
 Entonces la probabilidad de $A$, $P(A)$, corresponde al cociente:
 \[
   P(A) = \frac{\text{N$^{\circ}$ de resultados favorables a } A}{\text{N$^{\circ}$ de resultados posibles}} = \frac{|A|}{|S|}
 \]
-Esto significa que $P(A) = 1$ si la cantidad de resultados favorables a $A$ es la misma que la del experimento. En cambio, $P(A) = 0$ cuando nunca ocurre este evento.
+Así, según esta definición $P(A) = 1$ si todos los elementos de $S$ son parte de $A$. En cambio, $P(A) = 0$ si ninguno de los resultados posibles del experimento es favorable al evento.
 
-Se cataloga como ``ingenua'' esta definición de probabilidad porque, en la práctica, sus supuestos no son tan sencillos de alcanzar, pero debe ser entendida en su contexto de origen. Ha sido adjudicada al polimata italiano Gerolamo Cardano en el siglo XVI, quien la usó para ganar en el juego de apuestas\footnote{Larsen y Marx (2018). \textit{An Introduction to Mathematical Statistics and Its Applications}. Pp 9 y 16.}. Ahí es más posible que ambas condiciones se reunan.
+Esta definición de probabilidad se cataloga como ``ingenua'' porque, en la práctica, sus supuestos no son tan sencillos de alcanzar, pero debe ser entendida en su contexto de origen. Ha sido adjudicada al polimata italiano Gerolamo Cardano en el siglo XVI, quien la usó para ganar en el juego de apuestas\footnote{Larsen y Marx (2018). \textit{An Introduction to Mathematical Statistics and Its Applications}. Pp 9 y 16.}. Ahí es más posible que ambas condiciones se reunan.
 
-La definición ingenua de probabilidad sigue siendo usada en la actualidad y las otras que veremos a lo largo del curso se construyen a partir de ella. Su uso \textbf{correcto} dependerá de cómo lo justifiquemos a partir de los suspuestos de cada una.
+En la actualidad, esta definición de probabilidad es parte de otras formas de calcular este valor y su importancia radica en ser la base que permitió su formalización.
 
 
 \section{Métodos de conteo.}
 
-La definición de probabilidad estudiada hasta ahora requiere las cardinalidades del espacio muestral y de su evento. Contar los elementos de ambos conjuntos es sencillo en experimentos simples\footnote{Pensemos en los clásicos casos de los lanzamientos de una moneda o un dado, asumiendo que ambos objetos no están cargados a un resultado.}, pero se hace más tedioso para casos más complejos. Afortunadamente, en el área de la matemática llamada Combinatoria existen técnicas que facilitan este proceso.
+La definición de probabilidad estudiada hasta ahora requiere las cardinalidades del espacio muestral y de su evento. Contar los elementos de ambos conjuntos es sencillo en experimentos simples, pero se hace más tedioso para casos más complejos. Afortunadamente, en el área de la matemática llamada Combinatoria existen técnicas que facilitan este proceso.
 
 Richard Brualdi en \textit{Introductory Combinatorics} indica cuatro reglas básicas (o principios) de conteo: De la adición, del producto, de la sustracción y de la división (2009: 27-35). En esta clase nos centraremos fundamentalmente en la segunda, que también es posible encontrarla como ``teorema fundamental de conteo''\footnote{Casella y Berger (2002). \textit{Statistical Inference}. Pp. 13.} o ``principio básico de conteo''\footnote{Ross (2012). \textit{A First Course in Probability}. Pp. 2.}.
 
@@ -246,7 +250,9 @@ H =
 \]
 En otras palabras, podemos formar $12$ horarios entre las $3$ horas disponibles de la mañana y las $4$ de la tarde.
 
-Para este tipo de problemas, suele ser útil ayudarse con un \textbf{diagrama de árbol} como el que se observa a continuación.
+Es posible visualizar estos problemas con un \textbf{diagrama de árbol}. A continuación vemos uno para este ejemplo.
+
+\newpage
 
 \begin{figure}[hbt!]
 \centering
@@ -597,6 +603,8 @@ La cantidad de barras internas en el método de círculos y barras siempre será
 \subsection{Síntesis sobre métodos de conteo.}
 
 Habiendo entendido cada método de conteo estudiado en esta sección, es bueno tener a mano la siguiente tabla que resume sus fórmulas.
+
+\newpage
 
 \begin{table}[hbt!]
 \centering
