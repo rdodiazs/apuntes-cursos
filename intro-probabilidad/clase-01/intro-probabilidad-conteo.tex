@@ -156,17 +156,23 @@ El \textbf{producto cartesiano} entre dos conjuntos $A$ y $B$, $A \times B$, es 
   A \times B = \{(a, \ b) \ | \ a \in A \text{ y } b \in B\}
 \]
 
-\subsection{Definición ``ingenua'' de probabilidad.}
+\subsection{Experimento, espacio muestral y evento.}
 
-Consideremos los siguientes conceptos:
+En probabilidades, un \textbf{experimento} suele ser entendido como cualquier proceso (real o hipotético) que produce \textbf{uno de varios} resultados posibles y que puede ser repetido en una cantidad infinita de veces.
+
+El \textbf{espacio muestral} es el conjunto de todos los resultados posibles de un experimento. Este puede ser finito, infinito contable o incontable.
+
+Bertsekas y Tsitsiklis detallan en \textit{Introduction to Probability} que al construir un espacio muestral debemos tener en consideración lo siguiente (2008: 7):
 
 \begin{itemize}
-\item \textbf{Espacio Muestral}: Es el conjunto de todos los resultados posibles de un experimento\footnote{Entiéndase la palabra ``experimento'' como cualquier suceso del cual se obtienen resultados.}.
+\item Sus elementos deben ser \textbf{mutuamente excluyentes}: Al finalizar un experimento, debe ocurrir solo uno de todos sus elementos.\footnote{Por ejemplo, el espacio muestral del lanzamiento único de un dado es $\{1, \ 2, \ 3, \ 4, \ 5, \ 6\}$. Este punto indica que cuando deja de rodar luego de tirarlo, debemos obtener solo uno de sus seis elementos.}
 
-\item \textbf{Evento}: Es un subconjunto del espacio muestral.
+\item Debe ser \textbf{colectivamente exhaustivo}: En él se encuentran todos los resultados posibles tal que el único que se obtiene al finalizar el experimento siempre será miembro de este conjunto, independiente de lo que haya ocurrido en ese proceso.
+
+\item Los resultados posibles deben ser solo los del interés del experimentador/a. Cualquier información irrelevante debe ser desechada de este conjunto.
 \end{itemize}
 
-Sean $S$ el espacio muestral de un experimento, $A \subseteq S$ un evento de éste y $P:A \to \mathbb{R}$ una función. La \textbf{definición ingenua} de las probabilidades indica que si se cumple que:
+Un \textbf{evento} (o suceso) se define como un subconjunto bien definido del espacio muestral.
 
 \begin{enumerate}
 \item El espacio muestral ($S$) es \textbf{finito}.
