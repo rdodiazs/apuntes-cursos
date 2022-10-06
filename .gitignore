@@ -15,3 +15,6 @@
 # Archivos innecesarios del curso de cálculo de una variable.
 calculo/una-variable/02_integracion/ACLARACION*
 calculo/una-variable/02_integracion/week-2/
+
+# Carpetas de entorno virtual creadas con módulo 'venv'.
+.venv/
