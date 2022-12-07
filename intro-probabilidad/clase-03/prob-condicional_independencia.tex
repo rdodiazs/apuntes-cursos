@@ -1,0 +1,692 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{hyperref} % Siempre debe ir al final.
+
+% Opciones de Paquetes.
+\decimalpoint          % {babel}
+\onehalfspacing        % {setspace}
+\usetikzlibrary{babel} % {tikz}
+
+% Encabezado.
+\title{Clase 3: Probabilidad Condicional y Eventos Independientes.}
+\author{Harvard Statistics 110: Probability}
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent En esta ocasión estudiaremos la probabilidad condicional o aquella que calculamos asumiendo que ya manejamos algo de información. También veremos su vínculo con el concepto de independencia de eventos y resolveremos algunos ejercicios.
+\end{abstract}
+
+
+\section{Probabilidad Condicional.}
+
+Cuando evaluamos la posibilidad de que ocurra un hecho, suele ser más habitual hacerlo manejando algo de información. Esta puede ser desde una genuina creencia hasta evidencia rigurosa. Para incluir a cualquiera de ellas en nuestro cálculo matemático, usamos la fórmula de la llamada probabilidad condicional.
+
+\subsection{Definición de la probabilidad condicional.}
+
+Considere el siguiente caso.
+
+Suponga que estamos jugando con un grupo de personas a lanzar dos dados al mismo tiempo mientras tenemos los ojos vendados. Si, aún estando ciegos, decimos correctamente los números obtenidos, ganamos.
+
+En nuestro turno y luego de tirar los dados, apostamos mentalmente a que salieron los valores $(6, \ 2)$. Ahora que tenemos un conocimiento básico de teoría de conjuntos, establecemos que el evento $A \subseteq S$ ($S = $ espacio muestral) es:
+\[
+  A = \{\text{Obtener el par } (6, \ 2)\}
+\]
+Para tener una idea de nuestras posibilidades de ganar, aprovechamos de calcular la probabilidad de que ocurra $A$ como:
+\[
+  P(A) = \frac{1}{36}
+\]
+ya que $S$ es finito y asumimos que los dados no están cargados, de manera que todos los resultados son equiprobables.
+
+Como $P(A) \approx 0.03$, optamos por tomarnos un poco más de tiempo para pensar mejor la apuesta. Sin embargo, una de las personas lo nota y decide darnos una pista: ``La suma de los dos números que obtuviste es par''. Puesto que esta afirmación agrupa a algunos resultados del experimento, lo expresamos como un evento $B \subseteq S$.
+\[
+  B = \{\text{La suma de los dos números obtenidos es par}\}
+\]
+La pista nos ayuda a sacar dos conclusiones. La primera es que $(6, \ 2) \in B$. Además, dado a que $A$ es un singleton conformado solo por ese elemento, entonces $A \subset B$. En segundo lugar, esta información permite reducir el espacio muestral a solo $B$ (i.e, se descartan todos los resultados de $B^{c}$), donde $|B| = 18$.
+
+Así, calculamos la probabilidad de $A$ dado que tenemos conocimiento de $B$, $P(A \ | \ B)$, como:
+\[
+  P(A \ | \ B) = \frac{|A|}{|B|} = \frac{1}{18}
+\]
+$P(A \ | \ B)$ recibe el nombre de \textbf{probabilidad condicional} y se lee como ``la probabilidad de $A$ dado $B$''. Si bien la que calculamos nos da el resultado correcto, se restringe solo a ese caso. No nos sirve si $|A| > |B|$, ya que incluiríamos los resultados en $A$ que no están en $B$. Una mejor opción es considerar, más bien, el conjunto $A \cap B$.
+\[
+  P(A \ | \ B) = \frac{|A \cap B|}{|B|}
+\]
+Si lo usamos en el ejemplo, el resultado sigue siendo el mismo ya que $A \cap B = \{(6, \ 2)\}$.
+\[
+  P(A \ | \ B) = \frac{|A \cap B|}{|B|} = \frac{1}{18}
+\]
+Ahora, esta ecuación se restringe solo al contexto de la definición clásica de las probabilidades. No obstante, en 1933, Andrey Kolmogorov en \textit{Foundations of the Theory of Probability} estableció la siguiente generalización de $P(A \ | \ B)$ que es usada hasta el día de hoy (1956: 6):
+\[
+  P(A \ | \ B) = \frac{P(A \cap B)}{P(B)} \qquad \left(\text{con } P(B) > 0\right)
+\]
+\textbf{Ejercicio 1.} Antes de salir de su hogar nota que no encuentra sus llaves. Suponga que tiene un $80\%$ de certeza de que están en uno de los dos bolsillos de una chaqueta, con un $40\%$ de posibilidad de que esté en el izquierdo y un $40\%$ en el derecho. ¿Cuál es la probabilidad de que estén en el derecho si, al buscarlas, no las encuentra en el izquierdo?
+
+\textbf{Solución.} Definamos los eventos:
+\begin{align*}
+  I &= \{\text{Las llaves están en el bolsillo izquierdo}\} \\
+  D &= \{\text{Las llaves están en el bolsillo derecho}\}
+\end{align*}
+Así, las probabilidades dadas en el ejercicio son:
+\[
+  P(I) = P(D) = 0.4 \qquad \text{y} \qquad P(I \cup D) = 0.8
+\]
+y nos preguntan $P(D \ | \ I^{c})$. Para calcular esta probabilidad condicional necesitamos conocer tanto a $P(I^{c})$ como a $P(D \cap I^{c})$. La primera corresponde a:
+\[
+  P(I^{c}) = 1 - P(I) = 0.6
+\]
+En cuanto a $P(D \cap I^{c})$, observemos que las llaves solo pueden estar en uno de los dos bolsillos de la chaqueta, lo que implica que $I$ y $D$ son mutuamente excluyentes\footnote{Incluso lo podemos ver en $P(I \cup D) = P(I) + P(D) - P(I \cap D) = 0.4 + 0.4 - 0 = 0.8$}. Por lo tanto,
+\[
+  P(D \cap I^{c}) = P(D) = 0.4
+\]
+De este modo,
+\[
+  P(D \ | \ I^{c}) = \frac{P(D \cap I^{c})}{P(I^{c})} = \frac{2}{3} \approx 0.666
+\]
+\textbf{Ejercicio 2.} En la televisión darán los seis números ganadores de una lotería y, para participar, usted compró un boleto con los valores $1, \ 14, \ 15, \ 20, \ 23$ y $27$. Estos serán elegidos al azar y sin reemplazo desde una tómbola con treinta bolas etiquetadas del $1$ al $30$. Para ganar, los suyos deben coincidir con los que se mencionen independiente del orden de aparición.
+
+Suponga que, al empezar a escuchar los números, se apaga el televisor, pero después supo que uno de los mencionados fue el $15$. Calcule la probabilidad de que su boleto sea el ganador.
+
+\textbf{Solución.} Comencemos estableciendo los eventos:
+\begin{align*}
+A &= \{\text{El boleto con los números } 1, \ 14, \ 15, \ 20, \ 23 \text{ y } 27 \text{ es el ganador}\} \\
+B &= \{\text{El boleto ganador tiene el número } 15\}
+\end{align*}
+En ese sentido, buscamos calcular $P(A \ | \ B)$ y, para ello, debemos encontrar los valores de $P(A \cap B)$ y $P(B)$. Dado que los resultados de la lotería son equiprobables y a que el espacio muestral es finito, calcularemos ambas probabilidades con la definición clásica.
+
+A partir de lo señalado en el ejercicio, el espacio muestral $S$ consiste de todas las combinaciones de seis de los treinta números elegidos al azar y sin repetición de la tómbola. Por lo tanto, su tamaño puede calcularse como:
+\[
+  |S| = \binom{30}{6} = \frac{30!}{6! \cdot 24!}
+\]
+Luego, veamos que $A \cap B = A$ porque el número $15$ está en nuestro boleto. Esto implica que $|A \cap B| = 1$ y, por tanto, que:
+\[
+  P(A \cap B) = \frac{|A \cap B|}{|S|} = \frac{1}{\binom{30}{6}} = \frac{6! \cdot 24!}{30!}
+\]
+Por otra parte, el evento $B$ consiste de todos los boletos donde ya salió el número $15$, independiente de su posición. Como la selección de las bolas es sin reemplazo, entonces:
+\[
+  |B| = \binom{29}{5} = \frac{29!}{5! \cdot 24!}
+\]
+De este modo,
+\[
+  P(B) = \frac{|B|}{|S|} = \frac{29!}{5! \cdot 24!} \cdot \frac{6! \cdot 24!}{30!} = \frac{1}{5}
+\]
+Lo que conlleva a que:
+\[
+  P(A \ | \ B) = \frac{P(A \cap B)}{P(B)} = \frac{(6! \cdot 24!)/30!}{1/5} \approx 8.421 \cdot 10^{-6}
+\]
+Es decir, hay alrededor de un $0.0008421\%$ de posibilidad de que nuestro boleto sea el ganador solo por saber que se mencionó el número $15$.
+
+Una ventaja de la definición de Kolmogorov de la probabilidad condicional, es que permite calcularla en relación al espacio muestral sin importar si lo restringimos. Esto se puede ver, por ejemplo, al aplicar la definición clásica de las probabilidades en ella.
+\[
+  P(A \ | \ B) = \frac{P(A \cap B)}{P(B)} = \frac{|A \cap B| / |S|}{|B| / |S|} = \frac{|A \cap B|}{|B|}
+\]
+Otra ventaja de la definición de $P(A \ | \ B)$, es que de ella se puede desprender una fórmula para calcular $P(A \cap B)$ al multiplicarla por $P(B)$.
+\[
+  P(A \cap B) = P(A \ | \ B) \cdot P(B)
+\]
+Del mismo modo, si $P(A) > 0$, $P(B \cap A)$ se puede obtener mediante $P(B \ | \ A) = \frac{P(B \cap A)}{P(A)}$.
+\[
+  P(B \cap A) = P(A) \cdot P(B \ | \ A) \iff P(A) > 0
+\]
+Puesto que la intersección es una operación conmutativa, entonces $A \cap B = B \cap A$ y, por consiguiente, $P(A \cap B) = P(B \cap A)$. Esto implica que:
+\[
+  P(A \cap B) = P(A) \cdot P(B \ | \ A) \qquad (\text{con } P(A) > 0)
+\]
+Por lo tanto, si $P(A) > 0$ y $P(B) > 0$ con $A$ y $B$ siendo dos eventos, entonces:
+\[
+  P(A \cap B) = P(B) \cdot P(A \ | \ B) = P(A) \cdot P(B \ | \ A)
+\]
+Para $n$ eventos $A_{i}$, con $i = 1, \ \ldots, \ n$, la intersección de todos ellos nos lleva a la siguiente igualdad que se deriva de la de $P(A \cap B)$, conocida como el \textbf{teorema general del producto}\footnote{También llamada ``regla general del producto'' o ``regla de la cadena'' de las probabilidades.}:
+\[
+  P\left(\bigcap_{i = 1}^{n} A_{i}\right) = P(A_{1}) \cdot P(A_{2} \ | \ A_{1}) \cdot P(A_{3} \ | \ A_{1} \cap A_{2}) \cdot \ldots
+                                             \cdot P(A_{n} \ | \ A_{1} \cap A_{2} \cap \ldots \cap A_{n - 1})
+\]
+La definición de $P(A \ | \ B)$ es una función de probabilidad porque cumple con los axiomas de Kolmogorov. Para $A$, $B \subseteq S$ y $P(B) > 0$,
+
+\begin{enumerate}
+\item $P(A \ | \ B) \geq 0$
+\item $P(S \ | \ B) = 1$
+\item Para $\{A_{k}\}_{k = 1}^{\infty} \subseteq S$,
+\[
+  P\left(\bigcup_{k = 1}^{\infty} A_{k} \ \left|\right. \ B\right) = \sum_{k = 1}^{\infty} P(A_{k} \ | \ B)
+  \iff A_{i} \cap A_{j} = \emptyset \text{ cuando } i \neq j
+\]
+\end{enumerate}
+
+El primer teorema se puede demostrar intuitivamente. La definición de $P(A \ | \ B)$ se aplica solo si $P(B) > 0$. Por otra parte, $0 \leq P(A \cap B) \leq 1$. Debido a estas razones, $P(A \ | \ B)$ siempre será mayor o igual a cero.
+
+En cuanto al segundo teorema, puede ser demostrado desde su probabilidad condicional.
+\[
+  P(S \ | \ B) = \frac{P(S \cap B)}{P(B)} = \frac{P(B)}{P(B)} = 1
+\]
+Para el tercer teorema, considere los eventos $\{A_{k}\}_{k = 1}^{\infty} \subseteq S$ con $A_{i} \cap A_{j} = \emptyset$ para todo $i \neq j$ y que $P(B) > 0$ donde $B \subseteq S$. Entonces,
+\[
+  P\left(\bigcup_{k = 1}^{\infty} A_{k} \ \left|\right. \ B\right) = \frac{P([A_{1} \cup A_{2} \cup \ldots] \cap B)}{P(B)}
+\]
+En el numerador del lado derecho se puede distribuir la intersección sobre las uniones\footnote{Es una de las propiedades distributivas vista en la Clase 1: Para tres conjuntos $A$, $B$ y $C$, \[A \cap (B \cup C) = (A \cap B) \cup (A \cap C)\].}.
+\[
+  P\left(\bigcup_{k = 1}^{\infty} A_{k} \ \left|\right. \ B\right) = \frac{P([A_{1} \cap B] \cup [A_{2} \cap B] \cup \ldots)}{P(B)}
+                                                                   = \frac{P\left(\bigcup_{k = 1}^{\infty} [A_{k} \cap B]\right)}{P(B)}
+\]
+Como todos los $[A_{k} \cap B]$ son disjuntos entre sí, por el tercer axioma de Kolmogorov se obtiene:
+\[
+  P\left(\bigcup_{k = 1}^{\infty} A_{k} \ | \ B\right) = \frac{\sum_{k = 1}^{\infty} P(A_{k} \cap B)}{P(B)}
+\]
+Así, puesto que $P(A_{k} \cap B) = P(A_{k} \ | \ B) \cdot P(B)$ para $k = 1, \ 2, \ \ldots$, se concluye que:
+\[
+  P\left(\bigcup_{k = 1}^{\infty} A_{k} \ | \ B\right) = \frac{\sum_{k = 1}^{\infty} P(A_{k} \ | \ B) \cdot P(B)}{P(B)}
+                                                       = \frac{P(B) \cdot \sum_{k = 1}^{\infty} P(A_{k} \ | \ B)}{P(B)}
+                                                       = \sum_{k = 1}^{\infty} P(A_{k} \ | \ B)
+\]
+Otras igualdades fácilmente demostrables de la definición de la probabilidad condicional son:
+\[
+  P(A \ | \ A) = 1 \qquad \text{y} \qquad P(\emptyset \ | \ B) = 0
+\]
+
+\subsection{Interpretaciones.}
+
+La probabilidad condicional $P(A \ | \ B)$ puede ser entendida como una función que asigna una probabilidad a la ocurrencia de $A$ luego de saber que sucedió $B$.
+
+En el contexto donde el espacio muestral $S$ es finito y sus elementos son equiprobables, $P(A \ | \ B)$ puede ser interpretado como el valor de la posibilidad de que una fracción de los resultados de $B$ también sean parte de $A$. Al saber que $B$ ocurrió, este evento pasa a tomar el papel de $S$ y, como consecuencia de aquello, $P(A)$ se \textbf{actualiza} a $P(A \ | \ B)$.
+
+Otra interpretación de $P(A \ | \ B)$ que es usada en estadística, es aquella que denota la probabilidad de que la hipótesis que se está investigando sea verdadera luego de haber observado una cantidad determinada de evidencia, donde:
+
+\begin{itemize}
+\item $A \Longrightarrow$ La hipótesis.
+\item $B \Longrightarrow$ La evidencia (por ejemplo, datos).
+\end{itemize}
+
+Es decir, en esta interpretación de $P(A \ | \ B)$ se asume que la evidencia es verdadera (porque se observó) y, con ella, se intenta ver qué tan posible es que la hipótesis que se está poniendo a prueba también lo sea. De ésta surgen dos conceptos fundamentales:
+
+\begin{itemize}
+\item \textbf{Probabilidad previa} (\textit{prior probability}): La probabilidad de que la hipótesis sea verdadera antes de recoger evidencia. Es decir, $P(A)$.
+\item \textbf{Probabilidad posterior} (\textit{posterior probability}): La probabilidad de que la hipótesis sea verdadera después de haber obtenido evidencia. Es decir, $P(A \ | \ B)$.
+\end{itemize}
+
+Por lo tanto, la probabilidad posterior es una \textbf{actualización} de la probabilidad previa luego de manejar evidencia relacionada a la hipótesis que se está investigando.\footnote{En ocasiones también se señala que representa una actualización de nuestras creencias previas.}
+
+Un \textbf{error lógico} aparentemente común que cometemos las personas es plantear a $P(A \ | \ B)$ como $P(B \ | \ A)$. Es decir, se suele caer en la confusión de que:
+\[
+  P(A \ | \ B) = P(B \ | \ A)
+\]
+Sin embargo, sí es posible encontrar una relación entre ambas probabilidades condicionales mediante un importante teorema que estudiaremos en la siguiente sección.
+
+\subsection{Teorema de Bayes.}
+
+En esta sección se abordará una consecuencia de la definición de probabilidad condicional, conocida como el teorema de Bayes.
+
+\subsubsection{Derivando el teorema.}
+
+Sean $A$ y $B$ dos eventos. En la sección 1.1 vimos que si $P(A) > 0$ y $P(B) > 0$, entonces:
+\[
+  P(B) \cdot P(A \ | \ B) = P(A) \cdot P(B \ | \ A)
+\]
+Al despejar a $P(A \ | \ B)$, se obtiene lo siguiente:
+\[
+  P(A \ | \ B) = \frac{P(A) \cdot P(B \ | \ A)}{P(B)}
+\]
+Esta forma de expresar a $P(A \ | \ B)$ se conoce comúnmente como el \textbf{teorema de Bayes}, en referencia al matemático y reverendo inglés Thomas Bayes\footnote{A dos años de su muerte en 1761, Richard Price (matemático y amigo suyo) lo ayudó a publicar un trabajo titulado \textit{An Essay towards solving a Problem in the Doctrine of Chances} en la revista \textit{Philosophical Transactions of the Royal Society of London} (1763). Si bien no era el tema principal de su ensayo, el reverendo planteó dentro de sus proposiciones lo que simbólicamente conocemos como la probabilidad condicional. Por lo tanto, se puede decir que el ``teorema de Bayes'' es, más bien, una derivación de la primera.}.
+
+El teorema de Bayes permite establecer un vínculo entre $P(A \ | \ B)$ y $P(B \ | \ A)$ simplemente al despejar a una de las dos.
+\[
+  P(A \ | \ B) = \frac{P(A) \cdot P(B \ | \ A)}{P(B)} \qquad \qquad
+  P(B \ | \ A) = \frac{P(B) \cdot P(A \ | \ B)}{P(A)}
+\]
+La relación que se ve arriba es una ventaja porque, en ocasiones, una de las probabilidades condicionales es más fácil de obtener que la otra. Por lo tanto, se puede optar por calcular a la primera para después resolver la de nuestro interés.
+
+En estadística, con $A$ siendo una muestra de datos de una población y $B$ un parámetro de esta última, $P(B \ | \ A)$ recibe el nombre de \textbf{función de verosimilitud} (\textit{likelihood function}). Sin embargo, se debe tener en cuenta que no es una función de probabilidad. El matemático Ronald Fisher (quien planteó este concepto) discutió aquello de manera detallada\footnote{Ver, por ejemplo, sus artículos \textit{On the mathematical foundations of theoretical statistics} (1922) donde, además, define el método de estimación de máxima verosimilitud, y en \textit{Inverse Probability} (1930).}.
+
+La igualdad del teorema de Bayes también puede ser expresado como una cuota de probabilidades o mediante una partición del espacio muestral. Ambas son estudiadas a continuación.
+
+\subsubsection{Expresada como cuota.}
+
+Una cuota (\textit{odds}) es la razón entre que ocurra un evento y que el mismo no suceda. Es decir,
+\[
+  q(A) = \frac{P(A)}{P(A^{c})}
+\]
+Desde su definición es claro que $q(A)$ \textbf{no mide la probabilidad de que ocurra $A$}, sino más bien compara a esta última con la de que falle en suceder. Por ejemplo, suponga que la probabilidad de que, en una carrera de autos, gane el único de color rojo (el evento $A$) es:
+\[
+  P(A) = \frac{2}{3}
+\]
+En este caso, su cuota $q(A)$ será:
+\[
+  q(A) = \frac{\frac{2}{3}}{1 - \frac{2}{3}} = \frac{2}{1}
+\]
+Por lo tanto, la cuota de que gane la carrera el auto rojo es de $2$ a $1$ en su favor.
+
+Al despejar a $P(A)$ en $q(A) = P(A)/P(A^{c})$, se obtiene que:
+\[
+  P(A) = q(A) \cdot P(A^{c}) = q(A) \cdot [1 - P(A)] = q(A) - q(A)P(A)
+\]
+Veamos que $P(A) = q(A) - q(A)P(A)$ es lo mismo que:
+\[
+  q(A) = P(A) + q(A)P(A) = P(A) \cdot [1 + q(A)]
+\]
+La igualdad de arriba nos lleva a una fórmula para convertir una cuota $q(A)$ a $P(A)$.
+\[
+  P(A) = \frac{q(A)}{1 + q(A)}
+\]
+Ahora digamos que la probabilidad de que suceda un evento $A$ está condicionado a que, anteriormente, ocurrió $B$. La cuota $q$, entonces, puede expresarse como:
+\[
+  q(A \ | \ B) = \frac{P(A \ | \ B)}{P(A^{c} \ | \ B)}
+\]
+Centrémonos solo en el lado derecho de esta igualdad. Si asumimos que $P(B) > 0$, es posible aplicar el teorema de Bayes tanto en el numerador como en el denominador de esta fracción. Con un poco de álgebra elemental se obtiene lo siguiente:
+\[
+  \frac{P(A \ | \ B)}{P(A^{c} \ | \ B)} = \frac{P(A) \cdot P(B \ | \ A)}{P(B)} \cdot \frac{P(B)}{P(A^{c}) \cdot P(B \ | \ A^{c})}
+                                        = \frac{P(A) \cdot P(B \ | \ A)}{P(A^{c}) \cdot P(B \ | \ A^{c})}
+\]
+Esta igualdad también puede ser expresada como:
+\[
+  \frac{P(A \ | \ B)}{P(A^{c} \ | \ B)} = \frac{P(A)}{P(A^{c})} \cdot \frac{P(B \ | \ A)}{P(B \ | \ A^{c})}
+\]
+La igualdad de arriba es el teorema de Bayes expresado como una cuota de probabilidades. Su lado izquierdo recibe el nombre ``cuota posterior'', mientras que $P(A)/P(A^{c})$ es la ``cuota previa'' y el factor que multiplica a esta última, $P(B \ | \ A)/P(B \ | \ A^{c})$, se conoce como la ``cuota de verosimilitud''.
+
+Veamos, también, que al aplicar la fórmula para convertir una cuota a la probabilidad del evento en el teorema de Bayes que acabamos de ver, se obtiene que:
+\[
+  P(A \ | \ B) = \frac{q(A \ | \ B)}{1 + q(A \ | \ B)}
+               = \frac{P(A \ | \ B)}{P(A^{c} \ | \ B) + P(A \ | \ B)}
+               = \frac{P(A) \cdot P(B \ | \ A)}{P(A^{c}) \cdot P(B \ | \ A^{c}) + P(A) \cdot P(B \ | \ A)}
+\]
+Si volvemos a la fórmula inicial del teorema de Bayes, de la igualdad de arriba se puede desprender que $P(B) = P(A^{c}) \cdot P(B \ | \ A^{c}) + P(A) \cdot P(B \ | \ A)$. En la siguiente sección explotaremos este hecho mediante la ley de la probabilidad total, que nos lleva a la forma más usada de este teorema.
+
+\subsubsection{La ley de la probabilidad total y el teorema de Bayes.}
+
+La \textbf{ley de la probabilidad total} señala que si el espacio muestral $S$ es una partición de los eventos $\{A_{k}\}_{k = 1}^{n}$, con cada $P(A_{k}) > 0$, entonces la probabilidad de que suceda otro evento $B$ cualquiera es:
+\[
+  P(B) = \sum_{k = 1}^{n} P(A_{k}) \cdot P(B \ | \ A_{k})
+\]
+\textbf{Demostración.} El evento $B$ puede ser expresado como:
+\[
+  B = B \cap S = B \cap \left(\bigcup_{k = 1}^{n} A_{k}\right)
+\]
+Por la propiedad distributiva, el evento $B$ también corresponde a:
+\[
+  B = \bigcup_{k = 1}^{n} (B \cap A_{k})
+\]
+En ese sentido, la probabilidad de que ocurra $B$ es:
+\[
+  P(B) = P\left(\bigcup_{k = 1}^{n} (B \cap A_{k})\right)
+\]
+Para $i \neq j$, $(B \cap A_{i}) \cap (B \cap A_{j}) = \emptyset$ ya que los eventos $A_{k}$ son mutuamente excluyentes. Así, por el axioma 3 de las probabilidades se tiene que:
+\[
+  P(B) = \sum_{k = 1}^{n} P(B \cap A_{k})
+\]
+Como las $P(A_{k}) > 0$, entonces $P(B \cap A_{k}) = P(A_{k}) \cdot P(B \ | \ A_{k})$. Al reemplazar esta igualdad en el lado derecho de la de arriba, se concluye que:
+\[
+  P(B) = \sum_{k = 1}^{n} P(A_{k}) \cdot P(B \ | \ A_{k}) \qquad (\text{Q. E. D})
+\]
+La intuición detrás de la ley de la probabilidad total es que la probabilidad de un evento puede ser calculada como \textbf{la suma de sus partes}, que corresponden a las intersecciones entre este conjunto y los que constituyen al espacio muestral como una partición.
+
+En el siguiente diagrama de Venn se observa la ley de probabilidad total a partir de los eventos $A$, $A^{c}$ y $B$ de un espacio muestral $S$ formado como una partición entre $A$ y $A^{c}$.
+
+\begin{figure}[hbt!]
+
+\centering
+
+\begin{tikzpicture}
+%\draw[lightgray] (0, 0) grid (12, 6);
+
+% Figuras.
+\draw (2, 1) rectangle (9, 5);
+\draw[fill = lightgray] (5.5, 3) ellipse (1.7 and 1.1);
+\draw (5.5, 1) -- (5.5, 5);
+
+% Etiquetas.
+\node at (2.2, 5.3) {$S$};
+\node at (3, 3) {$A$};
+\node at (8, 3) {$A^{c}$};
+\node at (5, 4.3) {$B$};
+\node at (4.6, 3) {$B \cap A$};
+\node at (6.4, 3) {$B \cap A^{c}$};
+\end{tikzpicture}
+
+\end{figure}
+
+Del diagrama se deduce que $B = (B \cap A) \cup (B \cap A^{c})$. Como $(B \cap A) \cap (B \cap A^{c}) = \emptyset$, entonces:
+\[
+  P(B) = P(B \cap A) + P(B \cap A^{c}) = P(A) \cdot P(B \ | \ A) + P(A^{c}) \cdot P(B \ | \ A^{c})
+\]
+Un método visual para aplicar la ley de la probabilidad total es el diagrama de árbol. Como se observa a continuación, primero se dibujan las probabilidades de los eventos de la partición y luego las condicionales de $B$ y $B^{c}$.
+
+\begin{figure}[hbt!]
+\centering
+
+\begin{tikzpicture}
+%\draw[color = lightgray] (0, 0) grid (14, 7);
+
+% Primera ramificación
+\foreach \i \j in {5/P(A), 2/P(A^{c})} {
+  \node at (3, \i) {$\j$};
+}
+
+% Segunda ramificación
+\foreach \i \j in {6.3/P(B \ | \ A), 4.5/P(B^{c} \ | \ A), 3.3/P(B \ | \ A^{c}), 1.5/P(B^{c} \ | \ A^{c})} {
+  \node at (6, \i) {$\j$};
+}
+
+%% Ramas
+% Primeras dos
+\foreach \i in {5, 2} {
+  \draw (0, 3) -- (2.4, \i);
+}
+
+% Cuatro subramas restantes
+\foreach \i in {6.25, 4.5} {
+  \draw(3.55, 5) -- (5.1, \i);
+}
+
+\foreach \i in {3.25, 1.5} {
+  \draw(3.55, 2) -- (5.1, \i);
+}
+
+\end{tikzpicture}
+
+\end{figure}
+
+Para calcular los productos seguimos las ramas del diagrama de árbol. Por ejemplo, a partir de $P(A)$ podemos obtener $P(A) \cdot P(B \ | \ A)$ y $P(A) \cdot P(B^{c} \ | \ A)$, donde $P(B^{c} \ | \ A) = 1 - P(B \ | \ A)$.
+
+Si estamos usando el diagrama de árbol y la ley de probabilidad total para calcular $P(B)$, entonces nos centramos en las probabilidades de los productos que contengan al evento $B$, que en este caso son $P(A) \cdot P(B \ | \ A)$ y $P(A^{c}) \cdot P(B \ | \ A^{c})$. Finalmente, las sumamos.
+\[
+  P(B) = P(A) \cdot P(B \ | \ A) + P(A^{c}) \cdot P(B \ | \ A^{c})
+\]
+Ahora considere un evento $A_{j}$ de los $\{A_{k}\}_{k = 1}^{n}$ que forman a $S$ como una partición, con $0 \leq j \leq n$. La probabilidad $P(A_{j} \ | \ B)$ se puede calcular mediante el teorema de Bayes como:
+\[
+  P(A_{j} \ | \ B) = \frac{P(A_{j}) \cdot P(B \ | \ A_{j})}{P(B)}
+\]
+Dada la característica de los $A_{k}$ y de que las $P(A_{k}) > 0$, se puede aplicar la ley de la probabilidad total para establecer que $P(B) = \sum_{k = 1}^{n} P(A_{k}) \cdot P(B \ | \ A_{k})$. Al reemplazar esta suma en el denominador del lado derecho del teorema de Bayes, se obtiene que:
+\[
+  P(A_{j} \ | \ B) = \frac{P(A_{j}) \cdot P(B \ | \ A_{j})}{\sum_{k = 1}^{n} P(A_{k}) \cdot P(B \ | \ A_{k})}
+\]
+Esta forma del teorema de Bayes permite calcular a $P(A_{j} \ | \ B)$ mediante casos más sencillos. Sin embargo, dicha facilidad dependerá de cómo se decida ``cortar'' el espacio muestral. También es posible terminar con $n$ probabilidades más complejas de resolver.
+
+\textbf{Ejercicio 3.} Suponga que existe la posibilidad de hacerse gratuitamente un examen para cierta enfermedad y usted decide realizárselo porque es un proceso rápido y no deja secuelas.
+
+Al llegar al centro donde realizan el examen, le entregan un folleto en el que se informa su nivel de precisión: Si padece la enfermedad, hay un $90\%$ de probabilidad de que resulte positivo. Esta se reduce a un $10\%$ si no la ha contraído.
+
+Los datos indican que solo hay una posibilidad de $10000$ de que padezca la enfermedad. Calcule la probabilidad de que la haya adquirido si, días después de haberse realizado el examen, se entera que resultó positivo.
+
+\textbf{Solución.} Puesto que el experimento de este ejercicio se centra en el examen médico, definamos a los eventos como:
+\[
+      E = \{\text{Tener la enfermedad}\}, \quad
+  E^{c} = \{\text{No tener la enfermedad}\}, \quad
+      T = \{\text{Examen positivo}\}
+\]
+Ahora consideremos la información dada en el ejercicio.
+\[
+  P(T \ | \ E) = 0.9, \quad P(T \ | \ E^{c}) = 0.1, \quad P(E) = \frac{1}{10000} = 0.0001
+\]
+Lo que se pide calcular es la probabilidad de tener la enfermedad luego de saber que el examen salió positivo. Es decir, $P(E \ | \ T)$, donde:
+\[
+  P(E \ | \ T) = \frac{P(E) \cdot P(T \ | \ E)}{P(T)}
+\]
+El espacio muestral de este ejercicio podemos definirlo como una partición entre $E$ (tener la enfermedad) y $E^{c}$ (no tener la enfermedad). Como el evento $T$ también es un subconjunto de este conjunto, se puede establecer que:
+\[
+  T = (T \cap E) \cup (T \cap E^{c})
+\]
+Así, por la ley de la probabilidad total, $P(T) = P(E) \cdot P(T \ | \ E) + P(E^{c}) \cdot P(T \ | \ E^{c})$. Como $P(E^{c}) = 1 - P(E) = 0.9999$, entonces:
+\begin{align*}
+  P(T) = (0.0001 \cdot 0.9) + (0.9999 \cdot 0.1) \approx 0.1001
+\end{align*}
+Por lo tanto, la probabilidad de padecer la enfermedad dado que el examen salió positivo es:
+\[
+  P(E \ | \ T) = \frac{P(E) \cdot P(T \ | \ E)}{P(T)}
+               = \frac{0.0001 \cdot 0.9}{0.1001}
+               \approx 0.001
+\]
+Es decir, la posibilidad de que tengamos la enfermedad aumentó de $1$ de $10000$ a casi $1$ de $1000$ (o a $10$ de $10000$) solo por saber que el examen resultó positivo.
+
+\section{Independencia.}
+
+A partir de la definición de las probabilidades condicionales se puede formarlizar el concepto de independencia entre eventos. En esta sección profundizamos en ello.
+
+\subsection{Eventos independientes.}
+
+En la Clase 1, cuando se revisó el Problema del Cumpleaños, uno de los supuestos señalados fue que dichas fechas de las $r$ personas eran independientes. Es decir, se asumió que conocer aquello no debe afectar la probabilidad que se buscaba calcular. Formalicemos esta idea.
+
+Si dos eventos $A$ y $B$ son independientes, simbólicamente debe implicar que:
+\[
+  P(A \ | \ B) = P(A) \quad \text{y} \quad P(B \ | \ A) = P(B)
+\]
+En otras palabras, $P(A)$ no se ve afectado por saber que $B$ sucedió previamente cuando este y el evento $A$ son independientes. Lo mismo con $P(B)$ dado que $A$ ocurrió.
+
+Apliquemos la definición de las probabilidades condicionales en los lados izquierdos de $P(A \ | \ B) = P(A)$ y $P(B \ | \ A) = P(B)$, con $P(B) > 0$ y $P(A) > 0$, respectivamente.
+\[
+  \frac{P(A \cap B)}{P(B)} = P(A) \quad \text{y} \quad \frac{P(B \cap A)}{P(A)} = P(B)
+\]
+Luego, multipliquemos por $P(B)$ y $P(A)$ en ambas ecuaciones.
+\[
+  P(A \cap B) = P(A) \cdot P(B) \quad \text{y} \quad P(B \cap A) = P(B) \cdot P(A)
+\]
+Dado a que $P(A \cap B) = P(B \cap A)$ y que $P(A) \cdot P(B) = P(B) \cdot P(A)$ ya que la multiplicación es conmutativa, se concluye que dos eventos $A$ y $B$ son \textbf{independientes} si:
+\[
+  P(A \cap B) = P(A) \cdot P(B)
+\]
+Es decir, dos eventos $A$ y $B$ son independientes si la probabilidad de que ambos ocurran (no necesariamente al mismo tiempo) es igual al producto de sus probabilidades individuales.
+
+Si $A$ y $B$ son independientes, entonces también lo son los siguientes pares de eventos:
+\[
+  \text{(1) } A^{c} \text{ y } B \qquad \text{(2) } A \text{ y } B^{c} \qquad \text{(3) } A^{c} \text{ y } B^{c}
+\]
+Demostremos la afirmación (2). Si $A$ y $B^{c}$ son independientes, debe cumplirse entonces que $P(A \cap B^{c}) = P(A) \cdot P(B^{c})$ o que $P(A \ | \ B^{c}) = P(A)$. Veamos esta última igualdad.
+
+Asumiendo que $P(B^{c}) > 0$, podemos aplicar el teorema de Bayes en el lado izquierdo de $P(A \ | \ B^{c}) = P(A)$ para expresar esta ecuación como:
+\[
+  \frac{P(A) \cdot P(B^{c} \ | \ A)}{P(B^{c})} = P(A)
+\]
+Puesto que $P(B^{c} \ | \ A) = 1 - P(B \ | \ A)$, la ecuación de arriba es igual a:
+\[
+  \frac{P(A) \cdot [1 - P(B \ | \ A)]}{P(B^{c})} = P(A)
+\]
+Además, $P(B \ | \ A) = P(B)$ ya que $A$ y $B$ son independientes.
+\[
+  \frac{P(A) \cdot [1 - P(B)]}{P(B^{c})} = P(A)
+\]
+Así, debido a que $P(B^{c}) = 1 - P(B)$, entonces:
+\begin{align*}
+  \frac{P(A) \cdot P(B^{c})}{P(B^{c})} &= P(A) \\
+  P(A) &= P(A) \qquad (\text{Q. E. D})
+\end{align*}
+En cuanto a la demostración de $P(A \cap B^{c}) = P(A) \cdot P(B^{c})$, se puede comenzar aplicando la propiedad 5 de las probabilidades\footnote{Estudiada en la Clase 2.} para establecer que $P(A \cap B^{c}) = P(A) - P(B \cap A)$.
+
+\textbf{Ejercicio 4.} Suponga que dos dados no cargados de seis lados son lanzados al mismo tiempo. Evalúe si los siguientes eventos son independientes:
+\begin{align*}
+  A &= \{\text{En el primer dado sale el número 4}\} \\
+  B &= \{\text{La suma de los resultados de los dos dados es igual a seis}\}
+\end{align*}
+\textbf{Solución.} Dado la poca cantidad, consideremos los elementos de ambos eventos.
+\begin{align*}
+  A &= \{(4, \ i)\}, \text{ con } i = 1, \ 2, \ \ldots, \ 6 \\
+  B &= \{(1, \ 5), \ (2, \ 4), \ (3, \ 3), \ (4, \ 2), \ (5, \ 1)\}
+\end{align*}
+Como $|A| = 6$, $|B| = 5$, $|S| = 36$ ($S =$ el espacio muestral) y $A \cap B = \{(4, \ 2)\}$, entonces:
+\[
+  P(A) = \frac{6}{36} = \frac{1}{6}; \ P(B) = \frac{5}{36}; \ P(A \cap B) = \frac{1}{36}
+\]
+Para ver si $A$ y $B$ son independientes, debemos evaluar si se cumple la siguiente igualdad:
+\begin{align*}
+  P(A \cap B) &= P(A) \cdot P(B) \\
+  \frac{1}{36} &= \frac{1}{6} \cdot \frac{5}{36} \\
+  \frac{1}{36} &\neq \frac{5}{216}
+\end{align*}
+De este modo se concluye que $A$ y $B$ \textbf{no son eventos independientes}.
+
+\textbf{Ejercicio 5.} Cien personas adultas son encuestadas en relación al nivel de deuda estudiantil que existe en la educación superior y si, actualmente, tienen algún hijo/a estudiando en alguna de esas instituciones. En la siguiente tabla se resumen sus respuestas:
+
+\begin{table}[hbt!]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{c c c c c}
+\hline
+                  &             \multicolumn{3}{c}{Nivel de deuda}               &            \\
+\cline{2-4}
+Hijo/a estudiando & Muy alta ($A$) & Más o menos adecuada ($B$) & Muy baja ($C$) & \textit{Total} \\
+\hline
+Sí ($D$)          &     $0.20$     &       $0.09$               &    $0.01$      &     $0.30$ \\
+No ($E$)          &     $0.41$     &       $0.21$               &    $0.08$      &     $0.70$ \\
+\textit{Total}    &     $0.61$     &       $0.30$               &    $0.09$      &     $1$ \\
+\hline
+\end{tabular}
+
+\end{table}
+
+Evalúe cuál de los pares de eventos señalados a continuación son independientes:
+\[
+\text{(a) } A \text{ y } D \qquad \text{(b) } B \text{ y } D \qquad \text{(c) } C \text{ y } D
+\]
+\textbf{Solución.} Mediante la tabla del ejercicio se pueden derivar las probabilidades:
+\begin{align*}
+P(A) = 0.61 \quad P(B) = 0.30 \quad P(C) = 0.09 \quad P(D) = 0.30 \\
+P(A \cap D) = 0.20 \quad P(B \cap D) = 0.09 \quad P(C \cap D) = 0.01
+\end{align*}
+A partir de estas probabilidades evaluemos las siguientes igualdades:
+\begin{align*}
+  P(A \cap D) &= P(A) \cdot P(D) & P(B \cap D) &= P(B) \cdot P(D) & P(C \cap D) &= P(C) \cdot P(D) \\
+         0.20 &= 0.61 \cdot 0.30 &        0.09 &= 0.30 \cdot 0.30 &        0.01 &= 0.09 \cdot 0.30 \\
+         0.20 &\neq 0.183        &        0.09 &= 0.09            &        0.01 &\neq 0.027
+\end{align*}
+Por lo tanto, solo los eventos $B$ y $D$ son independientes. Una interpretación de este resultado es que el hecho de tener un hijo/a en la educación superior no incidió (aparentemente) en quienes respondieron que el nivel de deuda estudiantil es relativamente el adecuado.
+
+\subsection{Eventos independientes y eventos mutuamente excluyentes.}
+
+Es un buen momento para dejar claro el siguiente punto:
+
+\begin{center}
+\textit{Dos eventos independientes no son necesariamente mutuamente excluyentes}.
+\end{center}
+
+La afirmación de arriba también se aplica en sentido contrario:
+
+\begin{center}
+\textit{Dos eventos mutuamente excluyentes no son necesariamente independientes}.
+\end{center}
+
+El concepto de independencia tiene que ver con que saber que un evento sucedió no cambia nuestra creencia de qué tan posible es que ocurra el de nuestro interés. En cambio, el de exclusividad mutua se centra en el hecho de que si uno ocurre, el otro no puede suceder.
+
+Otra manera de verlo es a partir de las definiciones matemáticas de los conceptos de independencia y exclusividad mutua entre dos eventos $A$ y $B$:
+\[
+  \text{Es posible que } P(A \cap B) = 0 \text{, pero al mismo tiempo que } P(A) \cdot P(B) \neq 0
+\]
+Por lo tanto, la moraleja es que debemos evitar igualar los conceptos de independencia y exclusividad mutua entre eventos, así como establecer alguna relación causal entre ellos.
+
+\subsection{Independencia de varios eventos.}
+
+Determinar que más de dos eventos son independientes no es un hecho que se deriva inmediatamente de la definición que vimos en la sección 2.1.
+
+Tres eventos $A$, $B$ y $C$ son independientes si se cumplen las siguientes igualdades:
+
+\begin{itemize}
+\item $P(A \cap B) = P(A) \cdot P(B)$
+\item $P(A \cap C) = P(A) \cdot P(C)$
+\item $P(B \cap C) = P(B) \cdot P(C)$
+\item $P(A \cap B \cap C) = P(A) \cdot P(B) \cdot P(C)$
+\end{itemize}
+
+Por lo tanto, para determinar que $A$, $B$ y $C$ son independientes debemos comprobar que lo sean entre los pares que se pueden formar entre ellos y, luego, con los tres.
+
+Para evaluar si cuatro eventos son independientes, se deben corroborar:
+
+\begin{itemize}
+\item Las $\binom{4}{2} = 6$ independencias pareadas entre ellos.
+\item Las $\binom{4}{3} = 4$ independencias de los grupos de tres eventos que se forman con los cuatro.
+\item $\binom{4}{4} = 1$ independencia entre los cuatro eventos en conjunto.
+\end{itemize}
+
+En total, deben cumplirse once independencias para concluir que cuatro eventos lo son.
+
+Así, se generaliza que una colección de eventos $\{A_{i}\}_{i = 1}^{n}$ son \textbf{mutuamente independientes} si, para cualquier subcolección $\{A_{i_{j}}\}_{j = 1}^{k}$ de ellos, se cumple que:
+\[
+  P\left(\bigcap_{j = 1}^{k} A_{i_{j}}\right) = \prod_{j = 1}^{k} P(A_{i_{j}})
+\]
+Es decir, los $n$ eventos $A_{i}$ son mutuamente independientes si son independientes para cualquier intersección que pueden formarse entre ellos.
+
+\subsection{Independencia condicional.}
+
+La independencia de eventos también puede estar condicionada a la ocurrencia de otro suceso.
+
+Se dice que dos eventos $A_{1}$ y $A_{2}$ son \textbf{condicionalmente independientes} si, dado que un suceso $B$ ocurrió, se cumple la igualdad:
+\[
+  P(A_{1} \cap A_{2} \ | \ B) = P(A_{1} \ | \ B) \cdot P(A_{2} \ | \ B)
+\]
+Que $A_{1}$ y $A_{2}$ sean condicionalmente independientes dado $B$ \textbf{no implica} que:
+
+\begin{itemize}
+\item También sean condicionalmente independientes dado $B^{c}$.
+\item $A_{1}$ y $A_{2}$ sean independientes.
+\end{itemize}
+
+Tampoco implica que si $A_{1}$ y $A_{2}$ son mutuamente independientes, entonces también son condicionalmente independientes a $B$.
+
+En el siguiente ejercicio veremos el cuidado que debemos para asegurar la independencia condicional entre eventos.
+
+\textbf{Ejercicio 6.} Suponga que una bebé llora solo si tiene hambre, si está aburrida o ambas. Considere los siguientes eventos junto con sus probabilidades:
+
+\begin{table}[hbt!]
+\centering
+
+\renewcommand{\arraystretch}{1.3}
+
+\begin{tabular}{c c c}
+\hline
+\multicolumn{2}{c}{Eventos} & \\
+\cline{1-2}
+Símbolo & Significado & Probabilidad \\
+\hline
+$C$ & La bebé está llorando & $0 < c < 1$ \\
+$H$ & La bebé tiene hambre & $0 < h < 1$ \\
+$T$ & La bebé está aburrida & $0 < t < 1$ \\
+\hline
+\end{tabular}
+\end{table}
+
+Asumiendo que los eventos $H$ y $T$ son independientes:
+
+\begin{itemize}
+\item[(a)] Calcule $c$ en términos de $h$ y $t$.
+\item[(b)] Obtenga las probabilidades $P(H \ | \ C)$, $P(T \ | \ C)$ y $P(H \cap T \ | \ C)$.
+\item[(c)] Evalué si $H$ y $T$ son condicionalmente independientes dado $C$.
+\end{itemize}
+
+\textbf{Solución (a).} Dado que la bebé puede llorar porque tiene hambre, está aburrida o por ambas razones, podemos expresar al evento $C$ como:
+\[
+  C = H \cup T
+\]
+Así, se puede calcular la probabilidad de $C$ como:
+\[
+  P(C) = P(H \cup T) = P(H) + P(T) - P(H \cap T)
+\]
+Debido a que $H$ y $T$ son independientes, entonces $P(H \cap T) = P(H) \cdot P(T) = h \cdot t$. Además, puesto que $P(C) = c$, en consecuencia:
+\[
+  c = h + t - ht
+\]
+\textbf{Solución (b).} Las tres probabilidades condicionales podemos expresarlas usando el teorema de Bayes:
+\begin{align*}
+  P(H \ | \ C) &= \frac{P(H) \cdot P(C \ | \ H)}{P(C)} = \frac{h \cdot P(C \ | \ H)}{c} \\
+  P(T \ | \ C) &= \frac{P(T) \cdot P(C \ | \ T)}{P(C)} = \frac{t \cdot P(C \ | \ T)}{c} \\
+  P(H \cap T \ | \ C) &= \frac{P(H \cap T) \cdot P(C \ | \ H \cap T)}{P(C)} = \frac{ht \cdot P(C \ | \ H \cap T)}{c}
+\end{align*}
+Observemos que $P(C \ | \ H) = P(C \ | \ T) = P(C \ | \ H \cap T) = 1$ porque, a partir de lo señalado en el ejercicio, si ocurre $H$, $T$ o ambos eventos la bebé llorará. De este modo,
+\[
+  P(H \ | \ C) = \frac{h}{c} \qquad
+  P(T \ | \ C) = \frac{t}{c} \qquad
+  P(H \cap T \ | \ C) = \frac{ht}{c}
+\]
+\textbf{Solución (c).} Utilicemos la definición de la independencia condicional para evaluar esta pregunta.
+\begin{align*}
+  P(H \cap T \ | \ C) &= P(H \ | \ C) \cdot P(T \ | \ C) \\
+         \frac{ht}{c} &\neq \frac{h}{c} \cdot \frac{t}{c} = \frac{ht}{c^{2}}
+\end{align*}
+Esto nos muestra que $H$ y $T$ no son condicionalmente independientes dada la ocurrencia de $C$, a pesar que estos dos primeros eventos son independientes.
+
+Una explicación del resultado del Ejercicio 6 (c) puede ser, por ejemplo, que si sabemos que la bebé lloró y no fue porque estaba aburrida, entonces podemos deducir que se debió a que tenía hambre. Es decir, dada su actitud, los eventos $H$ y $T$ son dependientes.
+
+\end{document}
